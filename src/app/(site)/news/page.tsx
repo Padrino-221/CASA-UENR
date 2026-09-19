@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import SiteArrow from '@/components/site/SiteArrow';
@@ -5,6 +6,14 @@ import RichHeading from '@/components/site/RichHeading';
 import { getPageContent } from '@/lib/cms/content';
 import { getPublishedArticles, getPublishedEvents } from '@/lib/cms/news';
 import { resolvePreview, type SiteSearchParams } from '@/lib/cms/preview';
+import { pageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = pageMetadata({
+  title: 'News & Events',
+  description:
+    'Upcoming events, announcements, recaps, and testimonies from the CASA UENR fellowship at the University of Energy and Natural Resources.',
+  path: '/news',
+});
 
 const ANNOUNCEMENT_LINKS: Record<string, { href: string; label: string; cls: string; stroke: string }> = {
   'freshers-registration-is-open': {

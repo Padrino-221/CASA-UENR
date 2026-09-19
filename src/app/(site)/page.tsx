@@ -1,7 +1,9 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import SiteArrow from '@/components/site/SiteArrow';
 import RichHeading from '@/components/site/RichHeading';
+import { SITE_NAME, SITE_DESCRIPTION, OG_IMAGE } from '@/lib/seo';
 import {
   MusicNotes,
   HandsPraying,
@@ -12,6 +14,29 @@ import {
 } from '@phosphor-icons/react/dist/ssr';
 import { getPageContent, parseList, parseTags } from '@/lib/cms/content';
 import { resolvePreview, type SiteSearchParams } from '@/lib/cms/preview';
+
+const HOME_TITLE = `${SITE_NAME} — Christ Apostolic Students and Associates at UENR`;
+
+export const metadata: Metadata = {
+  title: { absolute: HOME_TITLE },
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    title: HOME_TITLE,
+    description: SITE_DESCRIPTION,
+    url: '/',
+    siteName: SITE_NAME,
+    locale: 'en_US',
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: `${SITE_NAME} logo` }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: HOME_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [OG_IMAGE],
+  },
+};
 
 const ICONS: Record<string, typeof MusicNotes> = {
   MusicNotes,

@@ -86,8 +86,13 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // Everything else passes through
-  return NextResponse.next();
+  // Everything else passes through. Keep the authenticated admin area and the
+  // login page out of search engines.
+  const response = NextResponse.next();
+  if (!isPublicPath(pathname) || pathname === "/login") {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  return response;
 }
 
 export const config = {

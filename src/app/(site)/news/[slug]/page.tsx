@@ -4,14 +4,41 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import SiteArrow from '@/components/site/SiteArrow';
 import { getArticleBySlug, getPublishedArticles } from '@/lib/cms/news';
+import { SITE_NAME, SITE_URL, OG_IMAGE } from '@/lib/seo';
 
 type Params = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  if (!article) return { title: 'Not found - CASA UENR' };
-  return { title: `${article.title} - CASA UENR`, description: article.excerpt };
+  if (!article) return { title: 'Article not found' };
+
+  const url = `/news/${article.slug}`;
+  const images = article.image
+    ? [{ url: article.image, width: 1200, height: 630, alt: article.title }]
+    : [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }];
+
+  return {
+    title: article.title,
+    description: article.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      title: article.title,
+      description: article.excerpt,
+      url,
+      siteName: SITE_NAME,
+      locale: 'en_US',
+      images,
+      publishedTime: article.date,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.excerpt,
+      images: images.map((image) => image.url),
+    },
+  };
 }
 
 export default async function ArticlePage({ params }: Params) {
@@ -22,8 +49,43 @@ export default async function ArticlePage({ params }: Params) {
   const all = await getPublishedArticles();
   const related = all.filter((item) => item.slug !== slug).slice(0, 2);
 
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.title,
+    description: article.excerpt,
+    image: article.image ? [article.image] : [`${SITE_URL}${OG_IMAGE}`],
+    datePublished: article.date,
+    dateModified: article.date,
+    author: { '@type': 'Organization', name: SITE_NAME },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/casa-logo-white.png` },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/news/${article.slug}` },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'News & Events', item: `${SITE_URL}/news` },
+      { '@type': 'ListItem', position: 3, name: article.title, item: `${SITE_URL}/news/${article.slug}` },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* ============ Page Hero ============ */}
       <section className="page-hero">
         <div className="inner page-hero-inner">

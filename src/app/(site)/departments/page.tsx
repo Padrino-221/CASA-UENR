@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import SiteArrow from '@/components/site/SiteArrow';
 import RichHeading from '@/components/site/RichHeading';
@@ -11,6 +12,14 @@ import {
 } from '@phosphor-icons/react/dist/ssr';
 import { getPageContent, parseList } from '@/lib/cms/content';
 import { resolvePreview, type SiteSearchParams } from '@/lib/cms/preview';
+import { pageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = pageMetadata({
+  title: 'Departments',
+  description:
+    'Find your place in one of the six CASA UENR departments — Choir & Music, Prayer Force, Evangelism, Media & Tech, Welfare, and Ushering & Protocol.',
+  path: '/departments',
+});
 
 const ICONS: Record<string, typeof MusicNotes> = {
   MusicNotes,

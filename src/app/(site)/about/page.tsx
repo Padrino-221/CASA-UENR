@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import SiteArrow from '@/components/site/SiteArrow';
@@ -6,6 +7,14 @@ import LeadersCarousel from '@/components/site/LeadersCarousel';
 import { getPageContent, parseTags, parseParagraphs } from '@/lib/cms/content';
 import { resolvePreview, type SiteSearchParams } from '@/lib/cms/preview';
 import { getPublishedLeaders } from '@/lib/cms/leaders';
+import { pageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = pageMetadata({
+  title: 'About Us',
+  description:
+    'Who we are, what we believe, and the leaders serving the CASA UENR fellowship at the University of Energy and Natural Resources (UENR), Sunyani.',
+  path: '/about',
+});
 
 export default async function AboutPage({ searchParams }: { searchParams: SiteSearchParams }) {
   const preview = await resolvePreview(searchParams);

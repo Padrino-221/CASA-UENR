@@ -10,6 +10,7 @@ export interface CmsArticle {
   quote?: { text: string; cite: string };
   image?: string;
   meta: string;
+  date?: string;
 }
 
 export interface CmsEvent {
@@ -37,6 +38,7 @@ type ArticleRow = {
   quoteCite: string | null;
   imageUrl: string | null;
   meta: string | null;
+  createdAt?: Date | string;
 };
 
 function mapArticle(row: ArticleRow): CmsArticle {
@@ -56,6 +58,7 @@ function mapArticle(row: ArticleRow): CmsArticle {
     quote: row.quoteText ? { text: row.quoteText, cite: row.quoteCite || '' } : undefined,
     image: row.imageUrl || undefined,
     meta: row.meta || '',
+    date: row.createdAt ? new Date(row.createdAt).toISOString() : undefined,
   };
 }
 
