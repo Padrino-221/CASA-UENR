@@ -5,8 +5,24 @@ import { db } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 
+// Auth.js (v5) only reads `AUTH_SECRET` by default. Fall back to
+// `NEXTAUTH_SECRET`, and finally derive one from `DATABASE_URL` so the app
+// still boots if no secret is configured. Always set `AUTH_SECRET` in production.
+const authSecret =
+  process.env.AUTH_SECRET ||
+  process.env.NEXTAUTH_SECRET ||
+  process.env.DATABASE_URL;
+
+if (!process.env.AUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
+  console.warn(
+    '[Auth] AUTH_SECRET is not set. Falling back to a derived secret — set AUTH_SECRET in your deployment environment.'
+  );
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  trustHost: true,
+  secret: authSecret,
   adapter: PrismaAdapter(db),
   providers: [
     Credentials({
