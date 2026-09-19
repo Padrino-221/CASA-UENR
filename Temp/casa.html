@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASA - Christ Apostolic Students and Associates</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0E2E22;
+            --brand: #0F3D2E;
+            --brand-hover: #12462F;
+            --lime: #C8F169;
+            --lime-soft: #F3FADE;
+            --paper: #F2F1EA;
+            --card: #FFFFFF;
+            --panel: #F8F7F1;
+            --line: rgba(14, 46, 34, 0.10);
+            --line-strong: rgba(14, 46, 34, 0.20);
+            --muted: #66716B;
+            --accent-orange: #E4572E;
+            --accent-violet: #7C4DFF;
+            --accent-teal: #00897B;
+            --accent-pink: #E91E63;
+            --accent-blue: #0066CC;
+            --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: clip;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background: #fff;
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: clip;
+            overflow-wrap: break-word;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        ::selection {
+            background: var(--lime);
+            color: var(--ink);
+        }
+
+        .serif {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* ============ Scroll Reveal ============ */
+        [data-reveal] {
+            --reveal-y: 24px;
+            opacity: 0;
+            transform: translateY(var(--reveal-y));
+            filter: blur(5px);
+            will-change: opacity, transform, filter;
+        }
+
+        [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+            transition:
+                opacity 0.8s var(--ease),
+                transform 0.8s var(--ease),
+                filter 0.8s var(--ease);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            [data-reveal] {
+                opacity: 1;
+                transform: none;
+                filter: none;
+            }
+        }
+
+        /* ============ Container ============ */
+        .main-container {
+            width: 100%;
+            background: var(--brand);
+            overflow: hidden;
+        }
+
+        /* Full-bleed sections with centered content columns */
+        .inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding-left: 44px;
+            padding-right: 44px;
+        }
+
+        .main-container > * {
+            min-width: 0;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* ============ Navigation ============ */
+        .navbar {
+            padding: 22px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+        }
+
+        .navbar .inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.72);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: color 0.25s var(--ease);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--lime);
+        }
+
+        .nav-links a.active {
+            font-weight: 600;
+        }
+
+        /* ============ Buttons ============ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 20px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.25s var(--ease), border-color 0.25s var(--ease), background 0.25s var(--ease);
+        }
+
+        .btn-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .btn-circle svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .btn-ink {
+            background: var(--ink);
+            color: #fff;
+            border: 1px solid var(--ink);
+        }
+
+        .btn-ink:hover {
+            transform: translateY(-1px);
+            background: var(--brand-hover);
+        }
+
+        .btn-ink .btn-circle {
+            background: var(--lime);
+        }
+
+        .btn-white {
+            background: #fff;
+            color: var(--ink);
+            border: 1px solid var(--line-strong);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-1px);
+            border-color: var(--ink);
+        }
+
+        .btn-white .btn-circle {
+            background: var(--ink);
+        }
+
+        .btn-lime {
+            background: var(--lime);
+            color: var(--brand);
+            border: 1px solid rgba(14, 46, 34, 0.25);
+        }
+
+        .btn-lime:hover {
+            transform: translateY(-1px);
+            background: #D6F87F;
+        }
+
+        .btn-lime .btn-circle {
+            background: var(--brand);
+        }
+
+        /* ============ Hero ============ */
+        .hero {
+            padding: 56px 0 0;
+        }
+
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 48px;
+            margin-bottom: 40px;
+        }
+
+        .hero-text h1 {
+            font-size: 60px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.04;
+            letter-spacing: -0.035em;
+            max-width: 560px;
+        }
+
+        .hero-text h1 .serif {
+            font-size: 1.04em;
+            color: var(--lime);
+        }
+
+        .hero-right {
+            max-width: 320px;
+        }
+
+        .hero-right p {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 14.5px;
+            line-height: 1.65;
+            margin-bottom: 24px;
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            margin: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.18);
+            overflow: hidden;
+            height: 540px;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gatherings-card {
+            position: absolute;
+            bottom: 32px;
+            left: 44px;
+            background: var(--brand);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 16px;
+            padding: 22px;
+            color: #fff;
+            min-width: 310px;
+        }
+
+        .gatherings-card .label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.55);
+            margin-bottom: 12px;
+        }
+
+        .gathering-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 16px;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+        }
+
+        .gathering-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .gathering-row .name {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .gathering-row .time {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--lime);
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .gatherings-card .venue {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding-top: 10px;
+            margin-top: 6px;
+        }
+
+        /* ============ Scripture Strip ============ */
+        .verse-strip {
+            background: #fff;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            padding: 28px 0;
+        }
+
+        .verse-inner {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 14px;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        .verse-strip blockquote {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            font-size: 21px;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+
+        .verse-strip cite {
+            font-style: normal;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--brand);
+            background: var(--lime);
+            border: 1px solid rgba(14, 46, 34, 0.22);
+            border-radius: 999px;
+            padding: 5px 12px;
+            white-space: nowrap;
+        }
+
+        /* ============ About Section ============ */
+        .about-section {
+            background: #fff;
+            padding: 72px 0;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+            align-items: start;
+        }
+
+        .about-left {
+            background: var(--lime-soft);
+            border: 1px solid rgba(14, 46, 34, 0.12);
+            border-radius: 22px;
+            padding: 36px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid var(--line-strong);
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 24px;
+        }
+
+        .about-left h2 {
+            font-size: 33px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.18;
+            letter-spacing: -0.025em;
+            margin-bottom: 30px;
+        }
+
+        .about-left h2 .serif {
+            font-size: 1.05em;
+        }
+
+        .about-image-wrapper {
+            position: relative;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            overflow: hidden;
+            height: 240px;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-tags {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .about-tag {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--line);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .about-tag.green {
+            background: var(--lime);
+            border-color: rgba(14, 46, 34, 0.22);
+            font-weight: 600;
+        }
+
+        .about-right {
+            padding-top: 16px;
+        }
+
+        .about-right h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            margin-bottom: 22px;
+        }
+
+        .about-right h3 .serif {
+            font-size: 1.05em;
+        }
+
+        .about-right p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .about-actions {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .our-team-link {
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.25s var(--ease);
+        }
+
+        .our-team-link:hover {
+            gap: 10px;
+        }
+
+        /* ============ Leadership ============ */
+        .leadership-section {
+            background: var(--panel);
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            padding: 72px 0;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 32px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .section-head .badge {
+            margin-bottom: 14px;
+        }
+
+        .section-head h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+        }
+
+        .section-head h2 .serif {
+            font-size: 1.05em;
+        }
+
+        .section-head p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 340px;
+        }
+
+        .leaders-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .leader-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 26px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+            transition: transform 0.35s var(--ease), border-color 0.35s var(--ease);
+        }
+
+        .leader-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--line-strong);
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.02em;
+        }
+
+        .avatar.brand {
+            background: var(--brand);
+            color: var(--lime);
+        }
+
+        .avatar.lime {
+            background: var(--lime);
+            color: var(--brand);
+        }
+
+        .avatar.violet {
+            background: rgba(124, 77, 255, 0.14);
+            color: var(--accent-violet);
+        }
+
+        .avatar.teal {
+            background: rgba(0, 137, 123, 0.14);
+            color: var(--accent-teal);
+        }
+
+        .leader-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+
+        .leader-card .role {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--brand);
+            background: var(--lime-soft);
+            border: 1px solid rgba(14, 46, 34, 0.12);
+            border-radius: 999px;
+            padding: 4px 10px;
+        }
+
+        .leader-card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        /* ============ Departments ============ */
+        .departments-section {
+            background: #fff;
+            padding: 72px 0;
+        }
+
+        .departments-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .dept-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 28px;
+            min-height: 190px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.35s var(--ease), border-color 0.35s var(--ease), background 0.35s var(--ease);
+        }
+
+        .dept-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--line-strong);
+            background: #fff;
+        }
+
+        .dept-symbol {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .dept-card:nth-child(6n + 1) .dept-symbol { background: rgba(124, 77, 255, 0.12); color: var(--accent-violet); }
+        .dept-card:nth-child(6n + 2) .dept-symbol { background: rgba(228, 87, 46, 0.12); color: var(--accent-orange); }
+        .dept-card:nth-child(6n + 3) .dept-symbol { background: rgba(0, 102, 204, 0.12); color: var(--accent-blue); }
+        .dept-card:nth-child(6n + 4) .dept-symbol { background: rgba(0, 137, 123, 0.12); color: var(--accent-teal); }
+        .dept-card:nth-child(6n + 5) .dept-symbol { background: rgba(233, 30, 99, 0.12); color: var(--accent-pink); }
+        .dept-card:nth-child(6n + 6) .dept-symbol { background: var(--lime); color: var(--brand); }
+
+        .dept-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+
+        .dept-card p {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .dept-card .join-link {
+            margin-top: auto;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--brand);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.25s var(--ease);
+        }
+
+        .dept-card:hover .join-link {
+            gap: 10px;
+        }
+
+        /* ============ News & Events ============ */
+        .news-section {
+            background: var(--panel);
+            border-top: 1px solid var(--line);
+            padding: 72px 0;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .event-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: transform 0.35s var(--ease), border-color 0.35s var(--ease);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--line-strong);
+        }
+
+        .event-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .date-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--lime);
+            border: 1px solid rgba(14, 46, 34, 0.22);
+            border-radius: 12px;
+            padding: 8px 14px;
+            min-width: 64px;
+        }
+
+        .date-block .month {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--brand);
+        }
+
+        .date-block .day {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand);
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .event-kind {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--brand);
+            background: var(--lime-soft);
+            border: 1px solid rgba(14, 46, 34, 0.12);
+            border-radius: 999px;
+            padding: 5px 11px;
+        }
+
+        .event-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.35;
+            letter-spacing: -0.01em;
+        }
+
+        .event-card p {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .event-meta {
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--line);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ============ Footer ============ */
+        .footer {
+            background: var(--brand);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 30px 0;
+        }
+
+        .footer .inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer .logo {
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .footer-copy {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 22px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.25s var(--ease);
+        }
+
+        .footer-links a:hover {
+            color: var(--lime);
+        }
+
+        /* ============ Responsive ============ */
+        @media (max-width: 1080px) {
+            .inner {
+                padding-left: 28px;
+                padding-right: 28px;
+            }
+
+            .hero-image-wrapper {
+                height: 460px;
+            }
+
+            .gatherings-card {
+                left: 28px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 46px;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .leaders-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .departments-grid,
+            .news-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+
+            .inner {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .hero-image-wrapper {
+                height: auto;
+            }
+
+            .hero-image {
+                height: 340px;
+            }
+
+            .hero-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 28px;
+            }
+
+            .hero-text h1 {
+                font-size: 37px;
+            }
+
+            .gatherings-card {
+                position: static;
+                margin: 18px;
+                min-width: 0;
+                width: auto;
+            }
+
+            .leaders-grid,
+            .departments-grid,
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-head h2 {
+                font-size: 29px;
+            }
+
+            .about-left h2 {
+                font-size: 27px;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+    <noscript>
+        <style>
+            [data-reveal] {
+                opacity: 1;
+                transform: none;
+                filter: none;
+            }
+        </style>
+    </noscript>
+</head>
+<body>
+    <div class="main-container">
+        <nav class="navbar">
+            <div class="inner">
+            <div class="logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 32 32" fill="none">
+                        <path d="M18 4h-4v8H8v4h6v12h4V16h6v-4h-6V4z" fill="#C8F169"/>
+                        <circle cx="26" cy="26" r="3" fill="#C8F169" opacity="0.5"/>
+                    </svg>
+                </span>
+                CASA
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#leadership">Leadership</a>
+                <a href="#departments">Departments</a>
+                <a href="#news">News &amp; Events</a>
+            </div>
+            <a href="#news" class="btn btn-lime">
+                Join us this Sunday
+                <span class="btn-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#C8F169" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </a>
+            </div>
+        </nav>
+
+        <!-- ============ Home / Hero ============ -->
+        <section class="hero" id="home">
+            <div class="inner">
+            <div class="hero-content">
+                <div class="hero-text" data-reveal>
+                    <h1>Rooted in <span class="serif">Christ,</span> raised for purpose</h1>
+                </div>
+                <div class="hero-right" data-reveal data-reveal-delay="120">
+                    <p>Christ Apostolic Students and Associates is a family of students growing together in the Word, prayer, and service — right in the heart of campus.</p>
+                    <a href="#about" class="btn btn-white">
+                        Get to know us
+                        <span class="btn-circle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <div class="hero-image-wrapper" data-reveal data-reveal-delay="150">
+            <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1200&h=600&fit=crop" alt="Students worshipping together" class="hero-image">
+            <div class="gatherings-card">
+                <div class="label">Weekly gatherings</div>
+                <div class="gathering-row"><span class="name">Celebration Service</span><span class="time">Sun · 8:00 AM</span></div>
+                <div class="gathering-row"><span class="name">Bible Study</span><span class="time">Wed · 5:30 PM</span></div>
+                <div class="gathering-row"><span class="name">Prayer Meeting</span><span class="time">Fri · 6:00 PM</span></div>
+                <div class="venue">Chapel Annex, Main Campus</div>
+            </div>
+        </div>
+
+        <!-- ============ Scripture Strip ============ -->
+        <div class="verse-strip" data-reveal>
+            <div class="inner verse-inner">
+            <blockquote>&ldquo;You are the light of the world. A city set on a hill cannot be hidden.&rdquo;</blockquote>
+            <cite>Matthew 5:14</cite>
+            </div>
+        </div>
+
+        <!-- ============ About / Overview ============ -->
+        <section class="about-section" id="about">
+            <div class="inner">
+            <div class="about-grid">
+                <div class="about-left" data-reveal>
+                    <div class="badge">Who We Are</div>
+                    <h2>Driven by <span class="serif">faith,</span> built for campus life</h2>
+                    <div class="about-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=600&h=400&fit=crop" alt="Students walking together on campus" class="about-image">
+                        <div class="about-tags">
+                            <span class="about-tag green">Student-led</span>
+                            <span class="about-tag">Word-centered</span>
+                            <span class="about-tag">Spirit-filled</span>
+                            <span class="about-tag">Campus Outreach</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-right" data-reveal data-reveal-delay="120">
+                    <h3>With Christ at our core, we raise students who <span class="serif">shine</span> in the classroom, the fellowship hall, and the world.</h3>
+                    <p>CASA — Christ Apostolic Students and Associates — is the campus fellowship of Christ Apostolic Church: a community where students encounter God, discover purpose, and build friendships that last far beyond graduation.</p>
+                    <p>From Sunday celebrations to late-night prayer meetings, from evangelism on campus to care for one another through exams, we go beyond weekly meetings into a shared life of faith.</p>
+                    <div class="about-actions">
+                        <a href="#departments" class="btn btn-ink">
+                            Find your place
+                            <span class="btn-circle">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#0E2E22" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </span>
+                        </a>
+                        <a href="#leadership" class="our-team-link">Meet the leaders &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- ============ Leadership ============ -->
+        <section class="leadership-section" id="leadership">
+            <div class="inner">
+            <div class="section-head" data-reveal>
+                <div>
+                    <div class="badge">Leadership</div>
+                    <h2>Servants who <span class="serif">lead</span> the way</h2>
+                </div>
+                <p>Every officer serves a one-session term, elected by the house and accountable to the fellowship and our patrons.</p>
+            </div>
+            <div class="leaders-grid">
+                <div class="leader-card" data-reveal>
+                    <div class="avatar brand">OA</div>
+                    <div>
+                        <h3>Oluwaseun Adeyemi</h3>
+                        <span class="role">President</span>
+                    </div>
+                    <p>Coordinates the fellowship's vision and chairs the executive council.</p>
+                </div>
+                <div class="leader-card" data-reveal data-reveal-delay="100">
+                    <div class="avatar lime">CB</div>
+                    <div>
+                        <h3>Chiamaka Balogun</h3>
+                        <span class="role">Vice President</span>
+                    </div>
+                    <p>Oversees welfare and supports every arm of the ministry.</p>
+                </div>
+                <div class="leader-card" data-reveal data-reveal-delay="200">
+                    <div class="avatar violet">TE</div>
+                    <div>
+                        <h3>Tunde Eze</h3>
+                        <span class="role">General Secretary</span>
+                    </div>
+                    <p>Keeps the house informed, organised, and on record.</p>
+                </div>
+                <div class="leader-card" data-reveal data-reveal-delay="300">
+                    <div class="avatar teal">FO</div>
+                    <div>
+                        <h3>Faith Okafor</h3>
+                        <span class="role">Bible Study Coordinator</span>
+                    </div>
+                    <p>Plans and teaches our weekly study of the Word.</p>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- ============ Departments ============ -->
+        <section class="departments-section" id="departments">
+            <div class="inner">
+            <div class="section-head" data-reveal>
+                <div>
+                    <div class="badge">Departments</div>
+                    <h2>Serve with your <span class="serif">gifts</span></h2>
+                </div>
+                <p>Every member belongs somewhere. Find your department and put your gifts to work on campus.</p>
+            </div>
+            <div class="departments-grid">
+                <div class="dept-card" data-reveal>
+                    <div class="dept-symbol">&#9834;</div>
+                    <div>
+                        <h3>Choir &amp; Music</h3>
+                        <p>Leading the house into God's presence with psalms, hymns, and spiritual songs.</p>
+                    </div>
+                    <a href="#news" class="join-link">Join the choir &rarr;</a>
+                </div>
+                <div class="dept-card" data-reveal data-reveal-delay="80">
+                    <div class="dept-symbol">&#9990;</div>
+                    <div>
+                        <h3>Prayer Force</h3>
+                        <p>Fueling the fellowship with intercession for campus, nation, and one another.</p>
+                    </div>
+                    <a href="#news" class="join-link">Stand in the gap &rarr;</a>
+                </div>
+                <div class="dept-card" data-reveal data-reveal-delay="160">
+                    <div class="dept-symbol">&#9889;</div>
+                    <div>
+                        <h3>Evangelism</h3>
+                        <p>Taking the gospel across campus — hostels, faculties, and the marketplace.</p>
+                    </div>
+                    <a href="#news" class="join-link">Reach out &rarr;</a>
+                </div>
+                <div class="dept-card" data-reveal data-reveal-delay="240">
+                    <div class="dept-symbol">&#9998;</div>
+                    <div>
+                        <h3>Media &amp; Tech</h3>
+                        <p>Sound, visuals, and social media — telling the story of what God is doing.</p>
+                    </div>
+                    <a href="#news" class="join-link">Create with us &rarr;</a>
+                </div>
+                <div class="dept-card" data-reveal data-reveal-delay="320">
+                    <div class="dept-symbol">&#10084;</div>
+                    <div>
+                        <h3>Welfare</h3>
+                        <p>Caring for members through exams, needs, and every season of student life.</p>
+                    </div>
+                    <a href="#news" class="join-link">Care for the house &rarr;</a>
+                </div>
+                <div class="dept-card" data-reveal data-reveal-delay="400">
+                    <div class="dept-symbol">&#9873;</div>
+                    <div>
+                        <h3>Ushering &amp; Protocol</h3>
+                        <p>Order, welcome, and warmth at every gathering — the first smile of the house.</p>
+                    </div>
+                    <a href="#news" class="join-link">Welcome people home &rarr;</a>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- ============ News & Events ============ -->
+        <section class="news-section" id="news">
+            <div class="inner">
+            <div class="section-head" data-reveal>
+                <div>
+                    <div class="badge">News &amp; Events</div>
+                    <h2>What's <span class="serif">happening</span> this semester</h2>
+                </div>
+                <p>Mark your calendar — and bring a friend. Every gathering is open to every student.</p>
+            </div>
+            <div class="news-grid">
+                <div class="event-card" data-reveal>
+                    <div class="event-top">
+                        <div class="date-block"><span class="month">Sep</span><span class="day">26</span></div>
+                        <span class="event-kind">Outreach</span>
+                    </div>
+                    <h3>Campus Evangelism Drive</h3>
+                    <p>Teams head out across hostels and faculties to share the good news and pray with students.</p>
+                    <div class="event-meta">Meet at Chapel Annex · 4:00 PM</div>
+                </div>
+                <div class="event-card" data-reveal data-reveal-delay="100">
+                    <div class="event-top">
+                        <div class="date-block"><span class="month">Oct</span><span class="day">02</span></div>
+                        <span class="event-kind">Fellowship</span>
+                    </div>
+                    <h3>Freshers' Welcome Night</h3>
+                    <p>Worship, testimonies, and dinner to welcome the new intake into the CASA family.</p>
+                    <div class="event-meta">Main Auditorium · 6:00 PM</div>
+                </div>
+                <div class="event-card" data-reveal data-reveal-delay="200">
+                    <div class="event-top">
+                        <div class="date-block"><span class="month">Oct</span><span class="day">16</span></div>
+                        <span class="event-kind">Retreat</span>
+                    </div>
+                    <h3>Annual Campus Retreat</h3>
+                    <p>Three days away with God — teachings, workshops, and communion at the mountain.</p>
+                    <div class="event-meta">C.A.C. Camp Ground · Oct 16&ndash;18</div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- ============ Footer ============ -->
+        <footer class="footer">
+            <div class="inner">
+            <div class="logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 32 32" fill="none">
+                        <path d="M18 4h-4v8H8v4h6v12h4V16h6v-4h-6V4z" fill="#C8F169"/>
+                        <circle cx="26" cy="26" r="3" fill="#C8F169" opacity="0.5"/>
+                    </svg>
+                </span>
+                CASA
+            </div>
+            <div class="footer-links">
+                <a href="#about">About</a>
+                <a href="#departments">Departments</a>
+                <a href="#news">Events</a>
+            </div>
+            <div class="footer-copy">&copy; 2026 Christ Apostolic Students and Associates</div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var items = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+
+            function show(el, delay) {
+                if (delay > 0) {
+                    setTimeout(function () { el.classList.add('is-visible'); }, delay);
+                } else {
+                    el.classList.add('is-visible');
+                }
+            }
+
+            if (reduceMotion || !('IntersectionObserver' in window)) {
+                items.forEach(function (el) { el.classList.add('is-visible'); });
+                return;
+            }
+
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    observer.unobserve(entry.target);
+                    var delay = parseInt(entry.target.getAttribute('data-reveal-delay'), 10) || 0;
+                    show(entry.target, delay);
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+            items.forEach(function (el) { observer.observe(el); });
+        })();
+    </script>
+</body>
+</html>

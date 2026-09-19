@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brightaid - Impact Through Kindness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0E2E22;
+            --ink-hover: #123A2C;
+            --brand: #0F3D2E;
+            --lime: #C8F169;
+            --paper: #F2F1EA;
+            --card: #FCFBF7;
+            --panel: #F3F1EA;
+            --line: rgba(14, 46, 34, 0.10);
+            --line-strong: rgba(14, 46, 34, 0.20);
+            --muted: #66716B;
+            --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: clip;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background: linear-gradient(180deg, #C8F169 0%, #B8E87A 50%, #A0DD8A 100%);
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 32px 20px;
+            overflow-x: clip;
+            overflow-wrap: break-word;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        ::selection {
+            background: var(--lime);
+            color: var(--ink);
+        }
+
+        .serif {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* ============ Scroll Reveal ============ */
+        [data-reveal] {
+            --reveal-y: 24px;
+            opacity: 0;
+            transform: translateY(var(--reveal-y));
+            filter: blur(5px);
+            will-change: opacity, transform, filter;
+        }
+
+        [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+            transition:
+                opacity 0.8s var(--ease),
+                transform 0.8s var(--ease),
+                filter 0.8s var(--ease);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            [data-reveal] {
+                opacity: 1;
+                transform: none;
+                filter: none;
+            }
+        }
+
+        /* ============ Container ============ */
+        .main-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            background: var(--brand);
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .main-container > * {
+            min-width: 0;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* ============ Navigation ============ */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 44px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.72);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: color 0.25s var(--ease);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--lime);
+        }
+
+        .nav-links a.active {
+            font-weight: 600;
+        }
+
+        /* ============ Buttons ============ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 20px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.25s var(--ease), border-color 0.25s var(--ease), background 0.25s var(--ease);
+        }
+
+        .btn-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .btn-circle svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .btn-ink {
+            background: var(--ink);
+            color: #fff;
+            border: 1px solid var(--ink);
+        }
+
+        .btn-ink:hover {
+            transform: translateY(-1px);
+            background: var(--ink-hover);
+        }
+
+        .btn-ink .btn-circle {
+            background: var(--lime);
+        }
+
+        .btn-white {
+            background: #fff;
+            color: var(--ink);
+            border: 1px solid var(--line-strong);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-1px);
+            border-color: var(--ink);
+        }
+
+        .btn-white .btn-circle {
+            background: var(--ink);
+        }
+
+        .btn-lime {
+            background: var(--lime);
+            color: var(--brand);
+            border: 1px solid rgba(14, 46, 34, 0.25);
+        }
+
+        .btn-lime:hover {
+            transform: translateY(-1px);
+            background: #D6F87F;
+        }
+
+        .btn-lime .btn-circle {
+            background: var(--brand);
+        }
+
+        /* ============ Hero ============ */
+        .hero {
+            padding: 56px 44px 0;
+        }
+
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 48px;
+            margin-bottom: 40px;
+        }
+
+        .hero-text h1 {
+            font-size: 62px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.04;
+            letter-spacing: -0.035em;
+            max-width: 520px;
+        }
+
+        .hero-text h1 .serif {
+            font-size: 1.04em;
+            color: var(--lime);
+        }
+
+        .hero-right {
+            max-width: 320px;
+        }
+
+        .hero-right p {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 14.5px;
+            line-height: 1.65;
+            margin-bottom: 24px;
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            margin: 0 44px 44px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 22px;
+            overflow: hidden;
+            height: 420px;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .donation-stats {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            background: var(--brand);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 16px;
+            padding: 22px;
+            color: #fff;
+            min-width: 300px;
+        }
+
+        .donation-stats .label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.55);
+            margin-bottom: 6px;
+        }
+
+        .donation-stats .amount {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 3px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 86%;
+            height: 100%;
+            background: var(--lime);
+            border-radius: 3px;
+        }
+
+        .donation-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 10px;
+        }
+
+        .donation-meta .highlight {
+            color: var(--lime);
+            font-weight: 600;
+        }
+
+        .donation-campaign {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding-top: 10px;
+        }
+
+        /* ============ Partner Logo Bar ============ */
+        .logo-bar {
+            background: #fff;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            padding: 26px 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px 32px;
+        }
+
+        .partner-logo {
+            font-size: 17px;
+            font-weight: 700;
+            color: #2E3B34;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .partner-logo .dot {
+            font-weight: 800;
+        }
+
+        .partner-logo:nth-child(1) .dot { color: #0F3D2E; }
+        .partner-logo:nth-child(2) .dot { color: #E4572E; }
+        .partner-logo:nth-child(3) .dot { color: #7C4DFF; }
+        .partner-logo:nth-child(4) .dot { color: #00897B; }
+        .partner-logo:nth-child(5) .dot { color: #E91E63; }
+        .partner-logo.swift { color: #0066CC; }
+        .partner-logo.swift .dot { color: #0066CC; }
+
+        /* ============ About Section ============ */
+        .about-section {
+            background: #fff;
+            padding: 72px 44px;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+            align-items: start;
+        }
+
+        .about-left {
+            background: #F3FADE;
+            border: 1px solid rgba(14, 46, 34, 0.12);
+            border-radius: 22px;
+            padding: 36px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid var(--line-strong);
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 24px;
+        }
+
+        .about-left h2 {
+            font-size: 33px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.18;
+            letter-spacing: -0.025em;
+            margin-bottom: 30px;
+        }
+
+        .about-left h2 .serif {
+            font-size: 1.05em;
+        }
+
+        .about-image-wrapper {
+            position: relative;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            overflow: hidden;
+            height: 240px;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-tags {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .about-tag {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--line);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .about-tag.green {
+            background: var(--lime);
+            border-color: rgba(14, 46, 34, 0.22);
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .about-right {
+            padding-top: 16px;
+        }
+
+        .about-right h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            margin-bottom: 22px;
+        }
+
+        .about-right h3 .serif {
+            font-size: 1.05em;
+        }
+
+        .about-right p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .about-actions {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+            flex-wrap: wrap;
+        }
+
+        .our-team-link {
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.25s var(--ease);
+        }
+
+        .our-team-link:hover {
+            gap: 10px;
+        }
+
+        /* ============ Footer ============ */
+        .footer {
+            background: var(--brand);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 30px 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer .logo {
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .footer-copy {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 22px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.25s var(--ease);
+        }
+
+        .footer-links a:hover {
+            color: var(--lime);
+        }
+
+        /* ============ Responsive ============ */
+        @media (max-width: 1080px) {
+            .navbar,
+            .hero,
+            .logo-bar,
+            .about-section,
+            .footer {
+                padding-left: 28px;
+                padding-right: 28px;
+            }
+
+            .hero-image-wrapper {
+                margin-left: 28px;
+                margin-right: 28px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 48px;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+
+            .navbar,
+            .hero,
+            .logo-bar,
+            .about-section,
+            .footer {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .hero-image-wrapper {
+                margin-left: 18px;
+                margin-right: 18px;
+                height: auto;
+            }
+
+            .hero-image {
+                height: auto;
+            }
+
+            .hero-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 28px;
+            }
+
+            .hero-text h1 {
+                font-size: 38px;
+            }
+
+            .donation-stats {
+                position: static;
+                margin: 18px;
+                min-width: 0;
+                width: auto;
+            }
+
+            .about-section {
+                padding-top: 48px;
+                padding-bottom: 48px;
+            }
+
+            .about-left {
+                padding: 24px;
+            }
+
+            .about-left h2 {
+                font-size: 27px;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+    <noscript>
+        <style>
+            [data-reveal] {
+                opacity: 1;
+                transform: none;
+                filter: none;
+            }
+        </style>
+    </noscript>
+</head>
+<body>
+    <div class="main-container">
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 32 32" fill="none">
+                        <path d="M16 4L4 28h8l4-10 4 10h8L16 4z" fill="#C8F169"/>
+                        <circle cx="16" cy="12" r="3" fill="#0E2E22"/>
+                    </svg>
+                </span>
+                Brightaid
+            </div>
+            <div class="nav-links">
+                <a href="#">Campaigns</a>
+                <a href="#">About Us</a>
+                <a href="#">How It Works</a>
+                <a href="#">Resources</a>
+                <a href="#" class="active">Contact</a>
+            </div>
+            <a href="#" class="btn btn-lime">
+                Get started
+                <span class="btn-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#C8F169" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </a>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text" data-reveal>
+                    <h1>Impact Through <span class="serif">Kindness</span></h1>
+                </div>
+                <div class="hero-right" data-reveal data-reveal-delay="120">
+                    <p>Every act of kindness brings comfort, relief, and hope to Palestinian children and families who need it most.</p>
+                    <a href="#" class="btn btn-white">
+                        Donate Now
+                        <span class="btn-circle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <div class="hero-image-wrapper" data-reveal data-reveal-delay="150">
+            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&h=600&fit=crop" alt="Children smiling" class="hero-image">
+            <div class="donation-stats">
+                <div class="label">Total donations collected</div>
+                <div class="amount">$385,970.70</div>
+                <div class="progress-bar"><div class="progress-fill"></div></div>
+                <div class="donation-meta">
+                    <span><span class="highlight">632</span> donors</span>
+                    <span class="highlight">86%</span>
+                </div>
+                <div class="donation-campaign">Help Restore Flood-Affected Settlements.</div>
+            </div>
+        </div>
+
+        <div class="logo-bar" data-reveal>
+            <div class="partner-logo">innovio</div>
+            <div class="partner-logo"><span class="dot">+</span> ZenZap</div>
+            <div class="partner-logo">sparkl<span class="dot">e</span></div>
+            <div class="partner-logo">Lum<span class="dot">+</span>Labs</div>
+            <div class="partner-logo"><span class="dot">::</span> Pulse</div>
+            <div class="partner-logo swift">swift<span class="dot">&gt;</span></div>
+        </div>
+
+        <section class="about-section">
+            <div class="about-grid">
+                <div class="about-left" data-reveal>
+                    <div class="badge">Who We Are</div>
+                    <h2>Driven by <span class="serif">Compassion,</span> Guided by Humanity</h2>
+                    <div class="about-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&h=400&fit=crop" alt="Happy children" class="about-image">
+                        <div class="about-tags">
+                            <span class="about-tag green">Transparent</span>
+                            <span class="about-tag">Emergency Relief</span>
+                            <span class="about-tag">Rapid Action</span>
+                            <span class="about-tag">Focused Aid</span>
+                            <span class="about-tag">Donors Worldwide</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-right" data-reveal data-reveal-delay="120">
+                    <h3>With compassion at our core, we deliver <span class="serif">essential aid</span> to children and families facing hardship.</h3>
+                    <p>At our core, we believe giving is more than charity — it's a shared promise of humanity. That's why we go beyond short-term relief to deliver thoughtful, meaningful, and lasting impact in every community we serve.</p>
+                    <div class="about-actions">
+                        <a href="#" class="btn btn-ink">
+                            Learn More
+                            <span class="btn-circle">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#0E2E22" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </span>
+                        </a>
+                        <a href="#" class="our-team-link">Our Team &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="logo">
+                <span class="logo-icon">
+                    <svg viewBox="0 0 32 32" fill="none">
+                        <path d="M16 4L4 28h8l4-10 4 10h8L16 4z" fill="#C8F169"/>
+                        <circle cx="16" cy="12" r="3" fill="#0E2E22"/>
+                    </svg>
+                </span>
+                Brightaid
+            </div>
+            <div class="footer-links">
+                <a href="#">Campaigns</a>
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="footer-copy">&copy; 2026 Brightaid — Impact Through Kindness</div>
+        </footer>
+    </div>
+
+    <script>
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var items = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+
+            function show(el, delay) {
+                if (delay > 0) {
+                    setTimeout(function () { el.classList.add('is-visible'); }, delay);
+                } else {
+                    el.classList.add('is-visible');
+                }
+            }
+
+            if (reduceMotion || !('IntersectionObserver' in window)) {
+                items.forEach(function (el) { el.classList.add('is-visible'); });
+                return;
+            }
+
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    observer.unobserve(entry.target);
+                    var delay = parseInt(entry.target.getAttribute('data-reveal-delay'), 10) || 0;
+                    show(entry.target, delay);
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+            items.forEach(function (el) { observer.observe(el); });
+        })();
+    </script>
+</body>
+</html>

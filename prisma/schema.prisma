@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  name      String?
+  role      Role
+  chapterId String?
+  regionId  String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  auditLogs AuditLog[]
+  region    Region?    @relation(fields: [regionId], references: [id], onDelete: SetNull)
+  chapter   Chapter?   @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+}
+
+model Region {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  events      Event[]
+  chapters    Chapter[]
+  admins      User[]
+}
+
+model Chapter {
+  id                 String              @id @default(cuid())
+  name               String
+  university         String              @default("University")
+  campus             String?
+  regionId           String
+  createdAt          DateTime            @default(now())
+  academicYears      AcademicYear[]
+  attendanceSessions AttendanceSession[]
+  events             Event[]
+  region             Region              @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  semesters          Semester[]
+  students           Student[]
+  transactions       Transaction[]
+  admins             User[]
+}
+
+model AcademicYear {
+  id        String    @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  isCurrent Boolean   @default(false)
+  chapterId String?
+  createdAt DateTime  @default(now())
+  chapter   Chapter?  @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  semesters Semester[]
+
+  @@unique([name, chapterId])
+}
+
+model Semester {
+  id            String       @id @default(cuid())
+  academicYearId String
+  chapterId     String?
+  name          String
+  startDate     DateTime
+  endDate       DateTime
+  status        String       @default("INACTIVE")
+  createdAt     DateTime     @default(now())
+  chapter       Chapter?     @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  academicYear  AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+}
+
+model Student {
+  id               String             @id @default(cuid())
+  studentId        String             @unique
+  name             String
+  email            String?
+  phone            String?
+  department       String?
+  levelYear        String?
+  maxLevel         String             @default("400")
+  address          String?
+  nextOfKinName    String?
+  nextOfKinPhone   String?
+  baptismDate      DateTime?
+  confirmationDate DateTime?
+  memberQrCode     String?            @unique
+  status           String             @default("ACTIVE")
+  isLeader         Boolean            @default(false)
+  position         String?
+  enrollmentDate   DateTime           @default(now())
+  chapterId        String?
+  attendance       AttendanceRecord[]
+  chapter          Chapter?           @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  transactions     Transaction[]
+  rsvps            EventRSVP[]
+}
+
+model AttendanceSession {
+  id                   String             @id @default(cuid())
+  chapterId            String?
+  serviceType          String
+  title                String?
+  date                 DateTime           @default(now())
+  createdAt            DateTime           @default(now())
+  imageUrl             String?
+  records              AttendanceRecord[]
+  chapter              Chapter?           @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+
+  totalAttendance      Int?
+  totalMales           Int?
+  totalFemales         Int?
+  speaker              String?
+  topic                String?
+  challenges           String?
+  attitudeOfExecutives String?
+  remarks              String?
+}
+
+model AttendanceRecord {
+  id            String            @id @default(cuid())
+  sessionId     String
+  studentId     String
+  checkInMethod String            @default("MANUAL")
+  checkedInAt   DateTime          @default(now())
+  student       Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session       AttendanceSession @relation(fields: [sessionId], references: [id])
+
+  @@unique([sessionId, studentId])
+}
+
+model Event {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  endDate     DateTime?
+  venue       String?
+  category    String?
+  scope       String     @default("LOCAL")
+  chapterId   String?
+  regionId    String?
+  createdAt   DateTime   @default(now())
+  region      Region?    @relation(fields: [regionId], references: [id], onDelete: SetNull)
+  chapter     Chapter?   @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  rsvps       EventRSVP[]
+}
+
+model EventRSVP {
+  id        String   @id @default(cuid())
+  eventId   String
+  studentId String
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id          String    @id @default(cuid())
+  amount      Float
+  type        String    @default("INCOME")
+  category    String
+  description String?
+  date        DateTime  @default(now())
+  semesterId  String?
+  chapterId   String?
+  studentId   String?
+  recordedBy  String?
+  createdAt   DateTime  @default(now())
+  student     Student?  @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  chapter     Chapter?  @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  semester    Semester? @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  entity    String
+  entityId  String?
+  metadata  String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  NATIONAL_ADMIN
+  REGIONAL_ADMIN
+  LOCAL_ADMIN
+  CONTENT_MANAGER
+}
+
+model SiteContent {
+  id             String   @id @default(cuid())
+  page           String
+  section        String
+  field          String
+  value          String   @default("")
+  publishedValue String?
+  updatedAt      DateTime @updatedAt
+  createdAt      DateTime @default(now())
+
+  @@unique([page, section, field])
+  @@index([page])
+}
+
+model MediaAsset {
+  id           String   @id @default(cuid())
+  filename     String
+  url          String
+  mimeType     String
+  size         Int
+  data         Bytes?
+  uploadedById String?
+  createdAt    DateTime @default(now())
+}
+
+model SiteArticle {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  kind      String   @default("Recap")
+  title     String
+  excerpt   String   @default("")
+  body      String   @default("[]")
+  quoteText String?
+  quoteCite String?
+  imageUrl  String?
+  meta      String?
+  published Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteLeader {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  bio       String   @default("")
+  initials  String   @default("")
+  color     String   @default("brand")
+  imageUrl  String?
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteEvent {
+  id        String   @id @default(cuid())
+  month     String
+  day       String
+  kind      String
+  title     String
+  text      String
+  meta      String?
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
