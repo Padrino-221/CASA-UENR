@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma db push && next build",
+    "build": "prisma generate && prisma db push && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
+    "db:push": "prisma db push",
     "migrate:media": "node scripts/migrate-media-to-db.js",
     "recompress:media": "node scripts/recompress-media.js",
     "seed:auth": "node prisma/seed-auth.js",
@@ -63,5 +64,8 @@
   },
   "prisma": {
     "seed": "node prisma/seed-auth.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

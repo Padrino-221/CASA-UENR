@@ -33,6 +33,25 @@ const globalForPrisma = global as unknown as { db?: PrismaClient };
 
 // Pass url explicitly to avoid Next.js bundler losing the outer closure variable
 function createClient(url: string): PrismaClient {
+  const isNeon = /neon\.tech|neon\.build/i.test(url);
+
+  if (isNeon) {
+    // Serverless (Vercel) path: use the Neon WebSocket driver so connections
+    // are pooled at the edge and survive function invocations.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { neonConfig } = require('@neondatabase/serverless');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaNeon } = require('@prisma/adapter-neon');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const ws = require('ws');
+
+    neonConfig.webSocketConstructor = ws;
+    console.log('[Prisma] Initializing with Neon serverless adapter');
+
+    const adapter = new PrismaNeon({ connectionString: url });
+    return new PrismaClient({ adapter, log: ['error', 'warn'] });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { Pool } = require('pg');
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -61,4 +80,3 @@ if (!globalForPrisma.db) {
 }
 
 export const db = globalForPrisma.db;
-
