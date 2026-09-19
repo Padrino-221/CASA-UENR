@@ -15,9 +15,32 @@ import Modal from '@/components/ui/Modal';
 import CustomDropdown from '@/components/ui/CustomDropdown';
 import { formatRoleLabel } from '@/lib/utils';
 
-export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
+export default function AdminList({
+  initialUsers,
+  viewerRole,
+}: {
+  initialUsers: any[];
+  viewerRole?: string | null;
+}) {
   const { data: session } = useSession();
-  const isNational = session?.user?.role === 'NATIONAL_ADMIN';
+  const role = viewerRole ?? session?.user?.role;
+  const isNational = role === 'NATIONAL_ADMIN';
+  const isLocal = role === 'LOCAL_ADMIN';
+  const canManage = isNational || isLocal;
+
+  const roleOptions = isNational
+    ? [
+        { label: 'National Admin', value: 'NATIONAL_ADMIN' },
+        { label: 'Regional Admin', value: 'REGIONAL_ADMIN' },
+        { label: 'Local Admin', value: 'LOCAL_ADMIN' },
+        { label: 'Content Manager', value: 'CONTENT_MANAGER' },
+        { label: 'Finance', value: 'FINANCE' },
+        { label: 'Secretary', value: 'SECRETARY' },
+      ]
+    : [
+        { label: 'Finance', value: 'FINANCE' },
+        { label: 'Secretary', value: 'SECRETARY' },
+      ];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState(initialUsers);
@@ -35,7 +58,7 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    role: 'REGIONAL_ADMIN',
+    role: isNational ? 'REGIONAL_ADMIN' : 'FINANCE',
     regionId: '',
     chapterId: '',
   });
@@ -73,7 +96,7 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
   };
 
   const openAddModal = () => {
-    setFormData({ name: '', email: '', role: 'REGIONAL_ADMIN', regionId: '', chapterId: '' });
+    setFormData({ name: '', email: '', role: isNational ? 'REGIONAL_ADMIN' : 'FINANCE', regionId: '', chapterId: '' });
     setTempPassword('');
     setFormError('');
     fetchRegions();
@@ -98,17 +121,18 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
   };
 
   const validateForm = () => {
+    if (!isNational) return true; // Local admins: the chapter is fixed to their own.
     if (formData.role === 'REGIONAL_ADMIN' && !formData.regionId) {
       setFormError('Please select a region for Regional Admin.');
       return false;
     }
-    if (formData.role === 'LOCAL_ADMIN') {
+    if (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY') {
       if (!formData.regionId) {
-        setFormError('Please select a region for Local Admin.');
+        setFormError('Please select a region.');
         return false;
       }
       if (!formData.chapterId) {
-        setFormError('Please select a chapter for Local Admin.');
+        setFormError('Please select a chapter.');
         return false;
       }
     }
@@ -193,10 +217,10 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        {isNational && (
+        {canManage && (
           <button className="btn-lux-primary shrink-0" onClick={openAddModal}>
             <Plus size={18} weight="duotone" />
-            <span>Add Admin</span>
+            <span>{isLocal ? 'Add Sub-account' : 'Add Admin'}</span>
           </button>
         )}
       </div>
@@ -238,7 +262,7 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
                   <td className="px-6 py-4 whitespace-nowrap text-slate-500">{user.region?.name || (user.role === 'NATIONAL_ADMIN' ? 'National' : 'Unassigned')}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-slate-500">{user.chapter?.name || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    {isNational ? (
+                    {canManage ? (
                       <div className="inline-flex items-center gap-2">
                         <button
                           onClick={() => openEditModal(user)}
@@ -321,16 +345,11 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
             </div>
             <CustomDropdown
               label="Role"
-              options={[
-                { label: 'National Admin', value: 'NATIONAL_ADMIN' },
-                { label: 'Regional Admin', value: 'REGIONAL_ADMIN' },
-                { label: 'Local Admin', value: 'LOCAL_ADMIN' },
-                { label: 'Content Manager', value: 'CONTENT_MANAGER' },
-              ]}
+              options={roleOptions}
               value={formData.role}
               onChange={(val) => setFormData({ ...formData, role: val })}
             />
-            {formData.role === 'REGIONAL_ADMIN' && (
+            {isNational && formData.role === 'REGIONAL_ADMIN' && (
               <CustomDropdown
                 label="Region"
                 placeholder="Select region..."
@@ -339,7 +358,7 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
                 onChange={(val) => { setFormData({ ...formData, regionId: val, chapterId: '' }); fetchChapters(val); }}
               />
             )}
-            {formData.role === 'LOCAL_ADMIN' && (
+            {isNational && (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY') && (
               <>
                 <CustomDropdown
                   label="Region"
@@ -404,15 +423,11 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
           </div>
           <CustomDropdown
             label="Role"
-            options={[
-              { label: 'National Admin', value: 'NATIONAL_ADMIN' },
-              { label: 'Regional Admin', value: 'REGIONAL_ADMIN' },
-              { label: 'Local Admin', value: 'LOCAL_ADMIN' },
-            ]}
+            options={roleOptions}
             value={formData.role}
             onChange={(val) => setFormData({ ...formData, role: val })}
           />
-          {formData.role === 'REGIONAL_ADMIN' && (
+          {isNational && formData.role === 'REGIONAL_ADMIN' && (
             <CustomDropdown
               label="Region"
               placeholder="Select region..."
@@ -421,7 +436,7 @@ export default function AdminList({ initialUsers }: { initialUsers: any[] }) {
               onChange={(val) => { setFormData({ ...formData, regionId: val, chapterId: '' }); fetchChapters(val); }}
             />
           )}
-          {formData.role === 'LOCAL_ADMIN' && (
+          {isNational && (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY') && (
             <>
               <CustomDropdown
                 label="Region"

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
 import bcrypt from 'bcryptjs';
+import { SUB_ACCOUNT_ROLES } from '@/lib/roles';
 
 /**
  * Verifies a REGIONAL_ADMIN has jurisdiction over a LOCAL_ADMIN.
@@ -36,10 +37,18 @@ export async function PATCH(
     // Permissions:
     // National can edit anyone.
     // Regional can edit Local Admins within their own region (resolved via chapter).
+    // Local can edit their own chapter's sub-accounts (Finance / Secretary).
     if (currentRole === 'REGIONAL_ADMIN') {
       const hasJurisdiction = await regionalAdminHasJurisdiction(session.user?.regionId, userToUpdate);
       if (!hasJurisdiction) {
         return NextResponse.json({ error: 'Forbidden: You can only manage local admins in your jurisdiction.' }, { status: 403 });
+      }
+    } else if (currentRole === 'LOCAL_ADMIN') {
+      const isOwnSubAccount =
+        (SUB_ACCOUNT_ROLES as readonly string[]).includes(userToUpdate.role) &&
+        userToUpdate.chapterId === session.user?.chapterId;
+      if (!isOwnSubAccount) {
+        return NextResponse.json({ error: 'Forbidden: You can only manage sub-accounts in your chapter.' }, { status: 403 });
       }
     } else if (currentRole !== 'NATIONAL_ADMIN') {
        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -51,11 +60,21 @@ export async function PATCH(
     const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (email !== undefined) updateData.email = email;
-    if (role !== undefined) updateData.role = role;
-    if (chapterId !== undefined && chapterId !== '') updateData.chapterId = chapterId;
-    if (regionId !== undefined && regionId !== '') updateData.regionId = regionId;
     if (password) {
       updateData.password = await bcrypt.hash(password, 10);
+    }
+
+    if (currentRole === 'LOCAL_ADMIN') {
+      // Local admins cannot escalate roles or move accounts out of their chapter.
+      if (role !== undefined && !(SUB_ACCOUNT_ROLES as readonly string[]).includes(role)) {
+        return NextResponse.json({ error: 'Forbidden: Invalid role' }, { status: 403 });
+      }
+      if (role !== undefined) updateData.role = role;
+      updateData.chapterId = session.user?.chapterId;
+    } else {
+      if (role !== undefined) updateData.role = role;
+      if (chapterId !== undefined && chapterId !== '') updateData.chapterId = chapterId;
+      if (regionId !== undefined && regionId !== '') updateData.regionId = regionId;
     }
 
     const updatedUser = await db.user.update({
@@ -97,6 +116,13 @@ export async function DELETE(
       const hasJurisdiction = await regionalAdminHasJurisdiction(session.user?.regionId, userToDelete);
       if (!hasJurisdiction) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    } else if (currentRole === 'LOCAL_ADMIN') {
+      const isOwnSubAccount =
+        (SUB_ACCOUNT_ROLES as readonly string[]).includes(userToDelete.role) &&
+        userToDelete.chapterId === session.user?.chapterId;
+      if (!isOwnSubAccount) {
+        return NextResponse.json({ error: 'Forbidden: You can only manage sub-accounts in your chapter.' }, { status: 403 });
       }
     } else if (currentRole !== 'NATIONAL_ADMIN') {
        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

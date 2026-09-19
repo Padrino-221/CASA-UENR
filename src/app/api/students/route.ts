@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { createAuditLog } from '@/lib/audit';
+import { isLocalScope, canManageMembers } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
               { studentId: { contains: search } },
             ]
           } : {},
-          role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+          isLocalScope(role) ? { chapterId: contextId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
         ]
       },
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
   }
 
   const postRole = session.user?.role;
-  if (postRole !== 'LOCAL_ADMIN') {
+  if (!canManageMembers(postRole)) {
     return NextResponse.json({ error: 'Forbidden: Only Local Administrators can register members' }, { status: 403 });
   }
 

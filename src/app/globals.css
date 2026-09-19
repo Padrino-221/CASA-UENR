@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Input placeholders stay light even when the input itself is bold. */
+input::placeholder,
+textarea::placeholder {
+  font-weight: 400;
+  opacity: 1;
+}
+
 :root {
   /* Invo Premium Cobalt Palette */
   --primary: #1E67FC;

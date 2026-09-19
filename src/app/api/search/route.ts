@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
               { email: { contains: query, mode: 'insensitive' } },
             ]
           },
-          role === 'LOCAL_ADMIN' ? { chapterId: chapterId || 'none' } : {},
+          isLocalScope(role) ? { chapterId: chapterId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: regionId || 'none' } } : {},
         ]
       },

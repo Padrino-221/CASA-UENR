@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { canManageAttendance } from '@/lib/roles';
 
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session || session.user?.role !== 'LOCAL_ADMIN') {
+  if (!session || !canManageAttendance(session.user?.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
@@ -83,7 +84,7 @@ export async function GET(request: Request) {
 }
 export async function DELETE(request: Request) {
   const session = await auth();
-  if (!session || session.user?.role !== 'LOCAL_ADMIN') {
+  if (!session || !canManageAttendance(session.user?.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 

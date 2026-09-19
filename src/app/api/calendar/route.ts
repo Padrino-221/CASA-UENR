@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope, canManageCalendar } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
 
     let academicYears = [];
 
-    if (role === 'LOCAL_ADMIN') {
+    if (isLocalScope(role)) {
       // Local admin sees only their chapter's academic years
       academicYears = await db.academicYear.findMany({
         where: { chapterId: chapterId || 'none' },
@@ -56,9 +57,9 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const role = session.user?.role;
-  // Both LOCAL_ADMIN and NATIONAL_ADMIN can manage Calendar; REGIONAL is read-only
-  if (role === 'REGIONAL_ADMIN') {
-    return NextResponse.json({ error: 'Forbidden: Regional administrators cannot modify academic calendars' }, { status: 403 });
+  // National/local admins and secretaries can manage the calendar; regional is read-only.
+  if (role === 'REGIONAL_ADMIN' || !(role === 'NATIONAL_ADMIN' || canManageCalendar(role))) {
+    return NextResponse.json({ error: 'Forbidden: You cannot modify academic calendars' }, { status: 403 });
   }
 
   try {
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
       if (!semester) return NextResponse.json({ error: 'Semester not found' }, { status: 404 });
 
       // Enforce local admin chapter boundary
-      if (role === 'LOCAL_ADMIN' && semester.chapterId !== session.user?.chapterId) {
+      if (isLocalScope(role) && semester.chapterId !== session.user?.chapterId) {
         return NextResponse.json({ error: 'Forbidden: Cannot modify another chapter\'s semester' }, { status: 403 });
       }
 
@@ -92,7 +93,7 @@ export async function POST(request: Request) {
 
     if (action === 'CREATE_YEAR') {
       // ONLY local admins can create years for their own chapter
-      if (role !== 'LOCAL_ADMIN') {
+      if (!isLocalScope(role)) {
         return NextResponse.json({ error: 'Forbidden: Only local administrators can initialize academic years' }, { status: 403 });
       }
 
@@ -117,7 +118,7 @@ export async function POST(request: Request) {
       const year = await db.academicYear.findUnique({ where: { id: yearId } });
       if (!year) return NextResponse.json({ error: 'Year not found' }, { status: 404 });
 
-      if (role === 'LOCAL_ADMIN' && year.chapterId !== session.user?.chapterId) {
+      if (isLocalScope(role) && year.chapterId !== session.user?.chapterId) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 
@@ -136,7 +137,7 @@ export async function POST(request: Request) {
       const year = await db.academicYear.findUnique({ where: { id: yearId } });
       if (!year) return NextResponse.json({ error: 'Year not found' }, { status: 404 });
 
-      if (role === 'LOCAL_ADMIN' && year.chapterId !== session.user?.chapterId) {
+      if (isLocalScope(role) && year.chapterId !== session.user?.chapterId) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 
@@ -156,7 +157,7 @@ export async function POST(request: Request) {
       const semester = await db.semester.findUnique({ where: { id: semesterId } });
       if (!semester) return NextResponse.json({ error: 'Semester not found' }, { status: 404 });
 
-      if (role === 'LOCAL_ADMIN' && semester.chapterId !== session.user?.chapterId) {
+      if (isLocalScope(role) && semester.chapterId !== session.user?.chapterId) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 
@@ -175,7 +176,7 @@ export async function POST(request: Request) {
       const semester = await db.semester.findUnique({ where: { id: semesterId } });
       if (!semester) return NextResponse.json({ error: 'Semester not found' }, { status: 404 });
 
-      if (role === 'LOCAL_ADMIN' && semester.chapterId !== session.user?.chapterId) {
+      if (isLocalScope(role) && semester.chapterId !== session.user?.chapterId) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 
@@ -188,7 +189,7 @@ export async function POST(request: Request) {
       const year = await db.academicYear.findUnique({ where: { id: yearId } });
       if (!year) return NextResponse.json({ error: 'Year not found' }, { status: 404 });
 
-      if (role === 'LOCAL_ADMIN' && year.chapterId !== session.user?.chapterId) {
+      if (isLocalScope(role) && year.chapterId !== session.user?.chapterId) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
 

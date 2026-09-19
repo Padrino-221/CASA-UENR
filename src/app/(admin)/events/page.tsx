@@ -19,6 +19,7 @@ import { useNotification } from '@/context/NotificationContext';
 import Modal from '@/components/ui/Modal';
 import CustomDropdown from '@/components/ui/CustomDropdown';
 import CustomDateTimePicker from '@/components/ui/CustomDateTimePicker';
+import { isLocalScope } from '@/lib/roles';
 
 export default function EventsPage() {
   const { data: session } = useSession();
@@ -74,7 +75,7 @@ export default function EventsPage() {
     const role = session.user.role;
     if (role === 'NATIONAL_ADMIN') return true;
     if (role === 'REGIONAL_ADMIN' && eventItem.regionId === session.user.regionId) return true;
-    if (role === 'LOCAL_ADMIN' && eventItem.chapterId === session.user.chapterId) return true;
+    if (isLocalScope(role) && eventItem.chapterId === session.user.chapterId) return true;
     return false;
   };
 

@@ -16,6 +16,10 @@ export function formatRoleLabel(role?: string) {
       return 'Local Admin';
     case 'CONTENT_MANAGER':
       return 'Content Manager';
+    case 'FINANCE':
+      return 'Finance';
+    case 'SECRETARY':
+      return 'Secretary';
     default:
       return role.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   }

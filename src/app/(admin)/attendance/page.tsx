@@ -1,5 +1,7 @@
 'use client';
 
+import { isLocalScope } from '@/lib/roles';
+
 import React, { useState, useEffect } from 'react';
 import { HeaderSkeleton, TableAreaSkeleton } from '@/components/ui/Skeleton';
 import {
@@ -97,7 +99,7 @@ export default function AttendancePage() {
     );
   }
 
-  const isLocalAdmin = session?.user?.role === 'LOCAL_ADMIN';
+  const isLocalAdmin = isLocalScope(session?.user?.role);
 
   const uniqueCampuses = Array.from(
     new Set(sessions.map(s => s.chapter?.name).filter(Boolean))

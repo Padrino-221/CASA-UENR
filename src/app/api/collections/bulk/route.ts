@@ -4,7 +4,7 @@ import { auth } from '@/auth';
 
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session || session.user?.role !== 'LOCAL_ADMIN') {
+  if (!session || (session.user?.role !== 'LOCAL_ADMIN' && session.user?.role !== 'FINANCE')) {
     return NextResponse.json({ error: 'Unauthorized: Only local administrators can perform bulk financial logging.' }, { status: 401 });
   }
 

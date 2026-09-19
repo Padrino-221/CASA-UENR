@@ -7,6 +7,7 @@ import {
 
 import { Transaction } from '@/types/models';
 import { Pagination } from '@/components/ui/Pagination';
+import { isLocalScope } from '@/lib/roles';
 
 interface CollectionTableProps {
   collections: Transaction[];
@@ -18,7 +19,7 @@ interface CollectionTableProps {
 }
 
 export const CollectionTable: React.FC<CollectionTableProps> = ({ collections, role, onEdit, onDelete, searchQuery, onAddClick }) => {
-  const isLocalAdmin = role === 'LOCAL_ADMIN';
+  const isLocalAdmin = isLocalScope(role);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;

@@ -6,6 +6,7 @@ import {
 } from '@phosphor-icons/react';
 
 import { AcademicYear } from '@/types/models';
+import { isLocalScope } from '@/lib/roles';
 
 interface AcademicHistoryProps {
   previousYears: AcademicYear[];
@@ -14,7 +15,7 @@ interface AcademicHistoryProps {
 }
 
 export const AcademicHistory: React.FC<AcademicHistoryProps> = ({ previousYears, role, onDeleteYear }) => {
-  const isLocalAdmin = role === 'LOCAL_ADMIN';
+  const isLocalAdmin = isLocalScope(role);
 
   return (
     <section className="bg-white border border-black/5 overflow-hidden">

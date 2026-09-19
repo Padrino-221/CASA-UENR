@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { canManageMembers } from '@/lib/roles';
 
 export async function PATCH(
   request: Request,
@@ -8,7 +9,7 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const session = await auth();
-  if (!session || session.user?.role !== 'LOCAL_ADMIN') {
+  if (!session || !canManageMembers(session.user?.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -41,7 +42,7 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const session = await auth();
-  if (!session || session.user?.role !== 'LOCAL_ADMIN') {
+  if (!session || !canManageMembers(session.user?.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

@@ -18,6 +18,7 @@ import { AcademicHistory } from '@/components/calendar/AcademicHistory';
 import { YearModal } from '@/components/calendar/YearModal';
 import { SemesterModal } from '@/components/calendar/SemesterModal';
 import { HeaderSkeleton } from '@/components/ui/Skeleton';
+import { isLocalScope } from '@/lib/roles';
 import { AcademicYear, Semester } from '@/types/models';
 
 export default function CalendarPage() {
@@ -82,13 +83,13 @@ export default function CalendarPage() {
               </div>
             )}
  
-            {role === 'LOCAL_ADMIN' && (
+            {isLocalScope(role) && (
               <button className="btn-glass-alt" onClick={promoteStudents}>
                 <TrendUp size={18} weight="duotone" />
                 <span>Run Academic Promotion</span>
               </button>
             )}
-            {role === 'LOCAL_ADMIN' && (
+            {isLocalScope(role) && (
               <button className="btn-lux-primary" onClick={() => setShowYearModal(true)}>
                 <Plus size={18} weight="duotone" />
                 <span>New Academic Year</span>
@@ -154,7 +155,7 @@ export default function CalendarPage() {
 }
 
 function NoActiveYearView({ onInitialize, role }: { onInitialize: () => void; role?: string }) {
-  const isLocalAdmin = role === 'LOCAL_ADMIN';
+  const isLocalAdmin = isLocalScope(role);
 
   return (
     <section className="bg-white border-2 border-dashed border-black/5 p-6 sm:p-10 lg:p-16 text-center">

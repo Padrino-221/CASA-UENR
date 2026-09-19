@@ -11,6 +11,7 @@ import {
 } from '@phosphor-icons/react';
 
 import { AcademicYear, Semester } from '@/types/models';
+import { isLocalScope } from '@/lib/roles';
 
 interface CurrentCycleCardProps {
   currentYear: AcademicYear;
@@ -26,7 +27,7 @@ interface CurrentCycleCardProps {
 export const CurrentCycleCard: React.FC<CurrentCycleCardProps> = ({
   currentYear, role, onEditYear, onDeleteYear, onAddSemester, onEditSemester, onDeleteSemester, onToggleSemester
 }) => {
-  const isLocalAdmin = role === 'LOCAL_ADMIN';
+  const isLocalAdmin = isLocalScope(role);
   const semesterProgressMap = useMemo(() => {
     const now = Date.now(); // eslint-disable-line react-hooks/purity
     const map = new Map<string, number>();

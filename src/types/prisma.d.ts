@@ -45,5 +45,11 @@ declare module '@prisma/client' {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     siteLeader: any;
   }
-  export type Role = 'NATIONAL_ADMIN' | 'REGIONAL_ADMIN' | 'LOCAL_ADMIN' | 'CONTENT_MANAGER';
+  export type Role =
+    | 'NATIONAL_ADMIN'
+    | 'REGIONAL_ADMIN'
+    | 'LOCAL_ADMIN'
+    | 'CONTENT_MANAGER'
+    | 'FINANCE'
+    | 'SECRETARY';
 }

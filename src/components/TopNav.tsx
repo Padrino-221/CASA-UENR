@@ -78,6 +78,8 @@ const TopNav = () => {
     if (role === 'REGIONAL_ADMIN') return '/regional';
     if (role === 'LOCAL_ADMIN') return '/local';
     if (role === 'CONTENT_MANAGER') return '/content';
+    if (role === 'FINANCE') return '/collections';
+    if (role === 'SECRETARY') return '/students';
     return '/';
   };
 
@@ -85,13 +87,13 @@ const TopNav = () => {
     { name: 'Dashboard', icon: Layout, path: getDashboardPath(), roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
     { name: 'Regions', icon: Globe, path: '/regions', roles: ['NATIONAL_ADMIN'] },
     { name: 'Chapters', icon: Buildings, path: '/chapters', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN'] },
-    { name: 'Members', icon: Users, path: '/students', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Attendance', icon: ShieldCheck, path: '/attendance', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Events', icon: CalendarBlank, path: '/events', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Calendar', icon: CalendarBlank, path: '/calendar', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Finance', icon: Wallet, path: '/collections', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
+    { name: 'Members', icon: Users, path: '/students', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Attendance', icon: ShieldCheck, path: '/attendance', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Events', icon: CalendarBlank, path: '/events', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Calendar', icon: CalendarBlank, path: '/calendar', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Finance', icon: Wallet, path: '/collections', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'FINANCE'] },
     { name: 'Snapshot', icon: FileText, path: '/reports', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN'] },
-    { name: 'Activity Logs', icon: ClockCounterClockwise, path: '/admins/logs', roles: ['NATIONAL_ADMIN'] },
+    { name: 'Activity Logs', icon: ClockCounterClockwise, path: '/admins/logs', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
   ];
 
   const filteredNavItems = navItems.filter(item => !role || item.roles.includes(role));

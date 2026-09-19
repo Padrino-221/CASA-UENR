@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope } from '@/lib/roles';
 
 export async function GET(
   request: Request,
@@ -50,7 +51,7 @@ export async function PUT(
     if (!existingSession) {
       return NextResponse.json({ error: 'Session not found' }, { status: 404 });
     }
-    if (session.user?.role === 'LOCAL_ADMIN' && existingSession.chapterId !== session.user?.chapterId) {
+    if (isLocalScope(session.user?.role) && existingSession.chapterId !== session.user?.chapterId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

@@ -65,7 +65,11 @@ export default function LoginPage() {
               ? '/regional'
               : role === 'LOCAL_ADMIN'
                 ? '/local'
-                : '/dashboard';
+                : role === 'FINANCE'
+                  ? '/collections'
+                  : role === 'SECRETARY'
+                    ? '/students'
+                    : '/dashboard';
         window.location.href = destination;
       }
     } catch {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope } from '@/lib/roles';
 
 const CHALLENGE_OPTIONS = [
   'Low Attendance',
@@ -33,7 +34,7 @@ export async function GET(request: Request) {
   try {
     const filters: Record<string, unknown>[] = [];
 
-    if (role === 'LOCAL_ADMIN') {
+    if (isLocalScope(role)) {
       filters.push({ chapterId: session.user?.chapterId || 'none' });
     } else if (role === 'REGIONAL_ADMIN') {
       filters.push({ chapter: { regionId: session.user?.regionId || 'none' } });

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope, canManageAttendance } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -24,7 +25,7 @@ export async function GET(request: Request) {
       where: {
         AND: [
           chapterId ? { chapterId } : {},
-          role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+          isLocalScope(role) ? { chapterId: contextId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
         ]
       },
@@ -47,7 +48,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session || session.user?.role !== 'LOCAL_ADMIN') {
+  if (!session || !canManageAttendance(session.user?.role)) {
     return NextResponse.json({ error: 'Only local admins can create sessions' }, { status: 403 });
   }
 

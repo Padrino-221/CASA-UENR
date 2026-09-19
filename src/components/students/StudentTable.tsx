@@ -9,6 +9,7 @@ import {
 
 import { Student } from '@/types/models';
 import { Pagination } from '@/components/ui/Pagination';
+import { isLocalScope } from '@/lib/roles';
 
 interface StudentTableProps {
   students: Student[];
@@ -19,7 +20,7 @@ interface StudentTableProps {
 }
 
 export const StudentTable: React.FC<StudentTableProps> = ({ students, role, onEdit, onDelete, searchQuery }) => {
-  const isLocalAdmin = role === 'LOCAL_ADMIN';
+  const isLocalAdmin = isLocalScope(role);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;

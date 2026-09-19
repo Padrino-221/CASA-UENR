@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope } from '@/lib/roles';
 
 // Helper to check ownership / authorization
 async function checkEventAuth(eventId: string, session: { user?: { role?: string; regionId?: string | null; chapterId?: string | null } }) {
@@ -13,7 +14,7 @@ async function checkEventAuth(eventId: string, session: { user?: { role?: string
   
   if (role === 'NATIONAL_ADMIN') return event;
   if (role === 'REGIONAL_ADMIN' && event.regionId === session.user.regionId) return event;
-  if (role === 'LOCAL_ADMIN' && event.chapterId === session.user.chapterId) return event;
+  if (isLocalScope(role) && event.chapterId === session.user.chapterId) return event;
   
   return null;
 }

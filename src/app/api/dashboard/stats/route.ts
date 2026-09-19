@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -122,7 +123,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json({ stats, recentCollections, chartData, monthlyRegistrations });
 
-    } else if (role === 'LOCAL_ADMIN') {
+    } else if (isLocalScope(role)) {
       const chapterId = contextId || 'none';
       const [membersCount, totalFinancials] = await Promise.all([
         db.student.count({ where: { chapterId } }),

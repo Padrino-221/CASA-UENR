@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import CollectionList from '@/components/collections/CollectionList';
 import { HeaderSkeleton, MetricCardSkeleton, TableAreaSkeleton } from '@/components/ui/Skeleton';
 import { Transaction } from '@/types/models';
+import { isLocalScope } from '@/lib/roles';
 
 function CollectionsLoadingSkeleton() {
   return (
@@ -32,7 +33,7 @@ export default async function CollectionsPage() {
   const where: Record<string, unknown> = {};
   if (role === 'REGIONAL_ADMIN' && regionId) {
     where.chapter = { regionId };
-  } else if (role === 'LOCAL_ADMIN' && chapterId) {
+  } else if (isLocalScope(role) && chapterId) {
     where.chapterId = chapterId;
   }
 
@@ -47,11 +48,11 @@ export default async function CollectionsPage() {
       orderBy: { date: 'desc' }
     }),
     db.chapter.findMany({
-      where: role === 'REGIONAL_ADMIN' ? { regionId } : (role === 'LOCAL_ADMIN' ? { id: chapterId } : {}),
+      where: role === 'REGIONAL_ADMIN' ? { regionId } : (isLocalScope(role) ? { id: chapterId } : {}),
       select: { id: true, name: true }
     }),
     db.student.findMany({
-      where: role === 'REGIONAL_ADMIN' ? { chapter: { regionId } } : (role === 'LOCAL_ADMIN' ? { chapterId: chapterId } : {}),
+      where: role === 'REGIONAL_ADMIN' ? { chapter: { regionId } } : (isLocalScope(role) ? { chapterId: chapterId } : {}),
       select: { id: true, name: true, studentId: true }
     })
   ]);

@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import StudentList from '@/components/students/StudentList';
 import { Student } from '@/types/models';
+import { isLocalScope } from '@/lib/roles';
 
 export default async function StudentsPage({
   searchParams,
@@ -30,7 +31,7 @@ export default async function StudentsPage({
   
   if (role === 'REGIONAL_ADMIN' && userRegionId) {
     where.chapter = { regionId: userRegionId };
-  } else if (role === 'LOCAL_ADMIN' && userChapterId) {
+  } else if (isLocalScope(role) && userChapterId) {
     where.chapterId = userChapterId;
   }
 
@@ -81,7 +82,7 @@ export default async function StudentsPage({
         orderBy: { enrollmentDate: 'desc' }
       }),
       db.chapter.findMany({
-          where: role === 'REGIONAL_ADMIN' ? { regionId: userRegionId } : (role === 'LOCAL_ADMIN' ? { id: userChapterId } : (filterRegionId ? { regionId: filterRegionId } : {})),
+          where: role === 'REGIONAL_ADMIN' ? { regionId: userRegionId } : (isLocalScope(role) ? { id: userChapterId } : (filterRegionId ? { regionId: filterRegionId } : {})),
           select: { id: true, name: true }
       }),
       role === 'NATIONAL_ADMIN' ? db.region.findMany({ select: { id: true, name: true } }) : Promise.resolve([])

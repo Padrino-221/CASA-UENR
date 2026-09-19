@@ -1,5 +1,7 @@
 'use client';
 
+import { isLocalScope } from '@/lib/roles';
+
 import React, { useState, useEffect, use, useRef } from 'react';
 import { 
   CaretLeft, 
@@ -220,7 +222,7 @@ export default function AttendanceSessionPage({ params }: { params: Promise<{ id
     return <div className="p-20 text-center font-black text-slate-400 uppercase tracking-widest">Session context not found.</div>;
   }
 
-  const isLocalAdmin = session?.user?.role === 'LOCAL_ADMIN';
+  const isLocalAdmin = isLocalScope(session?.user?.role);
 
   return (
     <div className="space-y-8 w-full pb-20 stagger-fade-in max-w-[1200px] mx-auto">

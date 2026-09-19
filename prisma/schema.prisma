@@ -194,6 +194,8 @@ enum Role {
   REGIONAL_ADMIN
   LOCAL_ADMIN
   CONTENT_MANAGER
+  FINANCE
+  SECRETARY
 }
 
 model SiteContent {

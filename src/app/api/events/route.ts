@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope, canManageEvents } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
       whereConditions.push({ scope: 'REGIONAL', regionId });
       whereConditions.push({ scope: 'LOCAL', chapter: { regionId } });
     }
-    if (role === 'LOCAL_ADMIN' && chapterId) {
+    if (isLocalScope(role) && chapterId) {
       whereConditions.push({ scope: 'LOCAL', chapterId });
       whereConditions.push({ scope: 'REGIONAL', region: { chapters: { some: { id: chapterId } } } });
     }
@@ -54,6 +55,10 @@ export async function POST(request: Request) {
     const { title, description, date, endDate, venue, category } = await request.json();
     const role = session.user?.role;
 
+    if (!(role === 'NATIONAL_ADMIN' || role === 'REGIONAL_ADMIN' || canManageEvents(role))) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     let scope = 'LOCAL';
     if (role === 'NATIONAL_ADMIN') scope = 'NATIONAL';
     else if (role === 'REGIONAL_ADMIN') scope = 'REGIONAL';
@@ -80,7 +85,7 @@ export async function POST(request: Request) {
         venue,
         category,
         scope,
-        chapterId: role === 'LOCAL_ADMIN' ? session.user?.chapterId : null,
+        chapterId: isLocalScope(role) ? session.user?.chapterId : null,
         regionId: role === 'REGIONAL_ADMIN' ? session.user?.regionId : null,
       }
     });

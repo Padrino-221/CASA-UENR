@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { createAuditLog } from '@/lib/audit';
+import { isLocalScope, canManageFinance } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
         AND: [
           chapterId ? { chapterId } : {},
           type ? { type } : {},
-          role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+          isLocalScope(role) ? { chapterId: contextId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
         ]
       },
@@ -47,6 +48,9 @@ export async function POST(req: Request) {
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    if (!canManageFinance(session.user.role)) {
+      return NextResponse.json({ error: 'Forbidden: You cannot record transactions' }, { status: 403 });
+    }
 
     const { amount, category, date, chapterId, type, description, studentId } = await req.json();
 
@@ -55,7 +59,7 @@ export async function POST(req: Request) {
     }
 
     let targetChapterId = chapterId;
-    if (session.user.role === 'LOCAL_ADMIN') {
+    if (isLocalScope(session.user.role)) {
       targetChapterId = session.user.chapterId;
     } else if (session.user.role === 'REGIONAL_ADMIN') {
       const chapter = await db.chapter.findUnique({

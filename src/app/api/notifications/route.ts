@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isLocalScope } from '@/lib/roles';
 
 export async function GET() {
   const session = await auth();
@@ -15,7 +16,7 @@ export async function GET() {
     const transactions = await db.transaction.findMany({
       where: {
         AND: [
-          role === 'LOCAL_ADMIN' ? { chapterId: chapterId || 'none' } : {},
+          isLocalScope(role) ? { chapterId: chapterId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: regionId || 'none' } } : {},
         ]
       },
@@ -30,7 +31,7 @@ export async function GET() {
         OR: [
           { scope: 'NATIONAL' },
           role === 'REGIONAL_ADMIN' ? { regionId: regionId || 'none' } : {},
-          role === 'LOCAL_ADMIN' ? { chapterId: chapterId || 'none' } : {},
+          isLocalScope(role) ? { chapterId: chapterId || 'none' } : {},
         ]
       },
       take: 3,

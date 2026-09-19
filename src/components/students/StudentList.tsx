@@ -17,6 +17,7 @@ import { StudentBulkModal } from './StudentBulkModal';
 import { Student } from '@/types/models';
 import { useGlobalSearch } from '@/context/SearchContext';
 import CustomDropdown from '@/components/ui/CustomDropdown';
+import { isLocalScope } from '@/lib/roles';
 
 interface StudentListProps {
   initialStudents: Student[];
@@ -294,7 +295,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
               <DownloadSimple size={18} weight="duotone" />
               <span>Export Excel</span>
             </button>
-            {role === 'LOCAL_ADMIN' && (
+            {isLocalScope(role) && (
               <>
                 <button className="btn-glass-alt" onClick={() => setShowBulkModal(true)}><FileArrowUp size={18} weight="duotone" /><span>Bulk Import</span></button>
                 <button className="btn-lux-primary" onClick={() => setShowAddModal(true)}><Plus size={18} weight="duotone" /><span>Add Member</span></button>

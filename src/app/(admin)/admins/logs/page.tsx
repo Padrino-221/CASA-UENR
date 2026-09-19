@@ -23,7 +23,8 @@ export default function AuditLogsPage() {
     );
   }
 
-  if (!session || session.user?.role !== 'NATIONAL_ADMIN') {
+  const role = session?.user?.role;
+  if (!session || (role !== 'NATIONAL_ADMIN' && role !== 'REGIONAL_ADMIN' && role !== 'LOCAL_ADMIN')) {
     redirect('/');
   }
 

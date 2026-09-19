@@ -25,6 +25,8 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
     if (role === 'REGIONAL_ADMIN') return '/regional';
     if (role === 'LOCAL_ADMIN') return '/local';
     if (role === 'CONTENT_MANAGER') return '/content';
+    if (role === 'FINANCE') return '/collections';
+    if (role === 'SECRETARY') return '/students';
     return '/dashboard';
   };
 
@@ -34,14 +36,14 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: 'Dashboard', icon: SquaresFour, path: dashboardPath, roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
     { name: 'Regions', icon: MapTrifold, path: '/regions', roles: ['NATIONAL_ADMIN'] },
     { name: 'Chapters', icon: Buildings, path: '/chapters', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN'] },
-    { name: 'Members', icon: UsersThree, path: '/students', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Attendance', icon: CheckSquare, path: '/attendance', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Events', icon: CalendarBlank, path: '/events', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Calendar', icon: ClockCounterClockwise, path: '/calendar', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
-    { name: 'Finance', icon: Wallet, path: '/collections', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
+    { name: 'Members', icon: UsersThree, path: '/students', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Attendance', icon: CheckSquare, path: '/attendance', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Events', icon: CalendarBlank, path: '/events', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Calendar', icon: ClockCounterClockwise, path: '/calendar', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Finance', icon: Wallet, path: '/collections', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'FINANCE'] },
     { name: 'Snapshot', icon: FileText, path: '/reports', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN'] },
-    { name: 'Activity Logs', icon: ClockCounterClockwise, path: '/admins/logs', roles: ['NATIONAL_ADMIN'] },
-    { name: 'Admins', icon: ShieldCheck, path: '/admins', roles: ['NATIONAL_ADMIN'] },
+    { name: 'Activity Logs', icon: ClockCounterClockwise, path: '/admins/logs', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN'] },
+    { name: role === 'LOCAL_ADMIN' ? 'Sub-accounts' : 'Admins', icon: ShieldCheck, path: '/admins', roles: ['NATIONAL_ADMIN', 'LOCAL_ADMIN'] },
     { name: 'Website CMS', icon: PaintBrush, path: '/content', roles: ['CONTENT_MANAGER', 'NATIONAL_ADMIN'] },
   ];
 

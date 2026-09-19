@@ -26,6 +26,12 @@ export default async function NationalDashboard() {
   if (role === 'CONTENT_MANAGER') {
     redirect('/content');
   }
+  if (role === 'FINANCE') {
+    redirect('/collections');
+  }
+  if (role === 'SECRETARY') {
+    redirect('/students');
+  }
 
   // Fetch metrics data directly on the server
   const [membersCount, institutionsCount, totalFinancials, recentLogs] = await Promise.all([

@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { canManageMembers } from '@/lib/roles';
 
 export async function POST() {
   const session = await auth();
   
-  if (!session || !session.user?.chapterId || session.user?.role !== 'LOCAL_ADMIN') {
+  if (!session || !session.user?.chapterId || !canManageMembers(session.user?.role)) {
     return NextResponse.json({ 
       error: 'Unauthorized: Academic promotion can only be executed by localized administrators.' 
     }, { status: 401 });

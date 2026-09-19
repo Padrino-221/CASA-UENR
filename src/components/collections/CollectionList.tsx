@@ -19,6 +19,7 @@ import { Transaction } from '@/types/models';
 import { useGlobalSearch } from '@/context/SearchContext';
 import CustomDropdown from '@/components/ui/CustomDropdown';
 import { useNotification } from '@/context/NotificationContext';
+import { isLocalScope } from '@/lib/roles';
 
 interface CollectionListProps {
   initialCollections: Transaction[];
@@ -193,7 +194,7 @@ export default function CollectionList({ initialCollections, chapters, members, 
 
           <div className="actions-cluster">
             <button className="btn-glass-alt" onClick={handleExportReport}><DownloadSimple size={18} weight="duotone" /><span>Export Report</span></button>
-            {role === 'LOCAL_ADMIN' && (
+            {isLocalScope(role) && (
               <>
                 <button className="btn-glass-alt" onClick={() => setShowBulkModal(true)}><FileArrowUp size={18} weight="duotone" /><span>Bulk Import</span></button>
                 <button className="btn-lux-primary" onClick={() => setShowAddModal(true)}><Plus size={18} weight="duotone" /><span>Add Collection</span></button>
@@ -222,7 +223,7 @@ export default function CollectionList({ initialCollections, chapters, members, 
 
         {/* Dynamic Dropdowns Filter Cluster */}
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto justify-end">
-          {role !== 'LOCAL_ADMIN' && (
+          {!isLocalScope(role) && (
             <CustomDropdown 
               options={chapterDropdownOptions}
               value={selectedChId}
