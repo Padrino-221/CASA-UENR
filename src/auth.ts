@@ -5,6 +5,17 @@ import { db } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
 
+// Auth.js builds action URLs with `new URL(AUTH_URL ?? NEXTAUTH_URL)`, which
+// throws if the value has no scheme (e.g. "my-app.vercel.app"). Normalise it.
+function normalizeEnvUrl(name: 'AUTH_URL' | 'NEXTAUTH_URL') {
+  const raw = process.env[name];
+  if (!raw || /^https?:\/\//i.test(raw)) return;
+  const isLocal = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:|\/|$)/i.test(raw);
+  process.env[name] = `${isLocal ? 'http' : 'https'}://${raw.replace(/^\/+/, '')}`;
+}
+normalizeEnvUrl('AUTH_URL');
+normalizeEnvUrl('NEXTAUTH_URL');
+
 // Auth.js (v5) only reads `AUTH_SECRET` by default. Fall back to
 // `NEXTAUTH_SECRET`, and finally derive one from `DATABASE_URL` so the app
 // still boots if no secret is configured. Always set `AUTH_SECRET` in production.
