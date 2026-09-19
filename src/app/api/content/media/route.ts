@@ -3,6 +3,7 @@ import { unlink } from 'fs/promises';
 import path from 'path';
 import { db } from '@/lib/prisma';
 import { getContentSession } from '@/lib/cms/auth';
+import { deleteObject } from '@/lib/storage';
 
 export async function GET() {
   const session = await getContentSession();
@@ -23,7 +24,11 @@ export async function DELETE(request: Request) {
   const asset = await db.mediaAsset.findUnique({ where: { id } });
   if (!asset) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  if (asset.url.startsWith('/uploads/')) {
+  if (asset.storageKey) {
+    await deleteObject(asset.storageKey).catch((err) => {
+      console.error('Failed to delete storage object:', err);
+    });
+  } else if (asset.url.startsWith('/uploads/')) {
     const filePath = path.join(process.cwd(), 'public', asset.url.replace(/^\//, ''));
     await unlink(filePath).catch(() => {});
   }

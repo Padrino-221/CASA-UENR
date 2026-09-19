@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
+      // Neon object storage (S3-compatible) public URLs.
+      { protocol: "https", hostname: "**.neon.tech" },
     ],
   },
   experimental: {

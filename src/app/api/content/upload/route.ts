@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import sharp from 'sharp';
 import { db } from '@/lib/prisma';
 import { getContentSession } from '@/lib/cms/auth';
+import { isStorageConfigured, uploadObject } from '@/lib/storage';
 
 export const runtime = 'nodejs';
 
@@ -10,6 +12,21 @@ const RASTER_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 const MAX_BYTES = 5 * 1024 * 1024;
 const MAX_WIDTH = 1600;
 const WEBP_QUALITY = 80;
+
+function extFor(mimeType: string): string {
+  switch (mimeType) {
+    case 'image/webp':
+      return '.webp';
+    case 'image/png':
+      return '.png';
+    case 'image/gif':
+      return '.gif';
+    case 'image/svg+xml':
+      return '.svg';
+    default:
+      return '.jpg';
+  }
+}
 
 export async function POST(request: Request) {
   const session = await getContentSession();
@@ -48,9 +65,38 @@ export async function POST(request: Request) {
       }
     }
 
-    // Persist the bytes in the database so media survives restarts and
-    // redeploys (the filesystem may be ephemeral). The public URL is served
-    // by /api/media/[id].
+    const uploadedById = session.user.id as string;
+
+    // Preferred path: Neon object storage (S3-compatible), public URL.
+    if (isStorageConfigured()) {
+      const key = `cms/${randomUUID()}${extFor(mimeType)}`;
+      const url = await uploadObject(key, output, mimeType);
+
+      const asset = await db.mediaAsset.create({
+        data: {
+          filename: file.name,
+          url,
+          storageKey: key,
+          mimeType,
+          size: output.length,
+          uploadedById,
+        },
+      });
+
+      return NextResponse.json(
+        {
+          id: asset.id,
+          filename: asset.filename,
+          url: asset.url,
+          mimeType: asset.mimeType,
+          size: asset.size,
+          createdAt: asset.createdAt,
+        },
+        { status: 201 }
+      );
+    }
+
+    // Fallback: persist the bytes in the database and serve via /api/media/[id].
     const created = await db.mediaAsset.create({
       data: {
         filename: file.name,
@@ -58,7 +104,7 @@ export async function POST(request: Request) {
         mimeType,
         size: output.length,
         data: output,
-        uploadedById: session.user.id as string,
+        uploadedById,
       },
     });
 
@@ -67,14 +113,17 @@ export async function POST(request: Request) {
       data: { url: `/api/media/${created.id}` },
     });
 
-    return NextResponse.json({
-      id: asset.id,
-      filename: asset.filename,
-      url: asset.url,
-      mimeType: asset.mimeType,
-      size: asset.size,
-      createdAt: asset.createdAt,
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        id: asset.id,
+        filename: asset.filename,
+        url: asset.url,
+        mimeType: asset.mimeType,
+        size: asset.size,
+        createdAt: asset.createdAt,
+      },
+      { status: 201 }
+    );
   } catch (err) {
     console.error('Media upload error:', err);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });

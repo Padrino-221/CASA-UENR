@@ -217,6 +217,7 @@ model MediaAsset {
   mimeType     String
   size         Int
   data         Bytes?
+  storageKey   String?
   uploadedById String?
   createdAt    DateTime @default(now())
 }
