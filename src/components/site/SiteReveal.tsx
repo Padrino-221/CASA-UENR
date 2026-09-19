@@ -1,30 +1,44 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 /**
- * Scroll reveal ported from the temp site's js/reveal.js — watches [data-reveal]
- * elements and adds .is-visible, honouring data-reveal-delay. Renders nothing.
+ * Scroll reveal for [data-reveal] elements.
+ *
+ * Content is hidden by CSS until `.is-visible` is added, so this must be
+ * resilient: it re-runs on navigation, watches for elements added later
+ * (streamed content / client-side navigation), and has a safety net so content
+ * can never remain permanently invisible.
  */
 export default function SiteReveal() {
-  useEffect(() => {
-    const items = Array.prototype.slice.call(
-      document.querySelectorAll<HTMLElement>('[data-reveal]')
-    );
+  const pathname = usePathname();
 
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      !('IntersectionObserver' in window)
-    ) {
-      items.forEach((el) => el.classList.add('is-visible'));
+  useEffect(() => {
+    const reveal = (el: HTMLElement) => el.classList.add('is-visible');
+    const delayOf = (el: Element) =>
+      parseInt((el as HTMLElement).getAttribute('data-reveal-delay') || '', 10) || 0;
+
+    const revealAll = () => {
+      document.querySelectorAll<HTMLElement>('[data-reveal]').forEach(reveal);
+    };
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const supportsObserver = 'IntersectionObserver' in window;
+
+    if (reduceMotion || !supportsObserver) {
+      revealAll();
       return;
     }
 
-    const show = (el: HTMLElement, delay: number) => {
+    const observed = new WeakSet<Element>();
+
+    const show = (el: HTMLElement) => {
+      const delay = delayOf(el);
       if (delay > 0) {
-        window.setTimeout(() => el.classList.add('is-visible'), delay);
+        window.setTimeout(() => reveal(el), delay);
       } else {
-        el.classList.add('is-visible');
+        reveal(el);
       }
     };
 
@@ -33,20 +47,40 @@ export default function SiteReveal() {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           observer.unobserve(entry.target);
-          const delay =
-            parseInt(
-              (entry.target as HTMLElement).getAttribute('data-reveal-delay') || '',
-              10
-            ) || 0;
-          show(entry.target as HTMLElement, delay);
+          show(entry.target as HTMLElement);
         });
       },
       { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
     );
 
-    items.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+    const observeAll = () => {
+      document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-visible)').forEach((el) => {
+        if (observed.has(el)) return;
+        observed.add(el);
+        observer.observe(el);
+      });
+    };
+
+    observeAll();
+
+    // Catch elements rendered after this effect ran (streaming / route changes).
+    const mutationObserver = new MutationObserver(() => observeAll());
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    // Safety net: if anything is still hidden while in view, reveal it.
+    const safety = window.setTimeout(() => {
+      document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-visible)').forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) show(el);
+      });
+    }, 1200);
+
+    return () => {
+      observer.disconnect();
+      mutationObserver.disconnect();
+      window.clearTimeout(safety);
+    };
+  }, [pathname]);
 
   return null;
 }

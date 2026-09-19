@@ -29,6 +29,7 @@ export default function SiteHeader({ siteName = 'CASA UENR' }: { siteName?: stri
   }, [drawerOpen]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDrawerOpen(false);
   }, [pathname]);
 
@@ -71,12 +72,6 @@ export default function SiteHeader({ siteName = 'CASA UENR' }: { siteName?: stri
         <div className="mobile-drawer-backdrop" onClick={() => setDrawerOpen(false)} />
         <div className="mobile-drawer-panel">
           <div className="mobile-drawer-header">
-            <Link href="/" className="logo">
-              <span className="logo-icon">
-                <Image src="/casa-logo-white.png" alt="CASA UENR logo" width={56} height={56} />
-              </span>
-              {siteName}
-            </Link>
             <button
               className="mobile-drawer-close"
               onClick={() => setDrawerOpen(false)}
