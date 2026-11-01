@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/ui/Modal';
+import { uploadCmsImage } from '@/lib/cms/upload-image';
 import { useNotification } from '@/context/NotificationContext';
 import { UploadSimple, ImageSquare, Trash, Check } from '@phosphor-icons/react';
 
@@ -45,21 +46,13 @@ export default function MediaPicker({
     setUploading(true);
     setError('');
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/content/upload', { method: 'POST', body: fd });
-      if (res.ok) {
-        const asset = await res.json();
+      const asset = await uploadCmsImage(file);
         onChange(asset.url);
         success('Image uploaded. Save the article or page to apply it.');
         setOpen(false);
         load();
-      } else {
-        const e = await res.json().catch(() => ({}));
-        setError(e.error || 'Upload failed');
-      }
-    } catch {
-      setError('Upload failed');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Upload failed. Check your connection and try again.');
     } finally {
       setUploading(false);
     }

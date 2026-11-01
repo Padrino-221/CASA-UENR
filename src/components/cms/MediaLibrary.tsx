@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { uploadCmsImage } from '@/lib/cms/upload-image';
 import { useNotification } from '@/context/NotificationContext';
 import { UploadSimple, Trash } from '@phosphor-icons/react';
 
@@ -37,16 +38,10 @@ export default function MediaLibrary() {
     setUploading(true);
     setError('');
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/content/upload', { method: 'POST', body: fd });
-      if (res.ok) load();
-      else {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error || 'Upload failed');
-      }
-    } catch {
-      setError('Upload failed. Check your connection and try again.');
+      await uploadCmsImage(file);
+      await load();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Upload failed. Check your connection and try again.');
     } finally {
       setUploading(false);
     }
