@@ -30,7 +30,7 @@ export default function SiteHeader({siteName='CASA UENR'}:{siteName?:string}) {
   },[drawerOpen]);
   return <>
     <nav className="navbar" aria-label="Main navigation"><div className="inner">
-      <Link href="/" className="logo"><span className="logo-icon"><Image src="/casa-logo-white.png" alt="" width={52} height={52}/></span><span className="brand-lockup">{siteName}<small>A faith community at UENR</small></span></Link>
+      <Link href="/" className="logo"><span className="logo-icon"><Image src="/casa-logo.png" alt="" width={52} height={52}/></span><span className="brand-lockup">{siteName}<small>A faith community at UENR</small></span></Link>
       <div className="nav-links">{NAV_ITEMS.map(item=><Link key={item.href} href={item.href} aria-current={pathname===item.href?'page':undefined} className={pathname===item.href?'active':undefined}>{item.label}</Link>)}</div>
       <Link href="/contact" className="btn btn-lime">Plan a visit <ArrowUpRight size={18}/></Link>
       <button className="hamburger-btn" ref={menuButton} onClick={()=>setDrawerOpen(true)} aria-label="Open menu" aria-expanded={drawerOpen} aria-controls="site-mobile-menu"><List size={26}/></button>

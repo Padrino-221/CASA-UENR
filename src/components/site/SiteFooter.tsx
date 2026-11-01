@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { ArrowUpRight, MapPin } from '@phosphor-icons/react/dist/ssr';
 
 interface FooterGathering {
   name?: string;
@@ -30,39 +31,21 @@ export default function SiteFooter({
   const tagline = content['footer.tagline'] || 'Rooted in Christ. Raised for purpose.';
 
   return (
-    <footer className="footer">
+    <footer className="church-footer">
       <div className="inner">
-
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <Link href="/" className="logo">
-              <span className="logo-icon">
-                <Image src="/casa-logo-white.png" alt={`${siteName} logo`} width={56} height={56} />
-              </span>
-              {siteName}
-            </Link>
+        <div className="church-footer-invite">
+          <div><span>Faith. Friendship. University life.</span><h2>There is a place for you here.</h2></div>
+          <Link href="/contact" className="church-footer-visit">Plan your first visit <ArrowUpRight size={19} aria-hidden="true" /></Link>
+        </div>
+        <div className="church-footer-main">
+          <div className="church-footer-brand">
+            <Link href="/" className="church-footer-logo" aria-label={`${siteName} home`}><Image src="/casa-logo.png" alt="" width={60} height={60}/><span>{siteName}<small>Christ Apostolic Students and Associates</small></span></Link>
             <p>{description}</p>
           </div>
-          <div className="footer-col">
-            <h4>Explore</h4>
-            <Link href="/">Home</Link>
-            <Link href="/about">About Us</Link>
-            <Link href="/departments">Departments</Link>
-            <Link href="/news">News &amp; Events</Link>
-            <Link href="/contact">Contact</Link>
-          </div>
-          <div className="footer-col">
-            <h4>Worship with us</h4>
-            {times.map((gathering, index) => (
-              <span key={index}>{[gathering.name, gathering.time].filter(Boolean).join(' · ')}</span>
-            ))}
-            <span>{location}</span>
-          </div>
+          <nav className="church-footer-links" aria-label="Footer navigation"><h3>Find your place</h3><Link href="/about">Our story</Link><Link href="/about#leadership">Meet the leadership</Link><Link href="/departments">Departments</Link><Link href="/news">News &amp; gatherings</Link><Link href="/contact">Get in touch</Link></nav>
+          <div className="church-footer-gatherings"><h3>Gather with us</h3><ul>{times.map((gathering,index)=><li key={index}><span>{gathering.name}</span><strong>{gathering.time}</strong></li>)}</ul><Link href="/contact" className="church-footer-location"><MapPin size={18} aria-hidden="true"/><span>{location}</span></Link></div>
         </div>
-        <div className="footer-bottom">
-          <div className="footer-copy">{copyright}</div>
-          <div className="footer-copy">{tagline}</div>
-        </div>
+        <div className="church-footer-base"><span>{copyright}</span><span>{tagline}</span></div>
       </div>
     </footer>
   );

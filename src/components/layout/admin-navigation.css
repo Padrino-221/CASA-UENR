@@ -23,3 +23,5 @@
 .admin-workspace .admin-topbar [class*=text-\[\#94A3B8\]]{color:#64748b}
 @media(max-width:1023px){.admin-workspace .admin-sidebar{position:fixed;z-index:50}.admin-workspace .admin-topbar{height:66px;padding:0 16px}.admin-workspace .admin-topbar input{font-size:14px}.admin-workspace .admin-topbar>div:first-child{min-width:0;flex:1}.admin-workspace .admin-topbar>div:first-child>div{width:auto;max-width:380px;flex:1}}
 @media(max-width:520px){.admin-workspace .admin-topbar{gap:10px;padding-inline:12px}.admin-workspace .admin-topbar>div:first-child{gap:8px}.admin-workspace .admin-topbar input{min-width:0;width:100%}.admin-workspace .admin-topbar>div:last-child{gap:2px}.admin-workspace .admin-topbar>div:last-child>button[title=Help]{display:none}}
+
+.admin-workspace .admin-sidebar img[alt="CASA UENR logo"]{border-radius:50%;background:white}

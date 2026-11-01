@@ -97,7 +97,7 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex items-center justify-between h-[64px] px-5 border-b border-white/10 lg:h-[88px] lg:pt-6 lg:pb-2">
           <Link href={dashboardPath} className="flex items-center gap-3" onClick={onClose} scroll={false}>
             <div className="w-14 h-14 overflow-hidden">
-              <Image src="/casa-logo-white.png" alt="CASA UENR logo" width={56} height={56} className="w-full h-full object-contain" />
+              <Image src="/casa-logo.png" alt="CASA UENR logo" width={56} height={56} className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
               <h2 className="text-white text-[16px] font-bold tracking-tight leading-none whitespace-nowrap">CASA UENR</h2>

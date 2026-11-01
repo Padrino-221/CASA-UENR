@@ -24,7 +24,7 @@
 .site.site-editorial .navbar{padding:18px 0;position:relative;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
 .site.site-editorial .navbar .inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
 .site.site-editorial .logo{display:flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none;flex-shrink:0;font-family:var(--font-campus-display),sans-serif;font-size:21px;font-weight:700}
-.site.site-editorial .logo-icon{display:grid;place-items:center;background:#1d4ed8;border-radius:50%;padding:3px;width:48px;height:48px;flex-shrink:0}
+.site.site-editorial .logo-icon{display:grid;place-items:center;background:transparent;border-radius:0;padding:0;width:48px;height:48px;flex-shrink:0}
 .site.site-editorial .brand-lockup{font-family:var(--font-campus-display),sans-serif;font-size:21px;font-weight:700;line-height:1.1;letter-spacing:-.025em}
 .site.site-editorial .brand-lockup small{display:block;margin-top:5px;font-family:var(--font-campus-body),sans-serif;font-size:11px;letter-spacing:0;font-weight:500;color:var(--muted)}
 .site.site-editorial .nav-links{display:flex;align-items:center;gap:26px}
@@ -91,3 +91,55 @@
 @media(max-width:850px){.site.site-editorial .navbar .nav-links,.site.site-editorial .navbar .btn{display:none}.site.site-editorial .hamburger-btn{display:flex}.site.site-editorial .welcome-layout,.site.site-editorial .community-layout{grid-template-columns:1fr;gap:28px}.site.site-editorial .welcome-copy h1{max-width:650px}.site.site-editorial .welcome-copy p{max-width:630px}.site.site-editorial .welcome-image{height:360px}.site.site-editorial .community-image{height:310px}.site.site-editorial .community-copy{max-width:650px}.site.site-editorial .next-grid{gap:16px}.site.site-editorial .next-card{padding:21px}.site.site-editorial .footer-grid{gap:30px}}
 @media(max-width:600px){.site.site-editorial .inner{padding-inline:20px}.site.site-editorial .navbar{padding:14px 0}.site.site-editorial .logo-icon{width:43px;height:43px}.site.site-editorial .brand-lockup{font-size:20px}.site.site-editorial .church-welcome{padding:30px 0}.site.site-editorial .welcome-copy h1{font-size:38px;margin-bottom:18px}.site.site-editorial .welcome-copy p{font-size:16px}.site.site-editorial .welcome-actions{gap:20px}.site.site-editorial .welcome-image{height:290px}.site.site-editorial .church-gatherings{padding:24px 0}.site.site-editorial .gatherings-list{grid-template-columns:1fr;gap:15px}.site.site-editorial .gathering-item{display:flex;justify-content:space-between;gap:20px;border:0;border-top:1px solid var(--line);padding:15px 0 0}.site.site-editorial .gathering-item:first-child{border-top:1px solid var(--line);padding-top:15px}.site.site-editorial .gathering-item h3{font-size:16px;margin:0}.site.site-editorial .gathering-item p{font-size:14px;white-space:nowrap}.site.site-editorial .church-community,.site.site-editorial .church-next{padding:34px 0}.site.site-editorial .community-image{height:270px}.site.site-editorial .next-grid{grid-template-columns:1fr}.site.site-editorial .next-card{padding:24px}.site.site-editorial .footer-grid{grid-template-columns:1fr;gap:26px}.site.site-editorial .footer{padding-top:30px}.site.site-editorial .footer-bottom{flex-direction:column;gap:8px}}
 @media(prefers-reduced-motion:reduce){.site.site-editorial *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Footer: a clear invitation, useful links, and a readable weekly schedule. */
+.site.site-editorial .church-footer{position:relative;overflow:hidden;background:#153ca5;color:#fff;margin-top:0}
+.site.site-editorial .church-footer::before{content:'';position:absolute;pointer-events:none;width:490px;height:490px;border:1px solid #ffffff14;border-radius:50%;left:-260px;bottom:-280px}
+.site.site-editorial .church-footer .inner{position:relative}
+.site.site-editorial .church-footer-invite{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:30px 0;border-bottom:1px solid #ffffff30}
+.site.site-editorial .church-footer-invite>div>span{font-size:13px;color:#dbeafe;font-weight:500}
+.site.site-editorial .church-footer-invite h2{font-family:var(--font-campus-display),sans-serif;font-size:30px;line-height:1.12;letter-spacing:-.04em;color:#fff;margin:9px 0 0;font-weight:600}
+.site.site-editorial .church-footer-visit{display:inline-flex;align-items:center;justify-content:center;gap:18px;padding:12px 17px;border:1px solid #fff;border-radius:7px;background:#fff;color:#153ca5;font-size:14px;font-weight:600;text-decoration:none;flex-shrink:0;transition:background .15s}
+.site.site-editorial .church-footer-visit:hover{background:#dbeafe}
+.site.site-editorial .church-footer-main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(160px,.7fr) minmax(270px,1fr);gap:44px;padding:32px 0}
+.site.site-editorial .church-footer-logo{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font-weight:700;font-size:22px;letter-spacing:-.035em}
+.site.site-editorial .church-footer-logo img{flex-shrink:0;object-fit:contain;width:56px;height:56px}
+.site.site-editorial .church-footer-logo small{display:block;font-size:11px;line-height:1.5;font-weight:400;letter-spacing:0;color:#dbeafe;margin-top:5px;max-width:200px}
+.site.site-editorial .church-footer-brand>p{color:#dbeafe;font-size:14px;line-height:1.7;max-width:350px;margin:17px 0 0}
+.site.site-editorial .church-footer-main h3{font-size:15px;font-weight:600;letter-spacing:0;color:#fff;margin:0 0 17px;line-height:1.3}
+.site.site-editorial .church-footer-links{display:flex;flex-direction:column;align-items:start;gap:11px}
+.site.site-editorial .church-footer-links h3{margin-bottom:6px}
+.site.site-editorial .church-footer-links>a{color:#dbeafe;font-size:14px;text-decoration:none;line-height:1.5}
+.site.site-editorial .church-footer-links>a:hover{color:white;text-decoration:underline;text-underline-offset:4px}
+.site.site-editorial .church-footer-gatherings ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.site.site-editorial .church-footer-gatherings li{display:flex;align-items:baseline;justify-content:space-between;gap:18px;font-size:13px;line-height:1.5;color:#dbeafe}
+.site.site-editorial .church-footer-gatherings li strong{font-weight:500;color:#fff;text-align:right;flex-shrink:0}
+.site.site-editorial .church-footer-location{display:flex;align-items:start;gap:8px;color:#dbeafe;border-top:1px solid #ffffff25;padding-top:15px;margin-top:18px;font-size:13px;line-height:1.6;text-decoration:none}
+.site.site-editorial .church-footer-location svg{flex-shrink:0;margin-top:2px}
+.site.site-editorial .church-footer-location:hover{color:white}
+.site.site-editorial .church-footer-base{display:flex;justify-content:space-between;align-items:start;gap:18px;padding:18px 0;border-top:1px solid #ffffff30;font-size:13px;line-height:1.5;color:#dbeafe}
+.site.site-editorial .church-footer :focus-visible{outline:3px solid #bfdbfe;outline-offset:5px;border-radius:4px}
+@media(max-width:950px){.site.site-editorial .church-footer-main{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px}.site.site-editorial .church-footer-brand{grid-column:1/-1}.site.site-editorial .church-footer-brand>p{max-width:580px}}
+@media(max-width:600px){.site.site-editorial .church-footer-invite{align-items:start;flex-direction:column;gap:20px;padding:26px 0}.site.site-editorial .church-footer-invite h2{font-size:27px;max-width:300px}.site.site-editorial .church-footer-main{grid-template-columns:1fr;gap:27px;padding:27px 0}.site.site-editorial .church-footer-brand{grid-column:auto}.site.site-editorial .church-footer-logo small{font-size:12px}.site.site-editorial .church-footer-gatherings li{font-size:14px}.site.site-editorial .church-footer-base{flex-direction:column;gap:8px;font-size:12px}.site.site-editorial .church-footer-links{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}.site.site-editorial .church-footer-links h3{grid-column:1/-1;margin-bottom:2px}}
+
+.site.site-editorial .logo-icon img,.site.site-editorial .church-footer-logo img{border-radius:50%;background:white}
+
+/* Related blues give each part of the public website its own visual weight. */
+.site.site-editorial{--blue-action:#2459c4;--blue-deep:#173b70;--blue-night:#102649;--blue-sky:#0b5e94;--blue-pale:#edf3ff;--blue-mist:#f3f7fb;--brand:var(--blue-action);--primary:var(--blue-action);--primary-hover:var(--blue-deep);--primary-light:var(--blue-pale);--panel:var(--blue-mist)}
+.site.site-editorial .btn-ink{background:var(--blue-deep);border-color:var(--blue-deep);color:#fff}
+.site.site-editorial .btn-primary,.site.site-editorial .btn-lime,.site.site-editorial .welcome-actions .btn,.site.site-editorial .church-contact-form .btn{background:var(--blue-action);border-color:var(--blue-action);color:#fff}
+.site.site-editorial .btn-ink:hover,.site.site-editorial .btn-primary:hover,.site.site-editorial .btn-lime:hover,.site.site-editorial .welcome-actions .btn:hover,.site.site-editorial .church-contact-form .btn:hover{background:var(--blue-night);border-color:var(--blue-night)}
+.site.site-editorial .church-welcome{background:var(--blue-pale)}
+.site.site-editorial .welcome-copy h1,.site.site-editorial .community-copy h2{color:var(--blue-night)}
+.site.site-editorial .section-label,.site.site-editorial .text-link,.site.site-editorial .editorial-link,.site.site-editorial .our-team-link{color:var(--blue-sky)}
+.site.site-editorial .church-gatherings{background:var(--blue-deep);border-bottom-color:var(--blue-deep)}
+.site.site-editorial .church-gatherings h2,.site.site-editorial .church-gatherings h3{color:#fff}
+.site.site-editorial .church-gatherings p,.site.site-editorial .gatherings-intro svg{color:#dbeafe}
+.site.site-editorial .church-gatherings .gathering-item{border-color:#ffffff30}
+.site.site-editorial .church-next{background:var(--blue-mist)}
+.site.site-editorial .next-card:nth-child(1)>svg{color:var(--blue-action)}
+.site.site-editorial .next-card:nth-child(2)>svg{color:var(--blue-deep)}
+.site.site-editorial .next-card:nth-child(3)>svg{color:var(--blue-sky)}
+.site.site-editorial .church-footer{background:var(--blue-night)}
+.site.site-editorial .church-footer-visit{background:#e4eeff;border-color:#e4eeff;color:var(--blue-deep)}
+.site.site-editorial .church-footer-visit:hover{background:#fff;border-color:#fff}

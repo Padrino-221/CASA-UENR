@@ -56,9 +56,9 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.webmanifest',
   icons: [
-    { rel: 'icon', url: '/casa-favicon-32.png', type: 'image/png', sizes: '32x32' },
-    { rel: 'icon', url: '/casa-favicon-192.png', type: 'image/png', sizes: '192x192' },
-    { rel: 'apple-touch-icon', url: '/casa-favicon-180.png', sizes: '180x180' },
+    { rel: 'icon', url: '/casa-icon-round-32.png', type: 'image/png', sizes: '32x32' },
+    { rel: 'icon', url: '/casa-icon-round-192.png', type: 'image/png', sizes: '192x192' },
+    { rel: 'apple-touch-icon', url: '/casa-icon-round-180.png', sizes: '180x180' },
   ],
 };
 

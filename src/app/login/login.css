@@ -69,3 +69,5 @@
 @media(max-width:900px){.signin-main{padding:18px 22px;justify-content:center}.signin-back{margin-bottom:16px}.signin-form-wrap{margin:0 auto 16px;padding:24px;max-width:440px}.signin-mobile-brand{margin-bottom:21px}.signin-heading{margin-bottom:21px}.signin-access-note{margin-top:0}.signin-field input,.signin-submit{height:48px}.signin-password button{height:38px;width:38px}.signin-help{margin-top:19px;padding-top:16px}}
 @media(max-width:420px){.signin-main{padding:16px 18px}.signin-form-wrap{padding:22px 20px}.signin-heading h1{font-size:30px}.signin-help{margin-top:18px}.signin-heading>div{font-size:15px;line-height:1.5}.signin-access-note{font-size:11px}}
 @media(min-width:901px) and (max-height:760px){.signin-main{padding-block:18px 14px}.signin-form-wrap{padding-block:12px}.signin-story-copy{padding-block:30px}.signin-heading{margin-bottom:19px}.signin-heading>p{margin-bottom:8px}.signin-field{margin-bottom:15px}.signin-help{margin-top:18px;padding-top:15px}.signin-access-note{font-size:11px}}
+
+.signin-brand>img,.signin-mobile-brand img{border-radius:50%;background:white}

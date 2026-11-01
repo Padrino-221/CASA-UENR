@@ -120,3 +120,16 @@
 
 .site.site-editorial .church-contact-topic{margin-bottom:19px}
 .site.site-editorial .church-contact-topic .admin-select-trigger{font-size:16px;border-radius:6px;min-height:46px}
+
+/* Carry the public blue palette into the inner pages. */
+.site.site-editorial .church-page-intro{background:var(--blue-pale)}
+.site.site-editorial .church-page-intro h1,.site.site-editorial .church-story h2,.site.site-editorial .church-section-heading h2{color:var(--blue-deep)}
+.site.site-editorial .church-soft{background:var(--blue-mist)}
+.site.site-editorial .church-event-date{background:#e3edff;color:var(--blue-deep)}
+.site.site-editorial .church-event .church-event-details,.site.site-editorial .church-news-copy>span:first-child,.site.site-editorial .church-article-kind{color:var(--blue-sky)}
+.site.site-editorial .church-department:nth-child(3n+1)>svg{color:var(--blue-action)}
+.site.site-editorial .church-department:nth-child(3n+2)>svg{color:var(--blue-deep)}
+.site.site-editorial .church-department:nth-child(3n)>svg{color:var(--blue-sky)}
+.site.site-editorial .church-article-body blockquote{background:var(--blue-pale);border-left-color:var(--blue-sky)}
+.site.site-editorial .team-role{color:var(--blue-sky)}
+.site.site-editorial .team-arrows button{color:var(--blue-deep)}

@@ -1,6 +1,6 @@
-const STATIC_CACHE = 'casa-static-v5';
+const STATIC_CACHE = 'casa-static-v7';
 const OFFLINE_URL = '/offline.html';
-const PRECACHE_URLS = [OFFLINE_URL, '/manifest.webmanifest', '/casa-favicon-192.png', '/casa-favicon-512.png'];
+const PRECACHE_URLS = [OFFLINE_URL, '/manifest.webmanifest', '/casa-icon-round-192.png', '/casa-icon-round-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(STATIC_CACHE).then(cache => cache.addAll(PRECACHE_URLS)));

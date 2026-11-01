@@ -21,7 +21,7 @@ export default async function SiteLayout({
     name: siteName,
     alternateName: 'Christ Apostolic Students and Associates — UENR',
     url: SITE_URL,
-    logo: `${SITE_URL}/casa-logo-white.png`,
+    logo: `${SITE_URL}/casa-logo.png`,
     description: SITE_DESCRIPTION,
     address: { '@type': 'PostalAddress', addressLocality: 'Sunyani', addressCountry: 'GH' },
     areaServed: 'University of Energy and Natural Resources, Sunyani, Ghana',

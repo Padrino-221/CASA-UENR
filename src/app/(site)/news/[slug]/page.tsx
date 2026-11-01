@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: Params) {
     publisher: {
       '@type': 'Organization',
       name: SITE_NAME,
-      logo: { '@type': 'ImageObject', url: `${SITE_URL}/casa-logo-white.png` },
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/casa-logo.png` },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}/news/${article.slug}` },
   };

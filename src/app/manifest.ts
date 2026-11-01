@@ -11,8 +11,8 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#1E67FC',
     orientation: 'portrait-primary',
     icons: [
-      { src: '/casa-favicon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-      { src: '/casa-favicon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/casa-icon-round-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/casa-icon-round-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
     ],
     categories: ['business', 'productivity', 'education'],
     lang: 'en',

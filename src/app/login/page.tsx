@@ -59,14 +59,14 @@ export default function LoginPage() {
 
   return <main className="admin-signin">
     <aside className="signin-story" aria-label="CASA UENR administration">
-      <Link href="/" className="signin-brand"><Image src="/casa-logo-white.png" alt="" width={54} height={54}/><span>CASA UENR<small>Church management</small></span></Link>
+      <Link href="/" className="signin-brand"><Image src="/casa-logo.png" alt="" width={54} height={54}/><span>CASA UENR<small>Church management</small></span></Link>
       <div className="signin-story-copy"><h2>Serving the church.<br/>Supporting the people.</h2><p>One place to care for your fellowship, organise your chapter, and keep ministry moving.</p></div>
 
       <p className="signin-story-note">University of Energy and Natural Resources · Sunyani</p>
     </aside>
     <section className="signin-main" aria-labelledby="signin-title">
       <div className="signin-form-wrap">
-        <Link href="/" className="signin-mobile-brand"><span><Image src="/casa-logo-white.png" alt="" width={42} height={42}/></span>CASA UENR</Link>
+        <Link href="/" className="signin-mobile-brand"><span><Image src="/casa-logo.png" alt="" width={42} height={42}/></span>CASA UENR</Link>
         <header className="signin-heading"><p>Administration</p><h1 id="signin-title">Welcome back</h1><div>Sign in to your account to manage your fellowship.</div></header>
         {error && <div className="signin-error" role="alert" id="signin-error"><WarningCircle size={22} aria-hidden="true"/><p>{error}</p></div>}
         <form onSubmit={handleLogin} aria-busy={loading}>
