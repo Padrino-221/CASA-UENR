@@ -299,7 +299,7 @@ export const CMS_PAGES: CmsPage[] = [
             "key": "slides",
             "label": "Additional carousel images",
             "type": "list",
-            "help": "Add and reorder photos after the first image. The slideshow advances every six seconds.",
+            "help": "Add and reorder photos after the first image. The slideshow advances every five seconds and pauses on hover.",
             "defaultList": [{ "image": "/church-bg.jpg", "alt": "Our church community" }],
             "itemLabelKey": "alt",
             "subFields": [

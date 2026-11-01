@@ -144,11 +144,3 @@
 .site.site-editorial .church-footer-visit{background:#e4eeff;border-color:#e4eeff;color:var(--blue-deep)}
 .site.site-editorial .church-footer-visit:hover{background:#fff;border-color:#fff}
 .site.site-editorial .hero-carousel,.site.site-editorial .hero-carousel-photo{position:relative;width:100%;height:100%}
-.site.site-editorial .hero-carousel-controls{position:absolute;bottom:16px;left:16px;right:16px;display:flex;align-items:center;gap:6px;padding:6px;background:#102344;border:1px solid #ffffff40;border-radius:10px;color:#fff}
-.site.site-editorial .hero-carousel-controls button{display:grid;place-items:center;min-width:40px;height:40px;flex-shrink:0;border:0;border-radius:7px;background:transparent;color:#fff;cursor:pointer}
-.site.site-editorial .hero-carousel-controls button:hover{background:#ffffff24}
-.site.site-editorial .hero-carousel-controls button:focus-visible{outline:2px solid #fff;outline-offset:1px}
-.site.site-editorial .hero-carousel-dots{display:flex;justify-content:center;flex:1;min-width:0;overflow:auto}
-.site.site-editorial .hero-carousel-dots button{min-width:26px;width:26px}
-.site.site-editorial .hero-carousel-dots button span{width:7px;height:7px;border-radius:50%;background:#a6bbdc}
-.site.site-editorial .hero-carousel-dots button[aria-current=true] span{width:17px;border-radius:5px;background:#fff}
