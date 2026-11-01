@@ -18,6 +18,8 @@ function client(): S3Client {
     cached = new S3Client({
       region,
       endpoint,
+      maxAttempts: 1,
+      requestHandler: { connectionTimeout: 3000, requestTimeout: 8000 },
       // Neon object storage requires path-style addressing.
       forcePathStyle: true,
       credentials: {

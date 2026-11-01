@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -40,8 +41,18 @@ function isPublicPath(pathname: string) {
   );
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // These belong to a different development server. Never redirect module
+  // requests to an HTML login page; report the missing resource directly.
+  if (pathname.startsWith('/@vite/') || pathname === '/@react-refresh' ||
+      pathname.startsWith('/@vite-plugin-pwa/')) {
+    return new NextResponse('Not found: this application uses Next.js.', {
+      status: 404,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },
+    });
+  }
 
   // Apply rate limiting on login submissions only
   if (
@@ -75,14 +86,14 @@ export function proxy(request: NextRequest) {
   // Every non-public page requires a session. Redirect unauthenticated users
   // (including unknown URLs such as /admin) to the login page.
   if (!isPublicPath(pathname)) {
-    const sessionToken =
-      request.cookies.get("authjs.session-token")?.value ||
-      request.cookies.get("__Secure-authjs.session-token")?.value;
-
-    if (!sessionToken) {
+    const session = await auth();
+    if (!session?.user) {
       const loginUrl = new URL("/login", request.nextUrl.origin);
       loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
+    }
+    if (session.user.role === 'CONTENT_MANAGER' && !pathname.startsWith('/content') && pathname !== '/profile') {
+      return NextResponse.redirect(new URL('/content', request.nextUrl.origin));
     }
   }
 

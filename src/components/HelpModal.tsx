@@ -2,10 +2,8 @@
 
 import React from 'react';
 import {
-  X,
   BookOpen,
   Shield,
-  Lifebuoy,
   MapTrifold,
   Buildings,
   CalendarBlank,
@@ -15,7 +13,7 @@ import {
 } from '@phosphor-icons/react';
 
 import { useSession } from 'next-auth/react';
-import Portal from './ui/Portal';
+import Modal from './ui/Modal';
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -164,83 +162,10 @@ const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
 
   const sections = roleSections[role] || roleSections.NATIONAL_ADMIN;
 
-  return (
-    <Portal>
-      <div
-        className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-[#0F172A]/40 backdrop-blur-md animate-in fade-in duration-300"
-        onClick={onClose}
-      >
-        <div
-          className="w-full max-w-4xl bg-white border border-slate-100 relative overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="px-8 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-4">
-              <div className="w-11 h-11 bg-[#EBF2FF] flex items-center justify-center text-[#1E67FC]">
-                <Lifebuoy size={22} weight="duotone" />
-              </div>
-              <div>
-                <h2 className="text-lg font-extrabold text-[#0F172A] tracking-tight">{currentHeader.title}</h2>
-                <p className="text-[12px] font-bold text-[#94A3B8]">{currentHeader.subtitle}</p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="w-9 h-9 hover:bg-slate-100 flex items-center justify-center text-[#94A3B8] hover:text-[#0F172A] transition-all"
-            >
-              <X size={18} weight="duotone" />
-            </button>
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {sections.map((section, idx) => (
-                <div key={idx} className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-[#F4F7FC] flex items-center justify-center">
-                      {section.icon}
-                    </div>
-                    <h3 className="font-extrabold text-[#0F172A] text-[14px]">{section.title}</h3>
-                  </div>
-                  <ul className="space-y-3">
-                    {section.items.map((item, i) => (
-                      <li key={i} className="flex gap-2.5 text-[12.5px] text-[#475569] leading-relaxed font-medium">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#1E67FC]/30 mt-2 shrink-0" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-
-          </div>
-
-          {/* Footer */}
-          <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/30 flex justify-between items-center shrink-0">
-            <button
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent('retrigger-uchms-guidance'));
-                onClose();
-              }}
-              className="text-[#1E67FC] hover:text-[#1E67FC]/80 text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition-all"
-            >
-              <BookOpen size={16} weight="duotone" />
-              <span>Review Guidelines</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="bg-[#1E67FC] hover:bg-[#1E67FC]/90 text-white px-7 py-2.5 font-extrabold text-[12px] tracking-wide transition-all"
-            >
-              I Understand
-            </button>
-          </div>
-        </div>
-      </div>
-    </Portal>
-  );
+  return <Modal isOpen={isOpen} onClose={onClose} title={currentHeader.title} description={currentHeader.subtitle} maxWidth="max-w-4xl">
+    <div className="admin-guide-grid">{sections.map(section => <section key={section.title} className="admin-guide-card"><div className="mb-3">{section.icon}</div><h3>{section.title}</h3><ul>{section.items.map(item => <li key={item}>{item}</li>)}</ul></section>)}</div>
+    <div className="admin-guide-actions"><button type="button" onClick={() => { window.dispatchEvent(new CustomEvent('retrigger-uchms-guidance')); onClose(); }}><BookOpen size={17} aria-hidden="true" className="inline mr-2"/>Review guidelines</button><button type="button" onClick={onClose}>Done</button></div>
+  </Modal>;
 };
 
 export default HelpModal;

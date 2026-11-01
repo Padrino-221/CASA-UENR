@@ -7,25 +7,26 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
-  password  String
-  name      String?
-  role      Role
-  chapterId String?
-  regionId  String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  auditLogs AuditLog[]
-  region    Region?    @relation(fields: [regionId], references: [id], onDelete: SetNull)
-  chapter   Chapter?   @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  id            String         @id @default(cuid())
+  email         String         @unique
+  password      String
+  name          String?
+  role          Role
+  chapterId     String?
+  regionId      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  auditLogs     AuditLog[]
+  announcements Announcement[]
+  region        Region?        @relation(fields: [regionId], references: [id], onDelete: SetNull)
+  chapter       Chapter?       @relation(fields: [chapterId], references: [id], onDelete: SetNull)
 }
 
 model Region {
-  id          String   @id @default(cuid())
-  name        String   @unique
+  id          String    @id @default(cuid())
+  name        String    @unique
   description String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
   events      Event[]
   chapters    Chapter[]
   admins      User[]
@@ -46,34 +47,36 @@ model Chapter {
   students           Student[]
   transactions       Transaction[]
   admins             User[]
+  contactMessages    ContactMessage[]
+  announcements      Announcement[]
 }
 
 model AcademicYear {
-  id        String    @id @default(cuid())
+  id        String     @id @default(cuid())
   name      String
   startDate DateTime
   endDate   DateTime
-  isCurrent Boolean   @default(false)
+  isCurrent Boolean    @default(false)
   chapterId String?
-  createdAt DateTime  @default(now())
-  chapter   Chapter?  @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  createdAt DateTime   @default(now())
+  chapter   Chapter?   @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   semesters Semester[]
 
   @@unique([name, chapterId])
 }
 
 model Semester {
-  id            String       @id @default(cuid())
+  id             String        @id @default(cuid())
   academicYearId String
-  chapterId     String?
-  name          String
-  startDate     DateTime
-  endDate       DateTime
-  status        String       @default("INACTIVE")
-  createdAt     DateTime     @default(now())
-  chapter       Chapter?     @relation(fields: [chapterId], references: [id], onDelete: SetNull)
-  academicYear  AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
-  transactions  Transaction[]
+  chapterId      String?
+  name           String
+  startDate      DateTime
+  endDate        DateTime
+  status         String        @default("INACTIVE")
+  createdAt      DateTime      @default(now())
+  chapter        Chapter?      @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  academicYear   AcademicYear  @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+  transactions   Transaction[]
 }
 
 model Student {
@@ -103,15 +106,15 @@ model Student {
 }
 
 model AttendanceSession {
-  id                   String             @id @default(cuid())
-  chapterId            String?
-  serviceType          String
-  title                String?
-  date                 DateTime           @default(now())
-  createdAt            DateTime           @default(now())
-  imageUrl             String?
-  records              AttendanceRecord[]
-  chapter              Chapter?           @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  id          String             @id @default(cuid())
+  chapterId   String?
+  serviceType String
+  title       String?
+  date        DateTime           @default(now())
+  createdAt   DateTime           @default(now())
+  imageUrl    String?
+  records     AttendanceRecord[]
+  chapter     Chapter?           @relation(fields: [chapterId], references: [id], onDelete: SetNull)
 
   totalAttendance      Int?
   totalMales           Int?
@@ -136,19 +139,19 @@ model AttendanceRecord {
 }
 
 model Event {
-  id          String     @id @default(cuid())
+  id          String      @id @default(cuid())
   title       String
   description String?
   date        DateTime
   endDate     DateTime?
   venue       String?
   category    String?
-  scope       String     @default("LOCAL")
+  scope       String      @default("LOCAL")
   chapterId   String?
   regionId    String?
-  createdAt   DateTime   @default(now())
-  region      Region?    @relation(fields: [regionId], references: [id], onDelete: SetNull)
-  chapter     Chapter?   @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+  region      Region?     @relation(fields: [regionId], references: [id], onDelete: SetNull)
+  chapter     Chapter?    @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   rsvps       EventRSVP[]
 }
 
@@ -163,7 +166,7 @@ model EventRSVP {
 
 model Transaction {
   id          String    @id @default(cuid())
-  amount      Float
+  amount      Decimal   @db.Decimal(14, 2)
   type        String    @default("INCOME")
   category    String
   description String?
@@ -267,4 +270,43 @@ model SiteEvent {
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  chapterId String
+  name      String
+  email     String
+  topic     String
+  message   String
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([chapterId, createdAt])
+  @@index([chapterId, status])
+}
+
+model Announcement {
+  id               String    @id @default(cuid())
+  chapterId        String
+  authorId         String?
+  title            String
+  message          String
+  sender           String
+  audience         String
+  recipients       Json
+  recipientCount   Int
+  skippedCount     Int       @default(0)
+  status           String    @default("DRAFT")
+  providerResponse Json?
+  error            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  sentAt           DateTime?
+  chapter          Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  author           User?     @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([chapterId, createdAt])
 }

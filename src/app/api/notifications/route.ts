@@ -1,3 +1,4 @@
+import { canViewAdministrativeData } from '@/lib/roles';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
@@ -5,6 +6,7 @@ import { isLocalScope } from '@/lib/roles';
 
 export async function GET() {
   const session = await auth();
+  if (session && !canViewAdministrativeData(session.user?.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const role = session.user?.role;
@@ -39,15 +41,15 @@ export async function GET() {
     });
 
     const notifications = [
-      ...transactions.map((t: { id: string; category: string; amount: number; type: string; chapter: { name: string }; createdAt: Date }) => ({
+      ...transactions.map((t) => ({
         id: t.id,
         type: 'FINANCE',
         title: `Financial Entry: ${t.category}`,
-        subtitle: `GH₵ ${t.amount.toLocaleString()} ${t.type.toLowerCase()} at ${t.chapter?.name ?? 'Unassigned'}`,
+        subtitle: `GH₵ ${Number(t.amount).toLocaleString()} ${t.type.toLowerCase()} at ${t.chapter?.name ?? 'Unassigned'}`,
         time: t.createdAt,
         url: '/collections'
       })),
-      ...events.map((e: { id: string; title: string; category: string; scope: string; createdAt: Date }) => ({
+      ...events.map((e) => ({
         id: e.id,
         type: 'EVENT',
         title: `Calendar: ${e.title}`,

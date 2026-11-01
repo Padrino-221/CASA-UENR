@@ -7,7 +7,7 @@ import { useNotification } from '@/context/NotificationContext';
 import { Plus, Trash, ArrowUp, ArrowDown, X } from '@phosphor-icons/react';
 
 const inputCls =
-  'w-full min-h-[44px] px-3 py-2 border border-[#E2E8F0] bg-white text-sm font-medium text-[#0F172A] focus:border-primary focus:outline-none transition-colors';
+  'rounded-md text-base w-full min-h-[44px] px-3 py-2 border border-[#E2E8F0] bg-white text-base font-normal text-[#0F172A] focus:border-primary focus:outline-none transition-colors';
 
 function safeParse(value: string): unknown[] {
   try {
@@ -79,7 +79,7 @@ function TagsInput({ value, onChange }: { value: string; onChange: (v: string) =
   return (
     <div className="flex flex-wrap items-center gap-2 border border-[#E2E8F0] bg-white p-2 min-h-[44px]">
       {tags.map((tag, index) => (
-        <span key={`${tag}-${index}`} className="inline-flex items-center gap-1 bg-[#EFF6FF] text-primary text-[12px] font-bold px-2 py-1">
+        <span key={`${tag}-${index}`} className="inline-flex items-center gap-1 bg-[#EFF6FF] text-primary text-sm font-bold px-2 py-1">
           {tag}
           <button
             type="button"
@@ -155,7 +155,7 @@ function ListInput({
       {items.map((item, index) => (
         <div key={index} className="border border-[#E2E8F0] bg-[#F8FAFC] p-3 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black uppercase tracking-[0.14em] text-[#94A3B8]">
+            <span className="text-[13px] font-semibold normal-case tracking-normal text-[#64748B]">
               {(field.itemLabelKey && item[field.itemLabelKey]) || `Item ${index + 1}`}
             </span>
             <div className="flex items-center gap-1">
@@ -172,7 +172,7 @@ function ListInput({
           </div>
           {subFields.map((sf) => (
             <div key={sf.key}>
-              <label className="block text-[11px] font-bold text-[#475569] mb-1">{sf.label}</label>
+              <label className="block text-[13px] font-bold text-[#475569] mb-1">{sf.label}</label>
               {sf.type === 'textarea' ? (
                 <textarea
                   rows={3}
@@ -199,7 +199,7 @@ function ListInput({
       <button
         type="button"
         onClick={addItem}
-        className="h-10 px-4 bg-white border border-dashed border-[#CBD5E1] text-[#0F172A] text-[12px] font-bold flex items-center gap-2 hover:border-primary hover:text-primary"
+        className="h-10 px-4 bg-white border border-dashed border-[#CBD5E1] text-[#0F172A] text-sm font-bold flex items-center gap-2 hover:border-primary hover:text-primary"
       >
         <Plus size={14} weight="bold" />
         Add item

@@ -30,29 +30,29 @@ export const RegionCard: React.FC<RegionCardProps> = ({ region, userRole, onEdit
         <div className="flex items-center gap-2">
           {userRole === 'NATIONAL_ADMIN' && (
             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all mr-2">
-              <button 
-                onClick={() => onEdit(region)} 
+              <button aria-label="Edit record"
+                onClick={() => onEdit(region)}
                 className="w-10 h-10 bg-card border border-standard text-muted hover:text-main flex items-center justify-center transition-colors"
               >
                 <Pencil size={16} weight="duotone" />
               </button>
-              <button 
-                onClick={() => onDelete(region.id)} 
+              <button aria-label="Delete record"
+                onClick={() => onDelete(region.id)}
                 className="w-10 h-10 bg-card border border-standard text-muted hover:text-red-500 flex items-center justify-center transition-colors"
               >
                 <Trash size={16} weight="duotone" />
               </button>
             </div>
           )}
-          <div className="text-[10px] font-black uppercase tracking-[0.15em] text-primary bg-[#EBF2FF] px-3 py-1.5">
+          <div className="text-[13px] font-semibold normal-case tracking-normal text-primary bg-[#EBF2FF] px-3 py-1.5">
              Active
           </div>
         </div>
       </div>
-      
+
       <div className="mb-6">
-        <h3 className="text-2xl font-black text-main tracking-tighter leading-none mb-2">{region.name}</h3>
-        <p className="text-sm text-slate-500 font-bold opacity-70 uppercase tracking-wide text-[10px]">Region</p>
+        <h3 className="text-2xl font-semibold text-main tracking-tighter leading-none mb-2">{region.name}</h3>
+        <p className="text-sm text-slate-500 font-bold opacity-70 normal-case tracking-normal text-[13px]">Region</p>
       </div>
 
       <div className="flex gap-6 py-4 border-t border-slate-100">
@@ -61,8 +61,8 @@ export const RegionCard: React.FC<RegionCardProps> = ({ region, userRole, onEdit
               <Buildings size={16} weight="duotone" />
             </div>
             <div className="flex flex-col">
-                <span className="text-sm font-extrabold text-main leading-none">{region._count?.chapters || 0}</span>
-                <span className="text-[10px] uppercase font-bold text-muted tracking-wider mt-1">Chapters</span>
+                <span className="text-sm font-semibold text-main leading-none">{region._count?.chapters || 0}</span>
+                <span className="text-[13px] normal-case font-bold text-muted tracking-normal mt-1">Chapters</span>
             </div>
          </div>
          <div className="flex items-center gap-3">
@@ -70,13 +70,13 @@ export const RegionCard: React.FC<RegionCardProps> = ({ region, userRole, onEdit
               <Users size={16} weight="duotone" />
             </div>
             <div className="flex flex-col">
-               <span className="text-sm font-extrabold text-main leading-none">{region._count?.students || 0}</span>
-               <span className="text-[10px] uppercase font-bold text-muted tracking-wider mt-1">Members</span>
+               <span className="text-sm font-semibold text-main leading-none">{region._count?.students || 0}</span>
+               <span className="text-[13px] normal-case font-bold text-muted tracking-normal mt-1">Members</span>
             </div>
          </div>
       </div>
 
-      <Link href={`/chapters?regionId=${region.id}`} className="w-full flex items-center justify-center gap-2 py-4 bg-[#F4F7FC] hover:bg-card text-primary hover:text-[#0F53D6] font-black text-xs uppercase tracking-widest transition-all border border-standard hover:border-[#1E67FC]/30 group/btn">
+      <Link href={`/chapters?regionId=${region.id}`} className="w-full flex items-center justify-center gap-2 py-4 bg-[#F4F7FC] hover:bg-card text-primary hover:text-[#0F53D6] font-semibold text-sm normal-case tracking-normal transition-all border border-standard hover:border-[#1D4ED8]/30 group/btn">
          <span>Enter Region</span>
          <CaretRight size={18} className="group-hover/btn:translate-x-1 transition-transform" weight="duotone" />
       </Link>

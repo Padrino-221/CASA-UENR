@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push && next build",
+    "build": "prisma generate && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
@@ -14,7 +14,9 @@
     "seed:auth": "node prisma/seed-auth.js",
     "seed:full": "node prisma/seed-full.js",
     "seed:dummy": "node prisma/seed-dummy.js",
-    "seed:prod": "node prisma/seed-auth.js && node prisma/seed-dummy.js"
+    "seed:prod": "node prisma/seed-auth.js",
+    "db:migrate": "prisma migrate deploy",
+    "test": "node --test tests/*.cjs"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -68,6 +70,6 @@
     "seed": "node prisma/seed-auth.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.9.0"
   }
 }

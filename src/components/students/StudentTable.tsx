@@ -37,31 +37,31 @@ export const StudentTable: React.FC<StudentTableProps> = ({ students, role, onEd
   const paginatedStudents = students.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="card table-card overflow-hidden ! border-black/5">
+    <div className="card table-card overflow-hidden border-slate-200">
       <div className="overflow-x-auto">
         <table className="ds-table w-full border-collapse">
           <thead>
             <tr>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Member
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Student ID
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Level
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Department
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Chapter
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Status
               </th>
               {isLocalAdmin && (
-                <th className="bg-slate-50/50 p-6 text-right text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+                <th className="bg-slate-50/50 px-5 py-4 text-right text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                   Actions
                 </th>
               )}
@@ -75,61 +75,61 @@ export const StudentTable: React.FC<StudentTableProps> = ({ students, role, onEd
                 (student.levelYear && student.maxLevel ? parseInt(student.levelYear) > parseInt(student.maxLevel) : false);
 
               return (
-                <tr key={student.id} className="border-b border-black/5 last:border-0 hover:bg-slate-50/40 transition-colors">
-                  <td className="p-6">
+                <tr key={student.id} className="border-b border-slate-200 last:border-0 hover:bg-slate-50/40 transition-colors">
+                  <td className="px-5 py-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-primary/10 text-primary font-extrabold flex items-center justify-center text-sm">
+                      <div className="w-10 h-10 bg-primary/10 text-primary font-semibold flex items-center justify-center text-sm">
                         {student.name.charAt(0)}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-bold text-main">{student.name}</span>
-                        <span className="text-[9px] text-slate-400 uppercase font-black tracking-widest mt-0.5">
+                        <span className="text-[13px] text-slate-500 normal-case font-semibold tracking-normal mt-0.5">
                           {isAlumni ? 'Alumni' : 'Undergraduate'}
                         </span>
                       </div>
                     </div>
                   </td>
-                  <td className="p-6">
-                    <code className="bg-slate-50 px-2 py-1 text-secondary font-bold text-xs border border-black/5">
+                  <td className="px-5 py-4">
+                    <code className="bg-slate-50 px-2 py-1 text-secondary font-bold text-sm border border-slate-200">
                       {student.studentId}
                     </code>
                   </td>
-                  <td className="p-6">
+                  <td className="px-5 py-4">
                     <div className="flex items-center gap-2">
                       <div className={`w-2 h-2 rounded-full ${isAlumni ? 'bg-slate-300' : 'bg-primary'}`} />
-                      <span className="font-black text-main text-xs uppercase tracking-tighter">{student.levelYear || 'N/A'}</span>
+                      <span className="font-semibold text-main text-sm normal-case tracking-tighter">{student.levelYear || 'N/A'}</span>
                     </div>
                   </td>
-                  <td className="p-6">
-                    <span className="text-secondary text-xs font-bold">{student.department || 'Unassigned'}</span>
+                  <td className="px-5 py-4">
+                    <span className="text-secondary text-sm font-bold">{student.department || 'Unassigned'}</span>
                   </td>
-                  <td className="p-6">
+                  <td className="px-5 py-4">
                     <div className="flex items-center gap-2">
-                      <Buildings size={14} className="text-slate-400" weight="duotone" />
-                      <span className="font-semibold text-xs truncate max-w-[120px] text-main">{student.chapter?.name ?? 'Unassigned'}</span>
+                      <Buildings size={14} className="text-slate-500" weight="duotone" />
+                      <span className="font-semibold text-sm truncate max-w-[120px] text-main">{student.chapter?.name ?? 'Unassigned'}</span>
                     </div>
                   </td>
-                  <td className="p-6">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest ${isAlumni ? 'bg-primary/10 text-primary' :
+                  <td className="px-5 py-4">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-[13px] font-semibold normal-case tracking-normal ${isAlumni ? 'bg-primary/10 text-primary' :
                         student.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600' :
-                          'bg-slate-100 text-slate-400'
+                          'bg-slate-100 text-slate-500'
                       }`}>
                       <UserCheck size={10} weight="duotone" />
                       {isAlumni ? 'ALUMNI' : student.status}
                     </span>
                   </td>
                   {isLocalAdmin && (
-                    <td className="p-6 text-right">
+                    <td className="px-5 py-4 text-right">
                       <div className="flex justify-end gap-2">
-                        <button
+                        <button aria-label="Edit record"
                           onClick={() => onEdit(student)}
-                          className="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors border border-black/5"
+                          className="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-500 hover:text-primary hover:bg-primary/10 transition-colors border border-slate-200"
                         >
                           <Pencil size={14} weight="duotone" />
                         </button>
-                        <button
+                        <button aria-label="Delete record"
                           onClick={() => onDelete(student.id)}
-                          className="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors border border-black/5"
+                          className="w-8 h-8 flex items-center justify-center bg-slate-50 text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors border border-slate-200"
                         >
                           <Trash size={14} weight="duotone" />
                         </button>
@@ -143,8 +143,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({ students, role, onEd
                 <td colSpan={isLocalAdmin ? 7 : 6} className="text-center py-20 bg-slate-50/30">
                   <div className="flex flex-col items-center justify-center gap-4">
                     <Users size={48} className="text-slate-200" weight="duotone" />
-                    <h3 className="text-lg font-bold text-slate-400">No matching members found</h3>
-                    <p className="text-slate-400 text-sm italic">Try adjusting your filters or adding a new record.</p>
+                    <h3 className="text-lg font-bold text-slate-500">No matching members found</h3>
+                    <p className="text-slate-500 text-sm italic">Try adjusting your filters or adding a new record.</p>
                   </div>
                 </td>
               </tr>

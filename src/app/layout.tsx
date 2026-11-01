@@ -1,22 +1,11 @@
+import localFont from 'next/font/local';
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import PwaRegister from "@/components/PwaRegister";
 import { SITE_NAME, SITE_URL, SITE_DESCRIPTION, OG_IMAGE } from "@/lib/seo";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-plus-jakarta",
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  variable: "--font-instrument-serif",
-  weight: ["400"],
-  style: ["italic"],
-});
+const jakarta = localFont({ src: '../../public/fonts/PlusJakartaSans.ttf', variable: '--font-plus-jakarta', display: 'swap', weight: '200 800' });
 
 const defaultTitle = `${SITE_NAME} — Christ Apostolic Students and Associates`;
 
@@ -85,8 +74,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${plusJakartaSans.variable} ${instrumentSerif.variable}`}>
-      <body className={`${plusJakartaSans.className} antialiased`}>
+    <html lang="en">
+      <body className={`${jakarta.variable} ${jakarta.className} antialiased`}>
         <Providers>
           <PwaRegister />
           {children}

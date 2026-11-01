@@ -1,32 +1,11 @@
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
-import sharp from 'sharp';
+import { compressMediaImage, MAX_IMAGE_UPLOAD_BYTES } from '@/lib/media-image';
 import { db } from '@/lib/prisma';
 import { getContentSession } from '@/lib/cms/auth';
 import { isStorageConfigured, uploadObject } from '@/lib/storage';
 
 export const runtime = 'nodejs';
-
-const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/svg+xml'];
-const RASTER_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
-const MAX_BYTES = 5 * 1024 * 1024;
-const MAX_WIDTH = 1600;
-const WEBP_QUALITY = 80;
-
-function extFor(mimeType: string): string {
-  switch (mimeType) {
-    case 'image/webp':
-      return '.webp';
-    case 'image/png':
-      return '.png';
-    case 'image/gif':
-      return '.gif';
-    case 'image/svg+xml':
-      return '.svg';
-    default:
-      return '.jpg';
-  }
-}
 
 export async function POST(request: Request) {
   const session = await getContentSession();
@@ -38,44 +17,35 @@ export async function POST(request: Request) {
     if (!(file instanceof File)) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
+    if (!file.size) return NextResponse.json({ error: 'The selected image is empty' }, { status: 400 });
+    if (file.size > MAX_IMAGE_UPLOAD_BYTES) {
+      return NextResponse.json({ error: 'This image exceeds the 100 MB upload limit. Please choose a smaller source file.' }, { status: 413 });
     }
-
     const bytes = Buffer.from(await file.arrayBuffer());
-    if (bytes.length > MAX_BYTES) {
-      return NextResponse.json({ error: 'File too large (max 5MB)' }, { status: 400 });
+    let output: Buffer;
+    try {
+      output = await compressMediaImage(bytes);
+    } catch {
+      return NextResponse.json({ error: 'Could not read this image. Use a valid JPG, PNG, WebP, GIF, SVG, AVIF or TIFF image (up to 100 megapixels).' }, { status: 400 });
     }
-
-    let output: Uint8Array = bytes;
-    let mimeType = file.type;
-
-    // Compress and normalise raster images: auto-orient, cap width, convert to WebP.
-    // SVG (vector) and GIF (animation) are stored as-is.
-    if (RASTER_TYPES.includes(file.type)) {
-      try {
-        output = await sharp(bytes)
-          .rotate()
-          .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-          .webp({ quality: WEBP_QUALITY })
-          .toBuffer();
-        mimeType = 'image/webp';
-      } catch {
-        return NextResponse.json({ error: 'Could not process image' }, { status: 400 });
-      }
-    }
+    const mimeType = 'image/webp';
+    const filename = `${file.name.replace(/\.[^.]+$/, '') || 'image'}.webp`;
 
     const uploadedById = session.user.id as string;
 
-    // Preferred path: Neon object storage (S3-compatible), public URL.
+    // Keep readable bytes locally even when also backing up to object storage.
     if (isStorageConfigured()) {
-      const key = `cms/${randomUUID()}${extFor(mimeType)}`;
-      const url = await uploadObject(key, output, mimeType);
+      try {
+      const key = `cms/${randomUUID()}.webp`;
+      await uploadObject(key, output, mimeType);
+      const mediaId = randomUUID();
 
       const asset = await db.mediaAsset.create({
         data: {
-          filename: file.name,
-          url,
+          id: mediaId,
+          filename,
+          url: `/api/media/${mediaId}`,
+          data: new Uint8Array(output),
           storageKey: key,
           mimeType,
           size: output.length,
@@ -94,24 +64,26 @@ export async function POST(request: Request) {
         },
         { status: 201 }
       );
+      } catch {
+        // Storage outages must not prevent editors from uploading images.
+        console.warn('CMS object storage unavailable; saving image in the database.');
+      }
     }
 
     // Fallback: persist the bytes in the database and serve via /api/media/[id].
-    const created = await db.mediaAsset.create({
+    const mediaId = randomUUID();
+    const asset = await db.mediaAsset.create({
       data: {
-        filename: file.name,
-        url: '',
+        id: mediaId,
+        filename,
+        url: `/api/media/${mediaId}`,
         mimeType,
         size: output.length,
-        data: output,
+        data: new Uint8Array(output),
         uploadedById,
       },
     });
 
-    const asset = await db.mediaAsset.update({
-      where: { id: created.id },
-      data: { url: `/api/media/${created.id}` },
-    });
 
     return NextResponse.json(
       {

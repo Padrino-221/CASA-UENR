@@ -1,3 +1,4 @@
+import { canViewAdministrativeData } from '@/lib/roles';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
@@ -5,6 +6,7 @@ import { isLocalScope, canManageAttendance } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
+  if (session && !canViewAdministrativeData(session.user?.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
@@ -48,6 +50,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const session = await auth();
+  if (session && !canViewAdministrativeData(session.user?.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   if (!session || !canManageAttendance(session.user?.role)) {
     return NextResponse.json({ error: 'Only local admins can create sessions' }, { status: 403 });
   }

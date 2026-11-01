@@ -9,12 +9,12 @@ import { isLocalScope } from '@/lib/roles';
 export default async function StudentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ 
-    search?: string; 
-    regionId?: string; 
-    chapterId?: string; 
-    status?: string; 
-    level?: string; 
+  searchParams: Promise<{
+    search?: string;
+    regionId?: string;
+    chapterId?: string;
+    status?: string;
+    level?: string;
     dept?: string;
   }>;
 }) {
@@ -28,7 +28,7 @@ export default async function StudentsPage({
 
   // Build prisma query based on role and search
   const where: Record<string, unknown> = {};
-  
+
   if (role === 'REGIONAL_ADMIN' && userRegionId) {
     where.chapter = { regionId: userRegionId };
   } else if (isLocalScope(role) && userChapterId) {
@@ -39,7 +39,7 @@ export default async function StudentsPage({
   if (filterRegionId && role === 'NATIONAL_ADMIN') {
     where.chapter = { ...(where.chapter as Record<string, unknown>), regionId: filterRegionId };
   }
-  
+
   if (filterChapterId) {
     where.chapterId = filterChapterId;
   }
@@ -93,7 +93,7 @@ export default async function StudentsPage({
       <div className="p-20 text-center">
         <h2 className="text-2xl font-bold text-red-600">Connection Error</h2>
         <p className="text-slate-500 mt-2">Could not connect to the database. Try restarting the server.</p>
-        <pre className="mt-4 p-4 bg-slate-100 text-xs text-left overflow-auto max-w-xl mx-auto">
+        <pre className="mt-4 p-4 bg-slate-100 text-sm text-left overflow-auto max-w-xl mx-auto">
           {error instanceof Error ? error.message : String(error)}
         </pre>
       </div>
@@ -102,11 +102,11 @@ export default async function StudentsPage({
 
   return (
     <div className="w-full">
-      <StudentList 
-        initialStudents={students as unknown as Student[]} 
-        chapters={institutions} 
+      <StudentList
+        initialStudents={students as unknown as Student[]}
+        chapters={institutions}
         regions={regions}
-        role={role || 'NATIONAL_ADMIN'} 
+        role={role || 'NATIONAL_ADMIN'}
       />
     </div>
   );

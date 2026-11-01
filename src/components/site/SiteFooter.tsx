@@ -25,14 +25,14 @@ export default function SiteFooter({
   const times = gatherings.length > 0 ? gatherings : DEFAULT_GATHERINGS;
   const location = venue || 'Chapel Annex, Main Campus';
   const description =
-    content['footer.description'] ||
-    'Christ Apostolic Students and Associates, University of Energy and Natural Resources (UENR) — raising students rooted in Christ, on campus and beyond.';
+    'Christ Apostolic Students and Associates at the University of Energy and Natural Resources. A community for worship, friendship, and growing in Christ.';
   const copyright = content['footer.copyright'] || '© 2026 Christ Apostolic Students and Associates';
   const tagline = content['footer.tagline'] || 'Rooted in Christ. Raised for purpose.';
 
   return (
     <footer className="footer">
       <div className="inner">
+
         <div className="footer-grid">
           <div className="footer-brand">
             <Link href="/" className="logo">

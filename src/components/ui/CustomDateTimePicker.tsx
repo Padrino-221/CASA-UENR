@@ -1,9 +1,10 @@
 'use client';
-
-import React, { useState, useRef, useEffect } from 'react';
-import { CalendarBlank, CaretDown, CaretLeft, CaretRight, CaretUp, Clock } from '@phosphor-icons/react';
+import { useId, useState } from 'react';
+import { Popover } from 'radix-ui';
+import { CalendarBlank, CaretLeft, CaretRight, X } from '@phosphor-icons/react';
+import CustomDropdown from './CustomDropdown';
 import { cn } from '@/lib/utils';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
+import './admin-controls.css';
 
 interface CustomDateTimePickerProps {
   value: Date;
@@ -11,328 +12,63 @@ interface CustomDateTimePickerProps {
   label?: string;
   className?: string;
   popoverDirection?: 'top' | 'bottom' | 'left' | 'right';
+  dateOnly?: boolean;
+  empty?: boolean;
+  onClear?: () => void;
 }
 
-export default function CustomDateTimePicker({
-  value,
-  onChange,
-  label,
-  className,
-  popoverDirection = 'right'
-}: CustomDateTimePickerProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMediaQuery('(max-width: 639px)');
-  const effectiveDirection = isMobile ? 'bottom' : popoverDirection;
-  
-  // Internal date logic states
-  const [currentMonth, setCurrentMonth] = useState(new Date(value.getFullYear(), value.getMonth(), 1));
-  const [tempHours, setTempHours] = useState(() => {
-    const hrs = value.getHours();
-    if (hrs === 0) return 12;
-    if (hrs > 12) return hrs - 12;
-    return hrs;
-  });
-  const [tempMinutes, setTempMinutes] = useState(value.getMinutes());
-  const [tempAmPm, setTempAmPm] = useState<'AM' | 'PM'>(value.getHours() >= 12 ? 'PM' : 'AM');
-
-  useEffect(() => {
-    const hrs = value.getHours();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTempHours(hrs === 0 ? 12 : hrs > 12 ? hrs - 12 : hrs);
-    setTempMinutes(value.getMinutes());
-    setTempAmPm(hrs >= 12 ? 'PM' : 'AM');
-  }, [value]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handlePrevMonth = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+export default function CustomDateTimePicker({ value, onChange, label, className, popoverDirection = 'bottom', dateOnly = false, empty = false, onClear }: CustomDateTimePickerProps) {
+  const id = useId();
+  const [open, setOpen] = useState(false);
+  const valid = !Number.isNaN(value.getTime());
+  const [month, setMonth] = useState(() => valid ? value.getMonth() : new Date().getMonth());
+  const [year, setYear] = useState(() => valid ? value.getFullYear() : new Date().getFullYear());
+  const days = new Date(year, month + 1, 0).getDate();
+  const offset = (new Date(year, month, 1).getDay() + 6) % 7;
+  const chooseDay = (day: number) => {
+    const next = valid ? new Date(value) : new Date();
+    next.setFullYear(year, month, day);
+    onChange(next);
+    if (dateOnly) setOpen(false);
   };
-
-  const handleNextMonth = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  const changeTime = (part: 'hour' | 'minute', number: string) => {
+    const next = valid ? new Date(value) : new Date();
+    if (part === 'hour') next.setHours(Number(number)); else next.setMinutes(Number(number));
+    next.setSeconds(0, 0); onChange(next);
   };
-
-  // Generate 42 calendar grid days
-  const getCalendarDays = () => {
-    const days: Array<{ day: number; month: 'prev' | 'current' | 'next'; date: Date }> = [];
-    const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
-    const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-    const prevMonthDays = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 0).getDate();
-
-    // Previous month padding
-    for (let i = firstDay - 1; i >= 0; i--) {
-      days.push({
-        day: prevMonthDays - i,
-        month: 'prev',
-        date: new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, prevMonthDays - i)
-      });
-    }
-
-    // Current month days
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push({
-        day: i,
-        month: 'current',
-        date: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i)
-      });
-    }
-
-    // Next month padding
-    const remaining = 42 - days.length;
-    for (let i = 1; i <= remaining; i++) {
-      days.push({
-        day: i,
-        month: 'next',
-        date: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, i)
-      });
-    }
-
-    return days;
-  };
-
-  const updateTime = (h: number, m: number, ampm: 'AM' | 'PM', baseDate: Date) => {
-    let finalHours = h;
-    if (ampm === 'PM' && finalHours < 12) finalHours += 12;
-    if (ampm === 'AM' && finalHours === 12) finalHours = 0;
-    
-    const nextDate = new Date(baseDate.getTime());
-    nextDate.setHours(finalHours);
-    nextDate.setMinutes(m);
-    nextDate.setSeconds(0);
-    nextDate.setMilliseconds(0);
-    onChange(nextDate);
-  };
-
-  const handleSelectDay = (dayDate: Date) => {
-    updateTime(tempHours, tempMinutes, tempAmPm, dayDate);
-  };
-
-  const handleHourChange = (increment: boolean) => {
-    let nextH = tempHours + (increment ? 1 : -1);
-    if (nextH > 12) nextH = 1;
-    if (nextH < 1) nextH = 12;
-    setTempHours(nextH);
-    updateTime(nextH, tempMinutes, tempAmPm, value);
-  };
-
-  const handleMinuteChange = (increment: boolean) => {
-    let nextM = tempMinutes + (increment ? 5 : -5);
-    if (nextM >= 60) nextM = 0;
-    if (nextM < 0) nextM = 55;
-    setTempMinutes(nextM);
-    updateTime(tempHours, nextM, tempAmPm, value);
-  };
-
-  const toggleAmPm = (mode: 'AM' | 'PM') => {
-    if (mode === tempAmPm) return;
-    setTempAmPm(mode);
-    updateTime(tempHours, tempMinutes, mode, value);
-  };
-
-  const formattedDateString = value.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  });
-
-  const formattedTimeString = value.toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
-
-  const monthLabel = currentMonth.toLocaleDateString(undefined, {
-    month: 'long',
-    year: 'numeric'
-  });
-
-  return (
-    <div className={cn("space-y-1.5 relative w-full", className)} ref={containerRef}>
-      {label && (
-        <label className="text-[10px] uppercase font-black text-slate-500 tracking-widest block ml-1 mb-2">
-          {label}
-        </label>
-      )}
-
-      {/* Date Picker Trigger Button */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          "w-full bg-slate-50 hover:bg-slate-100/80 border border-black/5 px-5 py-4 text-[#0F172A] font-extrabold text-xs transition-all flex items-center justify-between outline-none group",
-          isOpen && "border-[#1E67FC] bg-white text-[#1E67FC]"
-        )}
-      >
-        <div className="flex items-center gap-3 min-w-0">
-          <CalendarBlank size={18} className={cn("text-slate-400 shrink-0 transition-colors", isOpen && "text-[#1E67FC]")} weight="duotone" />
-          <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider whitespace-nowrap overflow-hidden">
-            <span className="text-[#0F172A] font-black">{formattedDateString}</span>
-            <span className="text-slate-300 font-extrabold mx-0.5">•</span>
-            <span className="text-slate-400 font-extrabold">{formattedTimeString}</span>
-          </div>
+  const moveMonth = (step: number) => { const next = new Date(year, month + step, 1); setMonth(next.getMonth()); setYear(next.getFullYear()); };
+  return <div className={cn('admin-date-field', className)}>
+    {label && <label htmlFor={id}>{label}</label>}
+    <Popover.Root open={open} onOpenChange={next => { if (next && valid) { setMonth(value.getMonth()); setYear(value.getFullYear()); } setOpen(next); }}>
+      <Popover.Trigger id={id} className="admin-date-trigger" aria-label={label || (dateOnly ? 'Choose date' : 'Choose date and time')}>
+        <span>{valid && !empty ? value.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', ...(dateOnly ? {} : { hour: '2-digit', minute: '2-digit' }) }) : 'Choose date'}</span><CalendarBlank size={18} />
+      </Popover.Trigger>
+      <Popover.Portal><Popover.Content className="admin-calendar-popover" side={popoverDirection} sideOffset={6} collisionPadding={12} data-admin-floating="true" aria-label={dateOnly ? 'Choose date' : 'Choose date and time'}>
+        <div className="admin-calendar-nav">
+          <button type="button" aria-label="Previous month" onClick={() => moveMonth(-1)}><CaretLeft size={17} /></button>
+          <CustomDropdown placeholder="Month" value={String(month)} onChange={value => setMonth(Number(value))} options={Array.from({ length: 12 }, (_, i) => ({ label: new Date(2026, i, 1).toLocaleDateString('en-GB', { month: 'long' }), value: String(i) }))} />
+          <CustomDropdown placeholder="Year" value={String(year)} onChange={value => setYear(Number(value))} options={Array.from({ length: 201 }, (_, i) => ({ label: String(1900 + i), value: String(1900 + i) }))} />
+          <button type="button" aria-label="Next month" onClick={() => moveMonth(1)}><CaretRight size={17} /></button>
         </div>
-        <Clock size={18} className={cn("text-slate-300 shrink-0 transition-colors", isOpen && "text-[#1E67FC]")} weight="duotone" />
-      </button>
-
-      {/* Popover Card */}
-      {isOpen && (
-        <div className={cn(
-          "absolute sm:w-[320px] w-[calc(100vw-32px)] bg-white border border-black/5 z-[3500] p-4 animate-in fade-in duration-200",
-          effectiveDirection === 'bottom' && "top-[calc(100%+6px)] left-0 slide-in-from-top-2",
-          effectiveDirection === 'top' && "bottom-[calc(100%+6px)] left-0 slide-in-from-bottom-2",
-          effectiveDirection === 'left' && "bottom-0 right-[calc(100%+6px)] slide-in-from-right-2",
-          effectiveDirection === 'right' && "bottom-0 left-[calc(100%+6px)] slide-in-from-left-2"
-        )}>
-          {/* Calendar Picker Section */}
-          <div className="space-y-4">
-            {/* Header controls */}
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-black uppercase tracking-widest text-[#0F172A]">
-                {monthLabel}
-              </span>
-              <div className="flex gap-1.5">
-                <button
-                  type="button"
-                  onClick={handlePrevMonth}
-                  className="w-7 h-7 bg-slate-50 hover:bg-[#EBF2FF] text-slate-400 hover:text-[#1E67FC] flex items-center justify-center transition-all border border-black/5"
-                >
-                  <CaretLeft size={14} weight="bold" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextMonth}
-                  className="w-7 h-7 bg-slate-50 hover:bg-[#EBF2FF] text-slate-400 hover:text-[#1E67FC] flex items-center justify-center transition-all border border-black/5"
-                >
-                  <CaretRight size={14} weight="bold" />
-                </button>
-              </div>
-            </div>
-
-            {/* Days list grid */}
-            <div className="grid grid-cols-7 gap-1 text-center">
-              {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-                <span key={day} className="text-[9px] font-black uppercase text-slate-400 tracking-wider">
-                  {day}
-                </span>
-              ))}
-            </div>
-
-            {/* Calendar Days Matrix */}
-            <div className="grid grid-cols-7 gap-1">
-              {getCalendarDays().map(({ day, month, date }, idx) => {
-                const isSelected = date.getDate() === value.getDate() &&
-                                   date.getMonth() === value.getMonth() &&
-                                   date.getFullYear() === value.getFullYear();
-                const isToday = new Date().toDateString() === date.toDateString();
-
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleSelectDay(date)}
-                    className={cn(
-                      "w-8 h-8 text-[10px] font-black uppercase flex items-center justify-center transition-all border border-transparent",
-                      month !== 'current' && "text-slate-300",
-                      month === 'current' && !isSelected && "text-slate-600 hover:bg-slate-50",
-                      isToday && !isSelected && "border-[#1E67FC]/40 text-[#1E67FC]",
-                      isSelected && "bg-[#1E67FC] text-white font-black"
-                    )}
-                  >
-                    {day}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Time Picker Spinner Footer */}
-          <div className="mt-4 pt-4 border-t border-black/5 flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Clock size={12} className="text-slate-400 mr-1" weight="duotone" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                Time
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              {/* Hours selector dials */}
-              <div className="flex flex-col items-center">
-                <button
-                  type="button"
-                  onClick={() => handleHourChange(true)}
-                  className="text-[9px] font-black text-slate-400 hover:text-[#1E67FC]"
-                >
-                  <CaretUp weight="duotone" size={10} />
-                </button>
-                <span className="bg-slate-50 border border-black/5 px-2 py-1 text-[10px] font-black text-slate-700 w-7 text-center">
-                  {tempHours}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleHourChange(false)}
-                  className="text-[9px] font-black text-slate-400 hover:text-[#1E67FC]"
-                >
-                  <CaretDown weight="duotone" size={10} />
-                </button>
-              </div>
-
-              <span className="font-extrabold text-slate-400">:</span>
-
-              {/* Minutes selector dials */}
-              <div className="flex flex-col items-center">
-                <button
-                  type="button"
-                  onClick={() => handleMinuteChange(true)}
-                  className="text-[9px] font-black text-slate-400 hover:text-[#1E67FC]"
-                >
-                  <CaretUp weight="duotone" size={10} />
-                </button>
-                <span className="bg-slate-50 border border-black/5 px-2 py-1 text-[10px] font-black text-slate-700 w-7 text-center">
-                  {tempMinutes.toString().padStart(2, '0')}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleMinuteChange(false)}
-                  className="text-[9px] font-black text-slate-400 hover:text-[#1E67FC]"
-                >
-                  <CaretDown weight="duotone" size={10} />
-                </button>
-              </div>
-
-              {/* AM/PM Switcher Segmented Control */}
-              <div className="flex border border-black/5 bg-slate-50 p-0.5 ml-2">
-                {(['AM', 'PM'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => toggleAmPm(mode)}
-                    className={cn(
-                      "px-2 py-1 text-[9px] font-black tracking-widest transition-all",
-                      tempAmPm === mode
-                        ? "bg-[#1E67FC] text-white"
-                        : "text-slate-400 hover:text-slate-700"
-                    )}
-                  >
-                    {mode}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="admin-calendar-week" aria-hidden="true">{['Mo','Tu','We','Th','Fr','Sa','Su'].map(day => <span key={day}>{day}</span>)}</div>
+        <div className="admin-calendar-days">
+          {Array.from({ length: offset }, (_, i) => <span key={`blank-${i}`} />)}
+          {Array.from({ length: days }, (_, i) => i + 1).map(day => <button key={day} type="button" aria-label={new Date(year, month, day).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} aria-pressed={!empty && valid && value.getDate() === day && value.getMonth() === month && value.getFullYear() === year} onClick={() => chooseDay(day)}>{day}</button>)}
         </div>
-      )}
-    </div>
-  );
+        {!dateOnly && <div className="admin-calendar-time"><span>Time</span>
+          <CustomDropdown placeholder="Hour" value={String(valid ? value.getHours() : 0)} onChange={v => changeTime('hour', v)} options={Array.from({ length: 24 }, (_, i) => ({ label: String(i).padStart(2, '0'), value: String(i) }))} />
+          <span>:</span><CustomDropdown placeholder="Minute" value={String(valid ? value.getMinutes() : 0)} onChange={v => changeTime('minute', v)} options={Array.from({ length: 60 }, (_, i) => ({ label: String(i).padStart(2, '0'), value: String(i) }))} />
+        </div>}
+        <div className="admin-calendar-footer">
+          <button type="button" onClick={() => { const today = new Date(); setMonth(today.getMonth()); setYear(today.getFullYear()); onChange(today); if (dateOnly) setOpen(false); }}>Today</button>
+          {onClear && <button type="button" onClick={() => { onClear(); setOpen(false); }}>Clear</button>}
+          <Popover.Close aria-label="Close date picker"><X size={14} /> Done</Popover.Close>
+        </div>
+      </Popover.Content></Popover.Portal>
+    </Popover.Root>
+  </div>;
+}
+
+export function CustomDatePicker({ value, onChange, label, className }: { value: string; onChange: (value: string) => void; label: string; className?: string }) {
+  return <CustomDateTimePicker value={value ? new Date(`${value}T12:00:00`) : new Date()} empty={!value} onChange={date => onChange(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`)} onClear={() => onChange('')} label={label} className={className} dateOnly />;
 }

@@ -16,23 +16,27 @@ function normalizeEnvUrl(name: 'AUTH_URL' | 'NEXTAUTH_URL') {
 normalizeEnvUrl('AUTH_URL');
 normalizeEnvUrl('NEXTAUTH_URL');
 
-// Auth.js (v5) only reads `AUTH_SECRET` by default. Fall back to
-// `NEXTAUTH_SECRET`, and finally derive one from `DATABASE_URL` so the app
-// still boots if no secret is configured. Always set `AUTH_SECRET` in production.
-const authSecret =
-  process.env.AUTH_SECRET ||
-  process.env.NEXTAUTH_SECRET ||
-  process.env.DATABASE_URL;
-
-if (!process.env.AUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
-  console.warn(
-    '[Auth] AUTH_SECRET is not set. Falling back to a derived secret — set AUTH_SECRET in your deployment environment.'
-  );
+const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+if (!authSecret || authSecret.length < 32 || authSecret.startsWith('replace-')) {
+  throw new Error('Set AUTH_SECRET to a random secret of at least 32 characters.');
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   trustHost: true,
+  callbacks: {
+    ...authConfig.callbacks,
+    async jwt({ token, user }) {
+      if (user) token.id = user.id;
+      if (!token.id) return null;
+      const current = await db.user.findUnique({
+        where: { id: token.id as string },
+        select: { role: true, chapterId: true, regionId: true, name: true, email: true },
+      });
+      if (!current) return null;
+      return { ...token, ...current };
+    },
+  },
   secret: authSecret,
   adapter: PrismaAdapter(db),
   providers: [

@@ -15,8 +15,8 @@ const CollectionsChart = ({ data }: { data: any[] }) => (
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} />
+        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748B', fontSize: 12 }} />
         <Tooltip formatter={(value: unknown) => [`GH₵ ${Number(value as number).toFixed(2)}`, undefined]} contentStyle={{ borderRadius: '0px', border: 'none' }} />
         <Area type="monotone" dataKey="value" stroke="#10B981" fillOpacity={1} fill="url(#colorVal)" />
       </AreaChart>

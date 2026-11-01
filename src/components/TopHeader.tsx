@@ -63,11 +63,12 @@ export default function TopHeader({ onMenuToggle }: TopHeaderProps) {
   };
 
   return (
-    <header className="relative z-30 h-[64px] bg-white/80 border-b border-slate-100/50 flex items-center justify-between px-4 md:px-6 shrink-0 transition-all duration-300 lg:h-[88px] lg:pt-6 lg:pb-2 lg:bg-transparent lg:border-none">
+    <header className="admin-topbar relative z-30 h-[64px] bg-white/80 border-b border-slate-100/50 flex items-center justify-between px-4 md:px-6 shrink-0 transition-all duration-300 lg:h-[88px] lg:pt-6 lg:pb-2 lg:bg-transparent lg:border-none">
 
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuToggle}
+          aria-label="Open navigation"
           className="lg:hidden flex items-center justify-center w-8.5 h-8.5 bg-slate-50 border border-slate-100 text-slate-600 hover:bg-slate-100"
         >
           <List size={16} weight="duotone" />
@@ -77,9 +78,10 @@ export default function TopHeader({ onMenuToggle }: TopHeaderProps) {
           <div className="group flex items-center bg-[#F4F7FC] px-3 w-full border border-[#E2E8F0] focus-within:border-[#1E67FC]/30 focus-within:bg-white transition-all duration-300">
             {loading ? <SpinnerGap size={14} className="text-[#94A3B8] animate-spin" weight="duotone" /> : <MagnifyingGlass size={14} className="text-[#94A3B8]" weight="duotone" />}
             <input
+              aria-label="Search members and chapters"
               type="text"
               placeholder="Search members, chapters..."
-              className="border-none bg-transparent py-2 px-2.5 text-[12px] text-[#0F172A] w-full font-bold outline-none placeholder:text-[#94A3B8]"
+              className="border-none bg-transparent py-2 px-2.5 text-[14px] text-[#0F172A] w-full font-bold outline-none placeholder:text-[#94A3B8]"
               value={query}
               onChange={(e) => handleSearchInput(e.target.value)}
               onFocus={() => query.length >= 2 && setShowResults(true)}
@@ -101,11 +103,11 @@ export default function TopHeader({ onMenuToggle }: TopHeaderProps) {
                     {result.type === 'Member' ? <User size={13} weight="duotone" /> : result.type === 'Branch' ? <Building size={13} weight="duotone" /> : <MapIcon size={13} weight="duotone" />}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="block text-[12px] font-bold text-[#0F172A] truncate">{result.title}</span>
-                    <span className="block text-[10px] font-medium text-[#94A3B8] truncate">{result.subtitle}</span>
+                    <span className="block text-[14px] font-bold text-[#0F172A] truncate">{result.title}</span>
+                    <span className="block text-[13px] font-medium text-[#94A3B8] truncate">{result.subtitle}</span>
                   </div>
                 </button>
-              )) : <div className="p-3 text-center text-[11px] font-bold text-[#94A3B8]">No results found.</div>}
+              )) : <div className="p-3 text-center text-[13px] font-bold text-[#94A3B8]">No results found.</div>}
             </div>
           )}
         </div>

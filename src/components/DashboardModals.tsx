@@ -67,20 +67,20 @@ const DashboardModals = ({ isOpen, onClose, type }: ModalProps) => {
   };
 
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      title={getTitle()} 
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={getTitle()}
     >
       {renderContent()}
     </Modal>
   );
 };
 
-const inputClass = "w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400";
-const labelClass = "text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1";
-const btnPrimaryClass = "bg-[#1E67FC] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-black text-sm transition-all";
-const btnSecondaryClass = "px-6 h-12 text-slate-400 hover:text-slate-600 hover:bg-slate-50 font-black text-sm transition-all";
+const inputClass = "w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500";
+const labelClass = "text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1";
+const btnPrimaryClass = "bg-[#1D4ED8] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-semibold text-sm transition-all";
+const btnSecondaryClass = "px-6 h-12 text-slate-500 hover:text-slate-600 hover:bg-slate-50 font-semibold text-sm transition-all";
 
 const TransactionForm = ({ onClose }: { onClose: () => void }) => {
   const [formData, setFormData] = useState({ amount: '', category: 'Offering', date: new Date().toISOString().split('T')[0] });
@@ -119,22 +119,22 @@ const TransactionForm = ({ onClose }: { onClose: () => void }) => {
         <div>
           <label className={labelClass}>Amount (GHS)</label>
           <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₵</div>
-            <input 
-              type="number" 
-              placeholder="0.00" 
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">₵</div>
+            <input
+              type="number"
+              placeholder="0.00"
               required
               value={formData.amount}
               onChange={e => setFormData({...formData, amount: e.target.value})}
-              autoFocus 
+              autoFocus
               className={`${inputClass} pl-9 text-base font-bold`}
             />
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <CustomDropdown 
+            <CustomDropdown
               label="Category"
               value={formData.category}
               onChange={val => setFormData({...formData, category: val})}
@@ -147,7 +147,7 @@ const TransactionForm = ({ onClose }: { onClose: () => void }) => {
             />
           </div>
           <div className="flex flex-col justify-end">
-            <CustomDateTimePicker 
+            <CustomDateTimePicker
               label="Date & Time"
               value={new Date(formData.date)}
               onChange={val => setFormData({...formData, date: val.toISOString().split('T')[0]})}
@@ -156,7 +156,7 @@ const TransactionForm = ({ onClose }: { onClose: () => void }) => {
           </div>
         </div>
       </div>
-      
+
       <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 mt-6">
         <button type="button" onClick={onClose} className={btnSecondaryClass}>Cancel</button>
         <button type="submit" disabled={loading} className={btnPrimaryClass}>{loading ? 'Syncing...' : 'Record Transaction'}</button>
@@ -197,7 +197,7 @@ const ChapterForm = ({ onClose, regions }: { onClose: () => void, regions: Regio
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <CustomDropdown 
+            <CustomDropdown
               label="Region"
               value={formData.regionId}
               onChange={val => setFormData({...formData, regionId: val})}
@@ -206,7 +206,7 @@ const ChapterForm = ({ onClose, regions }: { onClose: () => void, regions: Regio
             />
           </div>
           <div>
-            <CustomDropdown 
+            <CustomDropdown
               label="Type"
               value={formData.type}
               onChange={val => setFormData({...formData, type: val})}
@@ -267,7 +267,7 @@ const AdminForm = ({ onClose, regions }: { onClose: () => void, regions: Region[
           <input required type="email" placeholder="admin@u-chms.org" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className={inputClass} />
         </div>
         <div>
-          <CustomDropdown 
+          <CustomDropdown
             label="Assign Region"
             value={formData.regionId}
             onChange={val => setFormData({...formData, regionId: val})}

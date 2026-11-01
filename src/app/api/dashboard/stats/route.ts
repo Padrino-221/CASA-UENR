@@ -5,7 +5,7 @@ import { isLocalScope } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
-  
+
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     const targetYear = yearParam ? parseInt(yearParam) : new Date().getFullYear();
 
     let stats: { label: string; value: string; icon: string; change: string; positive: boolean; color: string; path: string }[] = [];
-    let recentCollections: { id: string; date: Date; amount: number; description?: string; chapter: { name: string } }[] = [];
+    let recentCollections: { id: string; date: Date; amount: import('@prisma/client').Prisma.Decimal; description: string | null; chapter: { name: string } | null }[] = [];
     let chartData: { name: string; value: number }[] = [];
 
     if (role === 'NATIONAL_ADMIN') {
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
 
       stats = [
         { label: 'Global Members', value: membersCount.toLocaleString(), icon: 'users', change: '+12%', positive: true, color: 'cyan', path: '/students' },
-        { label: 'Global Collections', value: `GHS ${(totalFinancials._sum.amount || 0).toLocaleString()}`, icon: 'wallet', change: '+8.5%', positive: true, color: 'cyan', path: '/collections' },
+        { label: 'Global Collections', value: `GHS ${Number(totalFinancials._sum.amount || 0).toLocaleString()}`, icon: 'wallet', change: '+8.5%', positive: true, color: 'cyan', path: '/collections' },
         { label: 'Total Chapters', value: chaptersCount.toString(), icon: 'church', change: '+2', positive: true, color: 'cyan', path: '/chapters' },
         { label: 'Nat. Growth Rate', value: '18.2%', icon: 'trending-up', change: '-1.4%', positive: false, color: 'cyan', path: '/reports' },
       ];
@@ -69,22 +69,22 @@ export async function GET(request: Request) {
         value: monthlyRegMap[name]
       }));
 
-      return NextResponse.json({ stats, recentCollections, chartData, monthlyRegistrations });
+      return NextResponse.json({ stats, recentCollections: recentCollections.map(t => ({ ...t, amount: Number(t.amount) })), chartData, monthlyRegistrations });
 
     } else if (role === 'REGIONAL_ADMIN') {
       const regionId = contextId || 'none';
       const [membersCount, chaptersCount, totalFinancials] = await Promise.all([
         db.student.count({ where: { chapter: { regionId } } }),
         db.chapter.count({ where: { regionId } }),
-        db.transaction.aggregate({ 
+        db.transaction.aggregate({
           where: { chapter: { regionId }, type: 'INCOME' },
-          _sum: { amount: true } 
+          _sum: { amount: true }
         })
       ]);
 
       stats = [
         { label: 'Regional Members', value: membersCount.toLocaleString(), icon: 'users', change: '+5%', positive: true, color: 'cyan', path: '/students' },
-        { label: 'Regional Collections', value: `GHS ${(totalFinancials._sum.amount || 0).toLocaleString()}`, icon: 'wallet', change: '+3.2%', positive: true, color: 'cyan', path: '/collections' },
+        { label: 'Regional Collections', value: `GHS ${Number(totalFinancials._sum.amount || 0).toLocaleString()}`, icon: 'wallet', change: '+3.2%', positive: true, color: 'cyan', path: '/collections' },
         { label: 'Campus Chapters', value: chaptersCount.toString(), icon: 'church', change: '0', positive: true, color: 'cyan', path: '/chapters' },
         { label: 'Performance', value: '92%', icon: 'trending-up', change: '+2%', positive: true, color: 'cyan', path: '/reports' },
       ];
@@ -121,21 +121,21 @@ export async function GET(request: Request) {
         value: monthlyRegMap[name]
       }));
 
-      return NextResponse.json({ stats, recentCollections, chartData, monthlyRegistrations });
+      return NextResponse.json({ stats, recentCollections: recentCollections.map(t => ({ ...t, amount: Number(t.amount) })), chartData, monthlyRegistrations });
 
     } else if (isLocalScope(role)) {
       const chapterId = contextId || 'none';
       const [membersCount, totalFinancials] = await Promise.all([
         db.student.count({ where: { chapterId } }),
-        db.transaction.aggregate({ 
+        db.transaction.aggregate({
           where: { chapterId, type: 'INCOME' },
-          _sum: { amount: true } 
+          _sum: { amount: true }
         })
       ]);
 
       stats = [
         { label: 'Campus Members', value: membersCount.toLocaleString(), icon: 'users', change: '+8', positive: true, color: 'cyan', path: '/students' },
-        { label: 'Total Finance', value: `GHS ${(totalFinancials._sum.amount || 0).toLocaleString()}`, icon: 'wallet', change: '+15%', positive: true, color: 'cyan', path: '/collections' },
+        { label: 'Total Finance', value: `GHS ${Number(totalFinancials._sum.amount || 0).toLocaleString()}`, icon: 'wallet', change: '+15%', positive: true, color: 'cyan', path: '/collections' },
         { label: 'Active Leaders', value: '12', icon: 'trending-up', change: '+1', positive: true, color: 'cyan', path: '/reports' },
         { label: 'Spiritual Growth', value: 'High', icon: 'trending-up', change: 'Stable', positive: true, color: 'cyan', path: '/calendar' },
       ];
@@ -155,10 +155,10 @@ export async function GET(request: Request) {
       ];
       chartData = last4Weeks;
 
-      return NextResponse.json({ stats, recentCollections, chartData });
+      return NextResponse.json({ stats, recentCollections: recentCollections.map(t => ({ ...t, amount: Number(t.amount) })), chartData });
     }
 
-    return NextResponse.json({ stats, recentCollections, chartData });
+    return NextResponse.json({ stats, recentCollections: recentCollections.map(t => ({ ...t, amount: Number(t.amount) })), chartData });
   } catch (error) {
     console.error('Dashboard stats error:', error);
     return NextResponse.json({ error: 'Failed to fetch dashboard stats' }, { status: 500 });

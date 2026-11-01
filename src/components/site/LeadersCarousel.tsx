@@ -1,109 +1,56 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import Image from 'next/image';
-import { CaretLeft, CaretRight } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 
 interface Leader {
-  id?: string;
-  image?: string;
-  initials?: string;
-  name?: string;
-  role?: string;
-  bio?: string;
-  color?: string;
+  id?: string; image?: string; initials?: string; name?: string;
+  role?: string; bio?: string; color?: string;
 }
 
-const AUTOPLAY_MS = 4500;
-
 export default function LeadersCarousel({ leaders }: { leaders: Leader[] }) {
-  const [visible, setVisible] = useState(4);
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const [tick, setTick] = useState(0);
-
+  const id = useId();
+  const track = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ current: 0, end: false, scrollable: false });
   useEffect(() => {
+    const element = track.current;
+    if (!element) return;
     const update = () => {
-      const width = window.innerWidth;
-      setVisible(width < 640 ? 1 : width < 1024 ? 2 : 4);
+      const cards = Array.from(element.children) as HTMLElement[];
+      const start = cards[0]?.offsetLeft || 0;
+      const current = cards.reduce((best, card, index) => Math.abs(card.offsetLeft - start - element.scrollLeft) < Math.abs(cards[best].offsetLeft - start - element.scrollLeft) ? index : best, 0);
+      const scrollable = element.scrollWidth > element.clientWidth + 2;
+      setPosition({ current, end: element.scrollLeft + element.clientWidth >= element.scrollWidth - 3, scrollable });
     };
-    const timer = setTimeout(update, 0);
-    window.addEventListener('resize', update);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-
-  const maxIndex = Math.max(0, leaders.length - visible);
-
-  useEffect(() => {
-    if (paused || maxIndex === 0) return;
-    const id = setInterval(() => {
-      setIndex((prev) => (Math.min(prev, maxIndex) >= maxIndex ? 0 : Math.min(prev, maxIndex) + 1));
-    }, AUTOPLAY_MS);
-    return () => clearInterval(id);
-  }, [paused, maxIndex, tick]);
-
-  if (leaders.length === 0) return null;
-
-  const step = 100 / visible;
-  const current = Math.min(index, maxIndex);
-
-  const move = (direction: -1 | 1) => {
-    setIndex(Math.min(maxIndex, Math.max(0, current + direction)));
-    setTick((value) => value + 1);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(element);
+    element.addEventListener('scroll', update, { passive: true });
+    return () => { observer.disconnect(); element.removeEventListener('scroll', update); };
+  }, [leaders.length]);
+  const moveTo = (index: number) => {
+    const element = track.current;
+    if (!element) return;
+    const first = element.children[0] as HTMLElement;
+    const card = element.children[Math.max(0, Math.min(leaders.length - 1, index))] as HTMLElement;
+    if (card && first) element.scrollTo({ left: card.offsetLeft - first.offsetLeft, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   };
-
-  return (
-    <div
-      className="leaders-carousel"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-    >
-      <div className="leaders-viewport">
-        <div className="leaders-track" style={{ transform: `translateX(-${current * step}%)` }}>
-          {leaders.map((leader, i) => (
-            <div className="leader-slide" style={{ width: `${step}%` }} key={leader.id ?? i}>
-              <div className="leader-card leader-card-media">
-                <div className="leader-photo">
-                  {leader.image ? (
-                    <Image
-                      src={leader.image}
-                      alt={leader.name || 'Leader'}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    />
-                  ) : (
-                    <div className={`avatar avatar-xl ${leader.color || 'brand'}`}>{leader.initials}</div>
-                  )}
-                </div>
-                <div className="leader-info">
-                  <h3>{leader.name}</h3>
-                  <span className="role">{leader.role}</span>
-                  <p>{leader.bio}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="leaders-nav">
-        <button type="button" onClick={() => move(-1)} disabled={current === 0} aria-label="Previous leaders">
-          <CaretLeft size={18} weight="bold" />
-        </button>
-        <button
-          type="button"
-          onClick={() => move(1)}
-          disabled={current >= maxIndex}
-          aria-label="Next leaders"
-        >
-          <CaretRight size={18} weight="bold" />
-        </button>
-      </div>
+  if (!leaders.length) return null;
+  return <div className="team-carousel" role="region" aria-roledescription="carousel" aria-label="Fellowship leadership">
+    <div className="team-toolbar"><span>Our leadership team</span><div className="team-arrows">
+      <button type="button" aria-label="Previous leaders" aria-controls={id} disabled={!position.scrollable || position.current === 0} onClick={() => moveTo(position.current - 1)}><ArrowLeft size={20} /></button>
+      <button type="button" aria-label="Next leaders" aria-controls={id} disabled={!position.scrollable || position.end} onClick={() => moveTo(position.current + 1)}><ArrowRight size={20} /></button>
+    </div></div>
+    <div id={id} ref={track} className="team-track" tabIndex={0} aria-label="Leadership portraits, swipe or use arrow keys to browse" onKeyDown={event => {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); moveTo(position.current + (event.key === 'ArrowRight' ? 1 : -1)); }
+      if (event.key === 'Home' || event.key === 'End') { event.preventDefault(); moveTo(event.key === 'Home' ? 0 : leaders.length - 1); }
+    }}>
+      {leaders.map((leader, index) => <article className="team-slide" key={leader.id ?? index} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${leaders.length}: ${leader.name || 'Fellowship leader'}`}>
+        <div className="team-portrait">{leader.image ? <Image src={leader.image} alt={leader.name || 'Fellowship leader'} fill sizes="(max-width: 640px) 82vw, (max-width: 1000px) 46vw, 32vw" /> : <span className="team-initials">{leader.initials || leader.name?.split(' ').map(part => part[0]).slice(0, 2).join('')}</span>}</div>
+        <div className="team-caption"><span className="team-role">{leader.role}</span><h3>{leader.name}</h3>{leader.bio && <p>{leader.bio}</p>}</div>
+      </article>)}
     </div>
-  );
+    <div className="team-footer"><span>{leaders.length} {leaders.length === 1 ? 'leader' : 'leaders'} serving our fellowship</span><span className="team-swipe-hint">Swipe to explore</span></div>
+  </div>;
 }

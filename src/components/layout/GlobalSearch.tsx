@@ -92,13 +92,13 @@ export default function GlobalSearch() {
 
   return (
     <div className="relative" ref={containerRef}>
-      <div 
+      <div
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-3 px-4 h-12 bg-bg-main border border-transparent hover:border-standard cursor-pointer transition-all min-w-[320px] group overflow-hidden"
       >
         <MagnifyingGlass size={18} className="text-muted group-hover:text-primary transition-colors" weight="duotone" />
         <span className="text-sm font-bold text-muted">Search chapters or members...</span>
-        <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 bg-card border border-standard text-[9px] font-black text-muted">
+        <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 bg-card border border-standard text-[13px] font-semibold text-muted">
            <Command size={10} weight="duotone" /> <span>K</span>
         </div>
       </div>
@@ -107,9 +107,9 @@ export default function GlobalSearch() {
         <div className="absolute top-0 left-0 w-full sm:w-[500px] bg-card border border-standard z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <div className="p-4 border-b border-standard flex items-center gap-3">
             <MagnifyingGlass size={18} className="text-primary" weight="duotone" />
-            <input 
+            <input
               autoFocus
-              type="text" 
+              type="text"
               placeholder="Search regions, chapters, or students..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -134,19 +134,19 @@ export default function GlobalSearch() {
             {isSearching && (
               <div className="p-8 text-center flex flex-col items-center">
                  <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                  <span className="text-xs font-bold text-muted uppercase tracking-widest">Searching...</span>
+                  <span className="text-xs font-bold text-muted tracking-normal">Searching...</span>
               </div>
             )}
 
             {!isSearching && query.length >= 2 && results.length === 0 && (
               <div className="p-8 text-center">
-                  <p className="text-sm font-bold text-muted uppercase tracking-widest">No matches found.</p>
+                  <p className="text-sm font-bold text-muted tracking-normal">No matches found.</p>
               </div>
             )}
 
             {!isSearching && results.map((result) => (
-              <Link 
-                key={`${result.type}-${result.id}`} 
+              <Link
+                key={`${result.type}-${result.id}`}
                 href={result.link}
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-4 p-4 hover:bg-bg-main transition-all group"
@@ -156,10 +156,10 @@ export default function GlobalSearch() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-black text-slate-800 text-[13px] truncate">{result.title}</span>
-                    <span className="px-1.5 py-0.5 bg-slate-100 text-[8px] font-black text-muted uppercase tracking-wider">{result.type}</span>
+                    <span className="font-semibold text-slate-800 text-[13px] truncate">{result.title}</span>
+                    <span className="px-1.5 py-0.5 bg-slate-100 text-[13px] font-semibold text-muted tracking-normal">{result.type}</span>
                   </div>
-                  <p className="text-[11px] font-bold text-muted truncate">{result.subtitle}</p>
+                  <p className="text-[13px] font-bold text-muted truncate">{result.subtitle}</p>
                 </div>
                 <ArrowRight size={14} className="text-slate-200 group-hover:text-primary transition-colors" weight="duotone" />
               </Link>
@@ -167,10 +167,10 @@ export default function GlobalSearch() {
           </div>
 
           <div className="p-4 bg-bg-main border-t border-standard flex justify-between items-center">
-              <span className="text-[9px] font-black text-muted uppercase tracking-widest">Search List</span>
+              <span className="text-[13px] font-semibold text-muted tracking-normal">Search List</span>
              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-bold text-muted px-1 bg-card border border-standard rounded">ESC</span>
-                <span className="text-[9px] font-bold text-slate-300">to close</span>
+                <span className="text-[13px] font-bold text-muted px-1 bg-card border border-standard rounded">ESC</span>
+                <span className="text-[13px] font-bold text-slate-300">to close</span>
              </div>
           </div>
         </div>

@@ -31,31 +31,31 @@ export const StudentEditModal: React.FC<StudentEditModalProps> = ({
   ];
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
       title="Edit Member"
     >
       <form onSubmit={onSubmit} className="space-y-6 max-h-[70vh] overflow-y-auto px-1 pr-4 no-scrollbar">
         <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Full Name</label>
-          <input 
-            type="text" 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Full Name</label>
+          <input
+            type="text"
             value={editingStudent?.name || ''}
             onChange={e => setEditingStudent((prev: Student | null) => prev ? {...prev, name: e.target.value} : null)}
-            required 
-            className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+            required
+            className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Official Student ID</label>
-            <input 
-              type="text" 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Official Student ID</label>
+            <input
+              type="text"
               value={editingStudent?.studentId || ''}
               onChange={e => setEditingStudent((prev: Student | null) => prev ? {...prev, studentId: e.target.value} : null)}
-              required 
-              className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+              required
+              className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
             />
           </div>
           <CustomDropdown
@@ -84,64 +84,64 @@ export const StudentEditModal: React.FC<StudentEditModalProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Department</label>
-            <input 
-              type="text" 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Department</label>
+            <input
+              type="text"
               value={editingStudent?.department || ''}
               onChange={e => setEditingStudent((prev: Student | null) => prev ? {...prev, department: e.target.value} : null)}
-              placeholder="e.g. Computer Science" 
-              className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+              placeholder="e.g. Computer Science"
+              className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Email Address</label>
-            <input 
-              type="email" 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Email Address</label>
+            <input
+              type="email"
               value={editingStudent?.email || ''}
               onChange={e => setEditingStudent((prev: Student | null) => prev ? {...prev, email: e.target.value} : null)}
-              placeholder="Email address..." 
-              className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+              placeholder="Email address..."
+              className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
             />
           </div>
           <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Phone Number</label>
-            <input 
-              type="tel" 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Phone Number</label>
+            <input
+              type="tel"
               value={editingStudent?.phone || ''}
               onChange={e => setEditingStudent((prev: Student | null) => prev ? {...prev, phone: e.target.value} : null)}
-              placeholder="Phone number..." 
-              className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+              placeholder="Phone number..."
+              className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
             />
           </div>
         </div>
 
-        <div className="bg-slate-50 p-6 border border-black/5 space-y-4">
+        <div className="bg-slate-50 p-6 border border-slate-200 space-y-4">
            <div className="flex items-center justify-between">
-               <h4 className="text-[10px] uppercase font-black text-[#0F172A] tracking-[0.2em]">Leadership Role</h4>
-              <input 
-                type="checkbox" 
+               <h4 className="text-[13px] normal-case font-semibold text-[#0F172A] tracking-normal">Leadership Role</h4>
+              <input
+                type="checkbox"
                 checked={editingStudent?.isLeader || false}
                 onChange={e => setEditingStudent((prev: Student | null) => prev ? {...prev, isLeader: e.target.checked} : null)}
-                className="w-5 h-5 accent-[#1E67FC] cursor-pointer"
+                className="w-5 h-5 accent-[#1D4ED8] cursor-pointer"
               />
            </div>
            {editingStudent?.isLeader && (
-              <input 
-                type="text" 
-                placeholder="Position (e.g. Secretary)" 
+              <input
+                type="text"
+                placeholder="Position (e.g. Secretary)"
                 value={editingStudent?.position || ''}
                 onChange={e => setEditingStudent((prev: Student | null) => prev ? {...prev, position: e.target.value} : null)}
-                className="w-full p-4 bg-white border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+                className="rounded-xl w-full p-4 bg-white border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
               />
            )}
         </div>
 
         <div className="flex justify-center items-center gap-3 pt-6">
-          <button type="button" className="px-6 h-12 text-slate-400 hover:text-slate-600 hover:bg-slate-50 font-black text-sm transition-all" onClick={onClose}>Cancel</button>
-          <button type="submit" disabled={isSubmitting} className="bg-[#1E67FC] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-black text-sm transition-all">
+          <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-600 hover:bg-slate-50 font-semibold text-sm transition-all" onClick={onClose}>Cancel</button>
+          <button type="submit" disabled={isSubmitting} className="bg-[#1D4ED8] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-semibold text-sm transition-all">
             {isSubmitting ? 'Saving...' : 'Update Member'}
           </button>
         </div>

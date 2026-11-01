@@ -14,25 +14,29 @@ export default function PwaRegister() {
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
 
-    // The service worker caches app assets. In development it serves stale
-    // chunks/RSC payloads and makes pages render outdated designs, so it is
-    // only enabled in production. In development we actively unregister any
-    // previously installed worker and drop its caches.
-    if (process.env.NODE_ENV !== 'production') {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(registration => registration.unregister());
-      });
-      if ('caches' in window) {
-        caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
-      }
+    // Local origins may have workers from other projects using the same port.
+    // Unregister them before reloading once so this document loses its controller.
+    const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+    if (process.env.NODE_ENV !== 'production' || isLocal) {
+      const controlled = Boolean(navigator.serviceWorker.controller);
+      void (async () => {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(registration => registration.unregister()));
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.filter(key => isLocal || key.startsWith('casa-')).map(key => caches.delete(key)));
+        }
+        if (controlled && !sessionStorage.getItem('casa-worker-recovery')) {
+          sessionStorage.setItem('casa-worker-recovery', '1');
+          window.location.reload();
+        }
+      })().catch(error => console.warn('Local service worker cleanup failed', error));
       return;
     }
 
     navigator.serviceWorker
-      .register('/sw.js', { scope: '/' })
+      .register('/sw.js', { scope: '/', updateViaCache: 'none' })
       .then(reg => {
-        if (reg.active) return;
-
         reg.addEventListener('updatefound', () => {
           const installing = reg.installing;
           if (!installing) return;

@@ -16,15 +16,18 @@ export async function PATCH(
   try {
     const body = await request.json();
     const student = await db.student.findUnique({ where: { id } });
-    
+
     if (student?.chapterId !== session.user?.chapterId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const updateData = { ...body };
-    delete (updateData as Record<string, unknown>).id;
-    delete (updateData as Record<string, unknown>).chapter;
-    delete (updateData as Record<string, unknown>).createdAt;
+    const editable = ['name', 'studentId', 'email', 'phone', 'department', 'levelYear',
+      'maxLevel', 'address', 'nextOfKinName', 'nextOfKinPhone', 'status', 'isLeader',
+      'position', 'baptismDate', 'confirmationDate'];
+    if (Object.keys(body).some((key) => !editable.includes(key))) {
+      return NextResponse.json({ error: 'Unsupported member field' }, { status: 400 });
+    }
+    const updateData = Object.fromEntries(Object.entries(body).filter(([key]) => editable.includes(key)));
 
     const updated = await db.student.update({
       where: { id },

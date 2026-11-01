@@ -38,6 +38,7 @@ export default function AdminList({
         { label: 'Secretary', value: 'SECRETARY' },
       ]
     : [
+        { label: 'Content Manager', value: 'CONTENT_MANAGER' },
         { label: 'Finance', value: 'FINANCE' },
         { label: 'Secretary', value: 'SECRETARY' },
       ];
@@ -126,7 +127,7 @@ export default function AdminList({
       setFormError('Please select a region for Regional Admin.');
       return false;
     }
-    if (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY') {
+    if (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY' || formData.role === 'CONTENT_MANAGER') {
       if (!formData.regionId) {
         setFormError('Please select a region.');
         return false;
@@ -206,13 +207,13 @@ export default function AdminList({
   return (
     <div className="space-y-6">
       {/* Search Bar */}
-      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-white border border-black/5 p-4 mb-6">
+      <div className="rounded-xl flex flex-col lg:flex-row gap-4 items-center justify-between bg-white border border-slate-200 p-4 mb-6">
         <div className="relative w-full lg:w-[280px]">
-          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" weight="duotone" />
+          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" weight="duotone" />
           <input
             type="text"
             placeholder="Search admins..."
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder:text-slate-400"
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-normal  text-[#0F172A] placeholder:text-slate-500 rounded-md text-base"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -226,17 +227,17 @@ export default function AdminList({
       </div>
 
       {/* Admin Table */}
-      <div className="overflow-hidden border border-black/5 bg-white">
+      <div className="overflow-hidden border border-slate-200 bg-white">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200 text-sm">
             <thead className="bg-slate-50">
               <tr>
-                <th className="px-6 py-4 text-left font-black uppercase tracking-[0.18em] text-slate-500">Name</th>
-                <th className="px-6 py-4 text-left font-black uppercase tracking-[0.18em] text-slate-500">Role</th>
-                <th className="px-6 py-4 text-left font-black uppercase tracking-[0.18em] text-slate-500">Email</th>
-                <th className="px-6 py-4 text-left font-black uppercase tracking-[0.18em] text-slate-500">Region</th>
-                <th className="px-6 py-4 text-left font-black uppercase tracking-[0.18em] text-slate-500">Chapter</th>
-                <th className="px-6 py-4 text-right font-black uppercase tracking-[0.18em] text-slate-500">Actions</th>
+                <th className="px-6 py-4 text-left font-semibold normal-case tracking-normal text-slate-500">Name</th>
+                <th className="px-6 py-4 text-left font-semibold normal-case tracking-normal text-slate-500">Role</th>
+                <th className="px-6 py-4 text-left font-semibold normal-case tracking-normal text-slate-500">Email</th>
+                <th className="px-6 py-4 text-left font-semibold normal-case tracking-normal text-slate-500">Region</th>
+                <th className="px-6 py-4 text-left font-semibold normal-case tracking-normal text-slate-500">Chapter</th>
+                <th className="px-6 py-4 text-right font-semibold normal-case tracking-normal text-slate-500">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white">
@@ -244,17 +245,17 @@ export default function AdminList({
                 <tr key={user.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 bg-slate-100 border border-black/5 flex items-center justify-center text-slate-400">
-                        <span className="text-xs font-black uppercase tracking-[0.18em]">{user.name?.charAt(0) || '?'}</span>
+                      <div className="w-11 h-11 bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500">
+                        <span className="text-sm font-semibold normal-case tracking-normal">{user.name?.charAt(0) || '?'}</span>
                       </div>
                       <div className="min-w-0">
-                        <p className="font-black text-slate-900 truncate">{user.name}</p>
-                        <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">{user.email}</p>
+                        <p className="font-semibold text-slate-900 truncate">{user.name}</p>
+                        <p className="text-[13px] normal-case tracking-normal text-slate-500">{user.email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex items-center border border-black/5 bg-slate-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">
+                    <span className="inline-flex items-center border border-slate-200 bg-slate-50 px-3 py-1 text-[13px] font-semibold normal-case tracking-normal text-slate-600">
                       {formatRoleLabel(user.role)}
                     </span>
                   </td>
@@ -264,13 +265,13 @@ export default function AdminList({
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     {canManage ? (
                       <div className="inline-flex items-center gap-2">
-                        <button
+                        <button aria-label="Edit record"
                           onClick={() => openEditModal(user)}
-                          className="inline-flex h-9 w-9 items-center justify-center border border-black/5 bg-slate-50 text-slate-500 hover:bg-[#EBF2FF] hover:text-[#1E67FC] transition-all"
+                          className="inline-flex h-9 w-9 items-center justify-center border border-slate-200 bg-slate-50 text-slate-500 hover:bg-[#EBF2FF] hover:text-[#1D4ED8] transition-all"
                         >
                           <Pencil size={16} weight="duotone" />
                         </button>
-                        <button
+                        <button aria-label="Delete record"
                           onClick={() => setDeleteTarget(user)}
                           className="inline-flex h-9 w-9 items-center justify-center border border-red-100 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all"
                         >
@@ -278,7 +279,7 @@ export default function AdminList({
                         </button>
                       </div>
                     ) : (
-                      <span className="text-[11px] uppercase tracking-[0.2em] text-slate-400">No actions</span>
+                      <span className="text-[13px] normal-case tracking-normal text-slate-500">No actions</span>
                     )}
                   </td>
                 </tr>
@@ -303,18 +304,18 @@ export default function AdminList({
         {tempPassword ? (
           <div className="space-y-6">
             <div className="bg-emerald-50 border border-emerald-200 p-6 text-center">
-              <h3 className="text-lg font-black text-emerald-800">Admin Created Successfully</h3>
+              <h3 className="text-lg font-semibold text-emerald-800">Admin Created Successfully</h3>
               <p className="text-sm text-emerald-600 font-semibold mt-2">Temporary Password</p>
-              <div className="mt-3 bg-white border border-emerald-200 px-4 py-3 font-mono text-lg font-black text-emerald-900 select-all">
+              <div className="mt-3 bg-white border border-emerald-200 px-4 py-3 font-mono text-lg font-semibold text-emerald-900 select-all">
                 {tempPassword}
               </div>
-              <p className="text-xs text-emerald-500 font-medium mt-3">
+              <p className="text-sm text-emerald-500 font-medium mt-3">
                 Share this password securely. It will not be shown again.
               </p>
             </div>
             <button
               onClick={() => { setShowAddModal(false); setTempPassword(''); }}
-              className="w-full h-12 bg-[#1E67FC] hover:bg-[#0F53D6] text-white font-black text-sm transition-all"
+              className="w-full h-12 bg-[#1D4ED8] hover:bg-[#0F53D6] text-white font-semibold text-sm transition-all"
             >
               Done
             </button>
@@ -322,24 +323,24 @@ export default function AdminList({
         ) : (
           <form onSubmit={handleAddSubmit} className="space-y-6">
             <div>
-              <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Full Name</label>
+              <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Full Name</label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder:text-slate-400"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder:text-slate-500"
                 placeholder="Enter full name"
               />
             </div>
             <div>
-              <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Email Address</label>
+              <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Email Address</label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder:text-slate-400"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder:text-slate-500"
                 placeholder="admin@example.com"
               />
             </div>
@@ -358,7 +359,7 @@ export default function AdminList({
                 onChange={(val) => { setFormData({ ...formData, regionId: val, chapterId: '' }); fetchChapters(val); }}
               />
             )}
-            {isNational && (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY') && (
+            {isNational && (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY' || formData.role === 'CONTENT_MANAGER') && (
               <>
                 <CustomDropdown
                   label="Region"
@@ -378,14 +379,14 @@ export default function AdminList({
             )}
             {formError && (
               <div className="bg-red-50 border border-red-200 px-4 py-3">
-                <p className="text-xs font-bold text-red-600">{formError}</p>
+                <p className="text-sm font-bold text-red-600">{formError}</p>
               </div>
             )}
             <div className="flex items-center justify-end gap-4 pt-2">
-              <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-black text-sm transition-all" onClick={() => { setShowAddModal(false); setTempPassword(''); }}>
+              <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-semibold text-sm transition-all" onClick={() => { setShowAddModal(false); setTempPassword(''); }}>
                 Cancel
               </button>
-              <button type="submit" disabled={isSubmitting} className="bg-[#1E67FC] hover:bg-[#0F53D6] text-white px-8 h-12 font-black text-sm transition-all disabled:opacity-50">
+              <button type="submit" disabled={isSubmitting} className="bg-[#1D4ED8] hover:bg-[#0F53D6] text-white px-8 h-12 font-semibold text-sm transition-all disabled:opacity-50">
                 {isSubmitting ? 'Creating...' : 'Create Admin'}
               </button>
             </div>
@@ -402,23 +403,23 @@ export default function AdminList({
       >
         <form onSubmit={handleEditSubmit} className="space-y-6">
           <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Full Name</label>
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Full Name</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A]"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A]"
             />
           </div>
           <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Email Address</label>
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Email Address</label>
             <input
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A]"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A]"
             />
           </div>
           <CustomDropdown
@@ -436,7 +437,7 @@ export default function AdminList({
               onChange={(val) => { setFormData({ ...formData, regionId: val, chapterId: '' }); fetchChapters(val); }}
             />
           )}
-          {isNational && (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY') && (
+          {isNational && (formData.role === 'LOCAL_ADMIN' || formData.role === 'FINANCE' || formData.role === 'SECRETARY' || formData.role === 'CONTENT_MANAGER') && (
             <>
               <CustomDropdown
                 label="Region"
@@ -456,14 +457,14 @@ export default function AdminList({
           )}
           {formError && (
             <div className="bg-red-50 border border-red-200 px-4 py-3">
-              <p className="text-xs font-bold text-red-600">{formError}</p>
+              <p className="text-sm font-bold text-red-600">{formError}</p>
             </div>
           )}
           <div className="flex items-center justify-end gap-4 pt-2">
-            <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-black text-sm transition-all" onClick={() => { setShowEditModal(false); setCurrentUser(null); }}>
+            <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-semibold text-sm transition-all" onClick={() => { setShowEditModal(false); setCurrentUser(null); }}>
               Cancel
             </button>
-            <button type="submit" disabled={isSubmitting} className="bg-[#1E67FC] hover:bg-[#0F53D6] text-white px-8 h-12 font-black text-sm transition-all disabled:opacity-50">
+            <button type="submit" disabled={isSubmitting} className="bg-[#1D4ED8] hover:bg-[#0F53D6] text-white px-8 h-12 font-semibold text-sm transition-all disabled:opacity-50">
               {isSubmitting ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
@@ -482,15 +483,15 @@ export default function AdminList({
             <p className="text-sm font-bold text-red-700">
               Are you sure you want to delete <span className="text-red-900">{deleteTarget?.name}</span>?
             </p>
-            <p className="text-xs text-red-500 font-semibold mt-2">
+            <p className="text-sm text-red-500 font-semibold mt-2">
               This will permanently remove their access to the system.
             </p>
           </div>
           <div className="flex items-center justify-end gap-4">
-            <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-black text-sm transition-all" onClick={() => setDeleteTarget(null)}>
+            <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-700 hover:bg-slate-50 font-semibold text-sm transition-all" onClick={() => setDeleteTarget(null)}>
               Cancel
             </button>
-            <button onClick={() => handleDelete(deleteTarget)} className="bg-red-500 hover:bg-red-600 text-white px-8 h-12 font-black text-sm transition-all">
+            <button onClick={() => handleDelete(deleteTarget)} className="bg-red-500 hover:bg-red-600 text-white px-8 h-12 font-semibold text-sm transition-all">
               Delete
             </button>
           </div>

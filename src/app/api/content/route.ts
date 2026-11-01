@@ -61,9 +61,7 @@ export async function POST(request: Request) {
 
     const publish = action === 'publish';
 
-    await db.$transaction(async (tx: {
-      siteContent: { upsert: (args: unknown) => Promise<unknown> };
-    }) => {
+    await db.$transaction(async (tx) => {
       for (const [key, rawValue] of entries) {
         const [sec, field] = key.split('.');
         const value = typeof rawValue === 'string' ? rawValue : String(rawValue ?? '');

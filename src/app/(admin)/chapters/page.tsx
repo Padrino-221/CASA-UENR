@@ -137,15 +137,15 @@ function ChaptersPageContent() {
         <div className="header-content-root">
           <div>
             <div className="flex flex-col md:flex-row md:items-center gap-3">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">Chapters</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">Chapters</h1>
               {selectedRegion && (
-                <div className="bg-[#EBF2FF] text-[#1E67FC] text-[10px] font-black px-3 py-1.5 flex items-center gap-2 shrink-0 border border-[#1E67FC]/10 mt-2 md:mt-0 w-fit">
+                <div className="bg-[#EBF2FF] text-[#1D4ED8] text-[14px] font-semibold px-3 py-1.5 flex items-center gap-2 shrink-0 border border-[#1D4ED8]/10 mt-2 md:mt-0 w-fit">
                   <span>Region: {selectedRegion.name}</span>
-                  <Link href="/chapters" className="hover:text-[#0F53D6] text-slate-400 font-extrabold text-xs leading-none">×</Link>
+                  <Link href="/chapters" className="hover:text-[#0F53D6] text-slate-400 font-semibold text-sm leading-none">×</Link>
                 </div>
               )}
             </div>
-            <p className="text-xs uppercase font-black text-slate-500 tracking-widest mt-2.5">Manage chapters</p>
+            <p className="text-sm normal-case font-semibold text-slate-500 tracking-normal mt-2.5">Manage chapters</p>
           </div>
 
           <div className="actions-cluster">
@@ -159,19 +159,19 @@ function ChaptersPageContent() {
         </div>
       </header>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white border border-black/5 p-4 mb-6">
-        <div className="relative w-full sm:w-[320px]">
+      <div className="admin-filter-bar">
+        <div className="admin-filter-search relative">
           <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" weight="duotone" />
           <input
             type="text"
-            placeholder="Search chapters..."
+            aria-label="Search chapters" placeholder="Search chapters..."
             value={localSearchQuery}
             onChange={(e) => setLocalSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
           />
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+        <div className="admin-filter-controls">
           {isNational && (
             <CustomDropdown
               options={regionDropdownOptions}
@@ -188,7 +188,7 @@ function ChaptersPageContent() {
                 setLocalSearchQuery('');
                 setSelectedRegionId('');
               }}
-              className="px-4 py-2.5 text-slate-400 hover:text-[#1E67FC] hover:bg-[#1E67FC]/10 font-black text-xs uppercase tracking-widest transition-all shrink-0"
+              className="px-4 py-2.5 text-slate-400 hover:text-[#1D4ED8] hover:bg-[#1D4ED8]/10 font-semibold text-sm normal-case tracking-normal transition-all shrink-0"
             >
               Reset
             </button>

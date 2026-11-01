@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import SiteArrow from '@/components/site/SiteArrow';
-import RichHeading from '@/components/site/RichHeading';
 import {
   MusicNotes,
   HandsPraying,
@@ -38,92 +37,10 @@ export default async function DepartmentsPage({ searchParams }: { searchParams: 
   const steps = parseList<{ number: string; title: string; text: string }>(c['steps.items']);
 
   return (
-    <>
-      {/* ============ Page Hero ============ */}
-      <section className="page-hero">
-        <div className="inner page-hero-inner">
-          <h1 data-reveal>
-            <RichHeading text={c['hero.heading']} />
-          </h1>
-          <div className="lede" data-reveal data-reveal-delay="120">
-            <p>{c['hero.body']}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ Departments ============ */}
-      <section className="departments-section">
-        <div className="inner">
-          <div className="section-head" data-reveal>
-            <div>
-              <div className="badge">{c['grid.badge']}</div>
-              <h2>
-                <RichHeading text={c['grid.heading']} />
-              </h2>
-            </div>
-            <p>{c['grid.subheading']}</p>
-          </div>
-          <div className="departments-grid">
-            {departments.map((dept, index) => {
-              const Icon = ICONS[dept.icon] ?? MusicNotes;
-              return (
-                <div className="dept-card" data-reveal data-reveal-delay={index * 80} key={index}>
-                  <div className="dept-symbol">
-                    <Icon size={20} weight="fill" />
-                  </div>
-                  <div>
-                    <h3>{dept.name}</h3>
-                    <p>{dept.text}</p>
-                  </div>
-                  <a href="#join" className="join-link">
-                    {dept.linkLabel} &rarr;
-                  </a>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ How to Join ============ */}
-      <section className="steps-section" id="join">
-        <div className="inner">
-          <div className="section-head" data-reveal>
-            <div>
-              <div className="badge">{c['steps.badge']}</div>
-              <h2>
-                <RichHeading text={c['steps.heading']} />
-              </h2>
-            </div>
-            <p>{c['steps.subheading']}</p>
-          </div>
-          <div className="steps-grid">
-            {steps.map((step, index) => (
-              <div className="step-card" data-reveal data-reveal-delay={index * 100} key={index}>
-                <div className="step-num">{step.number}</div>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ CTA Band ============ */}
-      <section className="cta-band">
-        <div className="inner cta-band-inner">
-          <div data-reveal>
-            <h2>
-              <RichHeading text={c['cta.heading']} />
-            </h2>
-            <p>{c['cta.body']}</p>
-          </div>
-          <Link href={c['cta.ctaHref']} className="btn btn-lime" data-reveal data-reveal-delay="120">
-            {c['cta.ctaLabel']}
-            <SiteArrow stroke="#0D47A1" />
-          </Link>
-        </div>
-      </section>
-    </>
+    <div className="church-inner-page">
+      <section className="church-page-intro"><div className="inner"><h1>Find a place to serve</h1><p>Bring your interests, learn something new, and help make fellowship life possible.</p></div></section>
+      <section className="church-section"><div className="inner"><div className="church-department-grid">{departments.map(dept=>{const Icon=ICONS[dept.icon]??MusicNotes;return <article className="church-department" key={dept.name}><Icon size={28} aria-hidden="true"/><div><h2>{dept.name}</h2><p>{dept.text}</p></div></article>;})}</div></div></section>
+      <section className="church-section church-soft" id="join"><div className="inner church-join-layout"><div><h2>Getting involved is simple</h2><p>You do not need to have everything figured out. Come to a gathering, meet the team, and find where you feel at home.</p><Link href="/contact" className="btn btn-ink">Talk to the team<SiteArrow stroke="currentColor" /></Link></div><ol className="church-steps">{steps.map((step,index)=><li key={index}><span>{index+1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></li>)}</ol></div></section>
+    </div>
   );
 }

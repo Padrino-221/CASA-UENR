@@ -1,69 +1,46 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { parseMoney, validTransactionType } from '@/lib/money';
 
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session || (session.user?.role !== 'LOCAL_ADMIN' && session.user?.role !== 'FINANCE')) {
-    return NextResponse.json({ error: 'Unauthorized: Only local administrators can perform bulk financial logging.' }, { status: 401 });
+  if (!session?.user?.chapterId || !['LOCAL_ADMIN', 'FINANCE'].includes(session.user.role || '')) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
-
   try {
     const { collections } = await request.json();
+    if (!Array.isArray(collections) || !collections.length || collections.length > 1000) {
+      return NextResponse.json({ error: 'Provide between 1 and 1000 records' }, { status: 400 });
+    }
     const chapterId = session.user.chapterId;
-
-    if (!collections || !Array.isArray(collections)) {
-      return NextResponse.json({ error: 'Invalid payload: Expected an array of records.' }, { status: 400 });
-    }
-
-    // Resolve natural studentIds to database IDs if present
-    const naturalIds = [...new Set(collections.map((c: { studentId?: string }) => c.studentId).filter(Boolean))];
-    const studentMap = new Map<string, string>();
-    if (naturalIds.length > 0) {
-      const students = await db.student.findMany({
-        where: { studentId: { in: naturalIds as string[] }, chapterId: chapterId as string },
-        select: { id: true, studentId: true }
+    const naturalIds = [...new Set(collections.map((c: { studentId?: string }) => c.studentId).filter(Boolean))] as string[];
+    const students = await db.student.findMany({
+      where: { studentId: { in: naturalIds }, chapterId }, select: { id: true, studentId: true }
+    });
+    const studentMap = new Map(students.map(s => [s.studentId, s.id]));
+    // Validate every row before the atomic insert; never silently skip invalid rows.
+    let data;
+    try {
+      data = collections.map((c: { amount: unknown; date?: string; studentId?: string; type?: string; category?: string; description?: string }) => {
+        const amount = parseMoney(c.amount);
+        const type = c.type || 'INCOME';
+        const date = c.date ? new Date(c.date) : new Date();
+        const category = c.category || 'Offering';
+        if (!validTransactionType(type) || !Number.isFinite(date.getTime()) || typeof category !== 'string' || !category.trim()) {
+          throw new Error('Invalid category, type, or date');
+        }
+        if (c.studentId && !studentMap.has(c.studentId)) throw new Error('Unknown member or member outside this chapter');
+        return { amount, type, date, category, description: c.description || null,
+          chapterId, studentId: c.studentId ? studentMap.get(c.studentId)! : null, recordedBy: session.user.id };
       });
-      students.forEach((s: { id: string; studentId: string }) => studentMap.set(s.studentId, s.id));
+    } catch (error) {
+      return NextResponse.json({ error: (error as Error).message }, { status: 400 });
     }
-
-    // Process transactions
-    const transactionsData = collections.map((c: { amount: string; date?: string; studentId?: string; type?: string; category?: string; description?: string }) => {
-      const parsedAmount = parseFloat(c.amount);
-      if (isNaN(parsedAmount)) return null;
-
-      let cDate = new Date();
-      if (c.date) {
-        const parsed = new Date(c.date);
-        if (!isNaN(parsed.getTime())) cDate = parsed;
-      }
-
-      const internalStudentId = c.studentId ? (studentMap.get(c.studentId) || null) : null;
-
-      return {
-        amount: parsedAmount,
-        type: c.type || 'INCOME',
-        category: String(c.category || 'Offering'),
-        description: c.description || null,
-        date: cDate,
-        chapterId: chapterId,
-        studentId: internalStudentId,
-        recordedBy: session.user.id
-      };
-    }).filter((c: Record<string, unknown> | null) => c !== null);
-
-    // Bulk creation
-    const created = await db.transaction.createMany({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: transactionsData as any,
-    });
-
-    return NextResponse.json({
-      message: `Successfully logged ${created.count} financial entries.`,
-      count: created.count,
-    });
+    const created = await db.transaction.createMany({ data });
+    return NextResponse.json({ message: `Successfully logged ${created.count} financial entries.`, count: created.count });
   } catch (error) {
     console.error('Bulk transaction error:', error);
-    return NextResponse.json({ error: 'Failed to process bulk transactions.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to process bulk transactions' }, { status: 500 });
   }
 }

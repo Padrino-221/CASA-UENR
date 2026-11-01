@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Repair local preview</title></head>
+<body><main><h1>Repair local preview</h1><p id="status">Clearing stale local app caches…</p><a href="/">Return to CASA UENR</a></main>
+<script>
+(async () => {
+  const status = document.getElementById('status');
+  if (!['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
+    status.textContent = 'This repair is available only on localhost.';
+    return;
+  }
+  try {
+    if ('serviceWorker' in navigator) {
+      await Promise.all((await navigator.serviceWorker.getRegistrations()).map(registration => registration.unregister()));
+    }
+    if ('caches' in window) await Promise.all((await caches.keys()).map(key => caches.delete(key)));
+    status.textContent = 'Local service workers and app caches cleared. Returning to the website…';
+    location.replace('/?cache-recovered=' + Date.now());
+  } catch (error) {
+    status.textContent = 'Automatic repair failed. Clear site data for localhost in your browser settings, then reload.';
+    console.error(error);
+  }
+})();
+</script></body></html>

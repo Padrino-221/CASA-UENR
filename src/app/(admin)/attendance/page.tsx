@@ -130,8 +130,8 @@ export default function AttendancePage() {
       <header className="premium-header !mb-0 !pb-6">
         <div className="header-content-root">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">Attendance</h1>
-            <p className="text-xs uppercase font-black text-slate-500 tracking-widest mt-2.5">Manage attendance</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">Attendance</h1>
+            <p className="text-sm normal-case font-semibold text-slate-500 tracking-normal mt-2.5">Manage attendance</p>
           </div>
 
           <div className="flex items-center gap-4 flex-wrap justify-end">
@@ -140,7 +140,7 @@ export default function AttendancePage() {
                 role="tab"
                 aria-selected={activeTab === 'sessions'}
                 onClick={() => setActiveTab('sessions')}
-                className={`px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'sessions' ? 'bg-white text-[#0F172A]' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-4 py-2 text-[14px] font-semibold normal-case tracking-normal transition-all ${activeTab === 'sessions' ? 'bg-white text-[#0F172A]' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Sessions
               </button>
@@ -148,7 +148,7 @@ export default function AttendancePage() {
                 role="tab"
                 aria-selected={activeTab === 'insights'}
                 onClick={() => setActiveTab('insights')}
-                className={`px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-all ${activeTab === 'insights' ? 'bg-white text-[#0F172A]' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-4 py-2 text-[14px] font-semibold normal-case tracking-normal transition-all ${activeTab === 'insights' ? 'bg-white text-[#0F172A]' : 'text-slate-500 hover:text-slate-700'}`}
               >
                 Insights
               </button>
@@ -178,7 +178,7 @@ export default function AttendancePage() {
                     value={searchTitle}
                     onChange={(e) => setSearchTitle(e.target.value)}
                     placeholder="Filter by session title..."
-                    className="w-full pl-4 pr-4 py-3.5 bg-white border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-xs text-[#0F172A] placeholder-slate-400"
+                    className="w-full pl-4 pr-4 py-3.5 bg-white border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
                   />
                 </div>
               </div>
@@ -194,7 +194,7 @@ export default function AttendancePage() {
                 {(searchTitle || selectedCampus !== 'ALL') && (
                   <button
                     onClick={() => { setSearchTitle(''); setSelectedCampus('ALL'); }}
-                    className="px-4 py-3.5 bg-rose-50 text-rose-600 hover:bg-rose-100 font-black text-xs uppercase tracking-widest transition-all shrink-0"
+                    className="px-4 py-3.5 bg-rose-50 text-rose-600 hover:bg-rose-100 font-semibold text-sm normal-case tracking-normal transition-all shrink-0"
                   >
                     Reset
                   </button>
@@ -210,11 +210,11 @@ export default function AttendancePage() {
                 <table className="ds-table w-full border-collapse">
                 <thead>
                   <tr>
-                    <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">Session</th>
-                    <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">Chapter</th>
-                    <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">Date</th>
-                    <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">Attendance</th>
-                    <th className="bg-slate-50/50 p-6 text-right text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">Access</th>
+                    <th className="bg-slate-50/50 p-6 text-left text-[14px] font-semibold normal-case tracking-normal text-slate-400 border-b border-black/5">Session</th>
+                    <th className="bg-slate-50/50 p-6 text-left text-[14px] font-semibold normal-case tracking-normal text-slate-400 border-b border-black/5">Chapter</th>
+                    <th className="bg-slate-50/50 p-6 text-left text-[14px] font-semibold normal-case tracking-normal text-slate-400 border-b border-black/5">Date</th>
+                    <th className="bg-slate-50/50 p-6 text-left text-[14px] font-semibold normal-case tracking-normal text-slate-400 border-b border-black/5">Attendance</th>
+                    <th className="bg-slate-50/50 p-6 text-right text-[14px] font-semibold normal-case tracking-normal text-slate-400 border-b border-black/5">Access</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -224,23 +224,23 @@ export default function AttendancePage() {
                         <td className="p-6">
                           <div className="flex flex-col">
                             <span className="font-bold text-[#0F172A]">{sessionItem.title || 'Untitled Session'}</span>
-                            <span className="text-[9px] text-[#1E67FC] uppercase font-black tracking-widest mt-0.5 w-fit bg-[#EBF2FF] px-1.5 py-0.5 rounded">
+                            <span className="text-[14px] text-[#1D4ED8] normal-case font-semibold tracking-normal mt-0.5 w-fit bg-[#EBF2FF] px-1.5 py-0.5 rounded">
                               {sessionItem.serviceType}
                             </span>
                           </div>
                         </td>
                         <td className="p-6">
-                          <span className="font-semibold text-xs text-[#0F172A]">{sessionItem.chapter?.name || 'Unassigned'}</span>
+                          <span className="font-semibold text-sm text-[#0F172A]">{sessionItem.chapter?.name || 'Unassigned'}</span>
                         </td>
                         <td className="p-6">
-                          <span className="text-slate-500 font-extrabold text-xs">
+                          <span className="text-slate-500 font-semibold text-sm">
                             {new Date(sessionItem.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
                           </span>
                         </td>
                         <td className="p-6">
                           <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-[#1E67FC]" />
-                            <span className="font-black text-[#0F172A] text-xs uppercase tracking-tighter">
+                            <div className="w-2 h-2 rounded-full bg-[#1D4ED8]" />
+                            <span className="font-semibold text-[#0F172A] text-sm normal-case tracking-tighter">
                               {sessionItem.totalAttendance !== null && sessionItem.totalAttendance !== undefined
                                 ? `${sessionItem.totalAttendance} Present`
                                 : `${sessionItem._count?.records || 0} Present`}
@@ -250,7 +250,7 @@ export default function AttendancePage() {
                         <td className="p-6 text-right">
                           <Link
                             href={`/attendance/${sessionItem.id}`}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EBF2FF] hover:bg-[#1E67FC] text-[#1E67FC] hover:text-white font-black text-[10px] uppercase tracking-widest transition-all"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EBF2FF] hover:bg-[#1D4ED8] text-[#1D4ED8] hover:text-white font-semibold text-[14px] normal-case tracking-normal transition-all"
                           >
                             <span>Enter</span>
                             <CaretRight size={12} weight="bold" />
@@ -260,7 +260,7 @@ export default function AttendancePage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-slate-400 font-bold text-xs border-none">
+                      <td colSpan={5} className="py-12 text-center text-slate-400 font-bold text-sm border-none">
                         No matching sessions found for the selected filters.
                       </td>
                     </tr>
@@ -285,8 +285,8 @@ export default function AttendancePage() {
               <div className="w-16 h-16 bg-white flex items-center justify-center text-slate-300 mb-5 border border-black/5">
                 <ShieldCheck size={32} weight="duotone" />
               </div>
-              <h3 className="text-lg font-black text-[#0F172A] mb-1">No active sessions found</h3>
-              <p className="text-slate-400 text-xs font-extrabold max-w-xs leading-relaxed">Start your first attendance session to begin tracking membership engagement.</p>
+              <h3 className="text-lg font-semibold text-[#0F172A] mb-1">No active sessions found</h3>
+              <p className="text-slate-400 text-sm font-semibold max-w-xs leading-relaxed">Start your first attendance session to begin tracking membership engagement.</p>
             </div>
           )}
         </>
@@ -317,12 +317,12 @@ export default function AttendancePage() {
           />
 
           <div className="space-y-2">
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Title (Optional)</label>
+            <label className="text-[14px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Title (Optional)</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
               placeholder="e.g. Empowerment Sunday"
             />
           </div>
@@ -337,14 +337,14 @@ export default function AttendancePage() {
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-6 h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs uppercase tracking-widest transition-all"
+              className="flex-1 px-6 h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm normal-case tracking-normal transition-all"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex-[2] px-6 h-12 bg-[#1E67FC] hover:bg-[#0F53D6] text-white font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50"
+              className="flex-[2] px-6 h-12 bg-[#1D4ED8] hover:bg-[#0F53D6] text-white font-semibold text-sm normal-case tracking-normal transition-all disabled:opacity-50"
             >
               {submitting ? 'Creating...' : 'Create Session'}
             </button>

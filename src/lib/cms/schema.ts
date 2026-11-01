@@ -84,6 +84,25 @@ export const CMS_PAGES: CmsPage[] = [
     path: '/',
     sections: [
       {
+        key: 'welcome',
+        label: 'Student welcome',
+        description: 'The introduction and next steps on the public home page.',
+        fields: [
+          { key: 'heading', label: 'Main heading', type: 'text', default: 'A church family for your university journey.' },
+          { key: 'body', label: 'Introduction', type: 'textarea', default: 'Grow in faith, build lasting friendships, and find support for student life. CASA UENR brings students together to worship Jesus and live out His love on campus.' },
+          { key: 'ctaLabel', label: 'Welcome button', type: 'text', default: 'Plan your first visit' },
+          { key: 'communityHeading', label: 'Community heading', type: 'text', default: 'Faith for everyday campus life.' },
+          { key: 'communityBody', label: 'Community introduction', type: 'textarea', default: 'University is a time of questions, change, and possibility. You do not have to navigate it alone. We make room for worship, honest conversations, prayer, and friendships that help us grow in Christ.' },
+          { key: 'nextHeading', label: 'Next steps heading', type: 'text', default: 'There is a place for you here.' },
+          { key: 'nextBody', label: 'Next steps introduction', type: 'textarea', default: 'Start with a gathering. Get to know the fellowship. Take your next step at your own pace.' },
+          { key: 'steps', label: 'Ways to connect', type: 'list', itemLabelKey: 'title', subFields: [{ key: 'title', label: 'Title', type: 'text' }, { key: 'text', label: 'Description', type: 'textarea' }, { key: 'href', label: 'Link', type: 'text' }, { key: 'label', label: 'Link label', type: 'text' }], defaultList: [
+            { title: 'Worship with us', text: 'Join a weekly gathering for worship, Scripture, and prayer. You are welcome, even if it is your first time at church.', href: '/contact', label: 'Find a gathering' },
+            { title: 'Find your community', text: 'Make friends and use your gifts through music, prayer, outreach, care, media, or welcoming others.', href: '/departments', label: 'Explore departments' },
+            { title: 'Talk to someone', text: 'Have a question, need prayer, or want help finding your way? Reach out to the fellowship.', href: '/contact#message', label: 'Get in touch' },
+          ] },
+        ],
+      },
+      {
         key: 'hero',
         label: 'Hero',
         fields: [

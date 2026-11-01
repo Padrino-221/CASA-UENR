@@ -10,7 +10,7 @@ export default function Loading() {
         <MetricCardSkeleton />
         <MetricCardSkeleton />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="admin-dashboard-grid grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8">
           <ChartSectionSkeleton />
         </div>

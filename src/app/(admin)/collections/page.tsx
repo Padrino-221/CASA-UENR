@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import CollectionList from '@/components/collections/CollectionList';
 import { HeaderSkeleton, MetricCardSkeleton, TableAreaSkeleton } from '@/components/ui/Skeleton';
 import { Transaction } from '@/types/models';
-import { isLocalScope } from '@/lib/roles';
+import { isLocalScope, canManageFinance } from '@/lib/roles';
 
 function CollectionsLoadingSkeleton() {
   return (
@@ -26,6 +26,8 @@ export default async function CollectionsPage() {
   if (!session) redirect('/login');
 
   const role = session.user?.role;
+  if (!canManageFinance(role)) redirect('/dashboard');
+  if ((isLocalScope(role) && !session.user?.chapterId) || (role === 'REGIONAL_ADMIN' && !session.user?.regionId)) redirect('/profile');
   const regionId = session.user?.regionId ?? undefined;
   const chapterId = session.user?.chapterId ?? undefined;
 
@@ -60,11 +62,11 @@ export default async function CollectionsPage() {
   return (
     <div className="space-y-8 w-full max-w-[1400px] mx-auto stagger-fade-in">
       <Suspense fallback={<CollectionsLoadingSkeleton />}>
-        <CollectionList 
-          initialCollections={transactions as unknown as Transaction[]} 
-          chapters={institutions} 
-          members={members} 
-          role={role || 'NATIONAL_ADMIN'} 
+        <CollectionList
+          initialCollections={transactions.map(t => ({ ...t, amount: Number(t.amount) })) as unknown as Transaction[]}
+          chapters={institutions}
+          members={members}
+          role={role || 'NATIONAL_ADMIN'}
         />
       </Suspense>
     </div>

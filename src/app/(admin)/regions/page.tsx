@@ -25,7 +25,7 @@ export default function RegionsPage() {
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [bulkFile, setBulkFile] = useState<File | null>(null);
   const [editingRegion, setEditingRegion] = useState<Region | null>(null);
-  const [newRegion, setNewRegion] = useState({ 
+  const [newRegion, setNewRegion] = useState({
     name: '', adminName: '', adminEmail: '', adminPassword: ''
   });
 
@@ -74,10 +74,10 @@ export default function RegionsPage() {
       <header className="premium-header !mb-0 !pb-6">
         <div className="header-content-root">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">Regions</h1>
-            <p className="text-xs uppercase font-black text-slate-500 tracking-widest mt-2.5">Manage regions</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">Regions</h1>
+            <p className="text-sm normal-case font-semibold text-slate-500 tracking-normal mt-2.5">Manage regions</p>
           </div>
- 
+
           {userRole === 'NATIONAL_ADMIN' && (
             <div className="actions-cluster">
               <button className="btn-glass-alt" onClick={() => setShowBulkModal(true)}><FileArrowUp size={18} weight="duotone" /><span>Bulk Import</span></button>
@@ -86,16 +86,16 @@ export default function RegionsPage() {
           )}
         </div>
       </header>
- 
-      <RegionTable 
-        regions={regions} 
-        userRole={userRole} 
-        onEdit={(r) => { setEditingRegion(r); setShowEditModal(true); }} 
-        onDelete={deleteRegion} 
+
+      <RegionTable
+        regions={regions}
+        userRole={userRole}
+        onEdit={(r) => { setEditingRegion(r); setShowEditModal(true); }}
+        onDelete={deleteRegion}
       />
 
       <RegionAddModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleCreateSubmit} newRegion={newRegion} setNewRegion={setNewRegion} isSubmitting={isSubmitting} />
-      
+
       <RegionEditModal isOpen={showEditModal} onClose={() => setShowEditModal(false)} onSubmit={handleUpdateSubmit} editingRegion={editingRegion} setEditingRegion={setEditingRegion} isSubmitting={isSubmitting} />
 
       <RegionBulkModal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} onSubmit={handleBulkSubmit} bulkFile={bulkFile} setBulkFile={setBulkFile} onDownloadTemplate={downloadTemplate} isSubmitting={isSubmitting} />

@@ -42,7 +42,7 @@ const EMPTY = {
 };
 
 const inputCls =
-  'w-full min-h-[44px] px-3 py-2 border border-[#E2E8F0] bg-white text-sm font-medium text-[#0F172A] focus:border-primary focus:outline-none';
+  'rounded-md text-base w-full min-h-[44px] px-3 py-2 border border-[#E2E8F0] bg-white text-base font-normal text-[#0F172A] focus:border-primary focus:outline-none';
 
 export default function ArticleManager() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -137,19 +137,19 @@ export default function ArticleManager() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-[#0F172A] tracking-tight">News & Articles</h1>
+          <h1 className="text-3xl font-semibold text-[#0F172A] tracking-tight">News & Articles</h1>
           <p className="text-sm text-[#64748B] font-medium mt-1">Write recaps, testimonies, and announcements.</p>
         </div>
-        <button onClick={openCreate} className="h-10 px-4 bg-primary text-white text-[12px] font-bold flex items-center gap-2">
+        <button onClick={openCreate} className="h-10 px-4 bg-primary text-white text-sm font-bold flex items-center gap-2">
           <Plus size={15} weight="bold" />
           New article
         </button>
       </div>
 
       {loading ? (
-        <p className="text-sm text-[#94A3B8] font-medium">Loading…</p>
+        <p className="text-sm text-[#64748B] font-medium">Loading…</p>
       ) : articles.length === 0 ? (
-        <p className="text-sm text-[#94A3B8] font-medium border border-dashed border-[#CBD5E1] p-10 text-center">
+        <p className="text-sm text-[#64748B] font-medium border border-dashed border-[#CBD5E1] p-10 text-center">
           No articles yet. Create your first one.
         </p>
       ) : (
@@ -164,13 +164,13 @@ export default function ArticleManager() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-[0.14em] text-primary">{article.kind}</span>
-                  <span className={`text-[10px] font-black uppercase tracking-[0.14em] ${article.published ? 'text-[#059669]' : 'text-[#94A3B8]'}`}>
+                  <span className="text-[13px] font-semibold normal-case tracking-normal text-primary">{article.kind}</span>
+                  <span className={`text-[13px] font-semibold normal-case tracking-normal ${article.published ? 'text-[#059669]' : 'text-[#64748B]'}`}>
                     {article.published ? 'Published' : 'Draft'}
                   </span>
                 </div>
-                <h3 className="text-[15px] font-black text-[#0F172A] tracking-tight truncate">{article.title}</h3>
-                <p className="text-[12px] text-[#64748B] font-medium truncate">{article.excerpt}</p>
+                <h3 className="text-[15px] font-semibold text-[#0F172A] tracking-tight truncate">{article.title}</h3>
+                <p className="text-sm text-[#64748B] font-medium truncate">{article.excerpt}</p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button onClick={() => openEdit(article)} className="p-2 text-[#64748B] hover:text-primary" aria-label="Edit">
@@ -189,7 +189,7 @@ export default function ArticleManager() {
         <form onSubmit={submit} className="space-y-4">
           {error && <p className="text-sm font-bold text-[#DC2626]">{error}</p>}
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Title</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Title</label>
             <input className={inputCls} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -200,35 +200,35 @@ export default function ArticleManager() {
               onChange={(value) => setForm({ ...form, kind: value })}
             />
             <div>
-              <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Slug (optional)</label>
+              <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Slug (optional)</label>
               <input className={inputCls} value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="auto-generated" />
             </div>
           </div>
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Excerpt</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Excerpt</label>
             <textarea className={inputCls} rows={2} value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} />
           </div>
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Body</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Body</label>
             <textarea className={inputCls} rows={7} value={form.bodyText} onChange={(e) => setForm({ ...form, bodyText: e.target.value })} />
-            <p className="mt-1.5 text-[11px] text-[#94A3B8] font-medium">Separate paragraphs with a blank line.</p>
+            <p className="mt-1.5 text-[13px] text-[#64748B] font-medium">Separate paragraphs with a blank line.</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Quote</label>
+              <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Quote</label>
               <input className={inputCls} value={form.quoteText} onChange={(e) => setForm({ ...form, quoteText: e.target.value })} />
             </div>
             <div>
-              <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Quote reference</label>
+              <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Quote reference</label>
               <input className={inputCls} value={form.quoteCite} onChange={(e) => setForm({ ...form, quoteCite: e.target.value })} />
             </div>
           </div>
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Meta</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Meta</label>
             <input className={inputCls} value={form.meta} onChange={(e) => setForm({ ...form, meta: e.target.value })} placeholder="Evangelism Department · Sep 12" />
           </div>
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Cover image</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Cover image</label>
             <MediaPicker value={form.imageUrl} onChange={(url) => setForm({ ...form, imageUrl: url })} />
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
@@ -239,10 +239,10 @@ export default function ArticleManager() {
             </span>
           </label>
           <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={() => setOpen(false)} className="h-11 px-5 text-[12px] font-bold text-[#64748B]">
+            <button type="button" onClick={() => setOpen(false)} className="h-11 px-5 text-sm font-bold text-[#64748B]">
               Cancel
             </button>
-            <button type="submit" className="h-11 px-6 bg-primary text-white text-[12px] font-bold">
+            <button type="submit" className="h-11 px-6 bg-primary text-white text-sm font-bold">
               {editingId ? 'Save changes' : 'Create article'}
             </button>
           </div>

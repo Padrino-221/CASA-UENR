@@ -20,7 +20,7 @@ interface SiteEvent {
 const EMPTY = { month: '', day: '', kind: 'Event', title: '', text: '', meta: '', published: true, order: 0 };
 
 const inputCls =
-  'w-full min-h-[44px] px-3 py-2 border border-[#E2E8F0] bg-white text-sm font-medium text-[#0F172A] focus:border-primary focus:outline-none';
+  'rounded-md text-base w-full min-h-[44px] px-3 py-2 border border-[#E2E8F0] bg-white text-base font-normal text-[#0F172A] focus:border-primary focus:outline-none';
 
 export default function EventManager() {
   const [events, setEvents] = useState<SiteEvent[]>([]);
@@ -99,19 +99,19 @@ export default function EventManager() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-[#0F172A] tracking-tight">Upcoming Events</h1>
+          <h1 className="text-3xl font-semibold text-[#0F172A] tracking-tight">Upcoming Events</h1>
           <p className="text-sm text-[#64748B] font-medium mt-1">These appear on the News &amp; Events page.</p>
         </div>
-        <button onClick={openCreate} className="h-10 px-4 bg-primary text-white text-[12px] font-bold flex items-center gap-2">
+        <button onClick={openCreate} className="h-10 px-4 bg-primary text-white text-sm font-bold flex items-center gap-2">
           <Plus size={15} weight="bold" />
           New event
         </button>
       </div>
 
       {loading ? (
-        <p className="text-sm text-[#94A3B8] font-medium">Loading…</p>
+        <p className="text-sm text-[#64748B] font-medium">Loading…</p>
       ) : events.length === 0 ? (
-        <p className="text-sm text-[#94A3B8] font-medium border border-dashed border-[#CBD5E1] p-10 text-center">
+        <p className="text-sm text-[#64748B] font-medium border border-dashed border-[#CBD5E1] p-10 text-center">
           No events yet.
         </p>
       ) : (
@@ -119,13 +119,13 @@ export default function EventManager() {
           {events.map((event) => (
             <div key={event.id} className="flex items-center gap-4 p-4">
               <div className="w-12 h-12 bg-primary text-white flex flex-col items-center justify-center shrink-0">
-                <span className="text-[9px] font-black uppercase">{event.month}</span>
-                <span className="text-[15px] font-black leading-none">{event.day}</span>
+                <span className="text-[13px] font-semibold normal-case">{event.month}</span>
+                <span className="text-[15px] font-semibold leading-none">{event.day}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-black uppercase tracking-[0.14em] text-primary">{event.kind}</span>
-                <h3 className="text-[15px] font-black text-[#0F172A] tracking-tight truncate">{event.title}</h3>
-                <p className="text-[12px] text-[#64748B] font-medium truncate">{event.meta}</p>
+                <span className="text-[13px] font-semibold normal-case tracking-normal text-primary">{event.kind}</span>
+                <h3 className="text-[15px] font-semibold text-[#0F172A] tracking-tight truncate">{event.title}</h3>
+                <p className="text-sm text-[#64748B] font-medium truncate">{event.meta}</p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button onClick={() => openEdit(event)} className="p-2 text-[#64748B] hover:text-primary" aria-label="Edit">
@@ -145,28 +145,28 @@ export default function EventManager() {
           {error && <p className="text-sm font-bold text-[#DC2626]">{error}</p>}
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Month</label>
+              <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Month</label>
               <input className={inputCls} value={form.month} onChange={(e) => setForm({ ...form, month: e.target.value })} placeholder="Oct" />
             </div>
             <div>
-              <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Day</label>
+              <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Day</label>
               <input className={inputCls} value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} placeholder="16" />
             </div>
             <div>
-              <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Kind</label>
+              <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Kind</label>
               <input className={inputCls} value={form.kind} onChange={(e) => setForm({ ...form, kind: e.target.value })} placeholder="Retreat" />
             </div>
           </div>
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Title</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Title</label>
             <input className={inputCls} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
           </div>
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Description</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Description</label>
             <textarea className={inputCls} rows={3} value={form.text} onChange={(e) => setForm({ ...form, text: e.target.value })} />
           </div>
           <div>
-            <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">Meta</label>
+            <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">Meta</label>
             <input className={inputCls} value={form.meta} onChange={(e) => setForm({ ...form, meta: e.target.value })} placeholder="Main Auditorium · 6:00 PM" />
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
@@ -174,10 +174,10 @@ export default function EventManager() {
             <span className="text-[13px] font-bold text-[#0F172A]">Published</span>
           </label>
           <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={() => setOpen(false)} className="h-11 px-5 text-[12px] font-bold text-[#64748B]">
+            <button type="button" onClick={() => setOpen(false)} className="h-11 px-5 text-sm font-bold text-[#64748B]">
               Cancel
             </button>
-            <button type="submit" className="h-11 px-6 bg-primary text-white text-[12px] font-bold">
+            <button type="submit" className="h-11 px-6 bg-primary text-white text-sm font-bold">
               {editingId ? 'Save changes' : 'Create event'}
             </button>
           </div>

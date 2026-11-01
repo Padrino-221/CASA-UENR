@@ -59,3 +59,7 @@ prisma/*.db-wal
 # Extracted docs / temp assets
 extracted_doc.html
 extracted_docx/
+
+/Temp/database-backups/
+
+/Temp/migration-baseline.prisma

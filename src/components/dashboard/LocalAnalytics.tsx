@@ -24,8 +24,8 @@ export default function LocalAnalytics({ chartData }: LocalAnalyticsProps) {
   if (!chartData || chartData.length === 0) {
     return (
       <div className="py-16 text-center bg-slate-50 border border-slate-200">
-        <p className="text-sm font-black text-slate-700 uppercase tracking-widest">No recent collections available</p>
-        <p className="mt-2 text-[11px] text-slate-400">Once income is recorded for your chapter, this chart will display the latest finance trend.</p>
+        <p className="text-sm font-semibold text-slate-700 normal-case tracking-normal">No recent collections available</p>
+        <p className="mt-2 text-[13px] text-slate-500">Once income is recorded for your chapter, this chart will display the latest finance trend.</p>
       </div>
     );
   }
@@ -50,7 +50,7 @@ export default function LocalAnalytics({ chartData }: LocalAnalyticsProps) {
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: '#94A3B8', fontSize: 10, fontWeight: 600 }}
+              tick={{ fill: '#64748B', fontSize: 13, fontWeight: 600 }}
               dy={10}
               interval={0}
             />
@@ -64,7 +64,7 @@ export default function LocalAnalytics({ chartData }: LocalAnalyticsProps) {
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   return (
-                    <div className="bg-[#0F172A] text-white px-3 py-1.5 text-[10px] font-bold border border-slate-800 tracking-wider">
+                    <div className="bg-[#0F172A] text-white px-3 py-1.5 text-[13px] font-bold border border-slate-800 tracking-normal">
                       {payload[0].payload?.name || ''}: GH₵ {Number(payload[0].value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
                   );
@@ -77,7 +77,7 @@ export default function LocalAnalytics({ chartData }: LocalAnalyticsProps) {
                 return (
                   <Cell
                     key={`cell-${index}`}
-                    fill="#1E67FC"
+                    fill="#1D4ED8"
                     fillOpacity={activeIndex === null ? 1 : activeIndex === index ? 1 : 0.45}
                     onMouseEnter={() => setActiveIndex(index)}
                     onMouseLeave={() => setActiveIndex(null)}

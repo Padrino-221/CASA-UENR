@@ -2,9 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Calendar as CalendarIcon,
   CalendarBlank,
-  CalendarCheck,
   Plus,
   TrendUp,
 } from '@phosphor-icons/react';
@@ -33,7 +31,7 @@ export default function CalendarPage() {
   const [showEditYearModal, setShowEditYearModal] = useState(false);
   const [showSemModal, setShowSemModal] = useState(false);
   const [showEditSemModal, setShowEditSemModal] = useState(false);
-  
+
   const [editingYear, setEditingYear] = useState<AcademicYear | null>(null);
   const [editingSem, setEditingSem] = useState<Semester | null>(null);
   const [targetYearId, setTargetYearId] = useState<string>('');
@@ -64,14 +62,14 @@ export default function CalendarPage() {
       <header className="premium-header !mb-0 !pb-6">
         <div className="header-content-root">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">Calendar</h1>
-            <p className="text-[9px] uppercase font-black text-slate-400 tracking-widest mt-2.5">Academic Calendar Configuration</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">Calendar</h1>
+            <p className="text-[14px] normal-case font-semibold text-slate-400 tracking-normal mt-2.5">Manage academic years and semester schedules.</p>
           </div>
- 
+
           <div className="actions-cluster">
             {(role === 'NATIONAL_ADMIN' || role === 'REGIONAL_ADMIN') && (
               <div className="w-full sm:w-[260px] shrink-0">
-                <CustomDropdown 
+                <CustomDropdown
                   value={selectedInstitutionId}
                   onChange={setSelectedInstitutionId}
                   options={[
@@ -82,7 +80,7 @@ export default function CalendarPage() {
                 />
               </div>
             )}
- 
+
             {isLocalScope(role) && (
               <button className="btn-glass-alt" onClick={promoteStudents}>
                 <TrendUp size={18} weight="duotone" />
@@ -98,13 +96,13 @@ export default function CalendarPage() {
           </div>
         </div>
       </header>
- 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
-        <div className="lg:col-span-7 space-y-4 sm:space-y-6 lg:space-y-8">
+
+      <div className="academic-calendar-layout">
+        <div className="academic-calendar-main">
           {currentYear ? (
-            <CurrentCycleCard 
-              currentYear={currentYear} 
-              role={role} 
+            <CurrentCycleCard
+              currentYear={currentYear}
+              role={role}
               onEditYear={(y) => { setEditingYear(y); setShowEditYearModal(true); }}
               onDeleteYear={deleteYear}
               onAddSemester={(id) => { setTargetYearId(id); setShowSemModal(true); }}
@@ -115,37 +113,26 @@ export default function CalendarPage() {
           ) : (
             <NoActiveYearView onInitialize={() => setShowYearModal(true)} role={role} />
           )}
- 
-          {/* Brutalist Luxury Governance Rule Card */}
-          <div className="flex gap-4 sm:gap-6 p-4 sm:p-6 lg:p-8 bg-slate-50/50 border border-black/5 sm: items-center">
-            <div className="w-12 h-12 bg-white border border-black/5 flex items-center justify-center text-[#1E67FC] flex-shrink-0">
-              <CalendarCheck size={22} className="text-[#1E67FC]" weight="duotone" />
-            </div>
-            <div>
-              <h4 className="text-[11px] font-black text-[#0F172A] uppercase tracking-widest">Note</h4>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed font-semibold">
-                Only one semester can be <strong className="text-[#1E67FC]">ACTIVE</strong> at a time. Activating a new semester will automatically finalize and archive the current cycle.
-              </p>
-            </div>
-          </div>
+
+          <p className="calendar-note">Only one semester can be active at a time. Activating another semester closes the current one.</p>
         </div>
 
-        <div className="lg:col-span-5">
+        <div className="academic-calendar-history">
           <AcademicHistory previousYears={previousYears} role={role} onDeleteYear={deleteYear} />
         </div>
       </div>
 
-      <YearModal 
-        isOpen={showYearModal} 
-        onClose={() => setShowYearModal(false)} 
-        onSubmit={(p) => { createYear(p); setShowYearModal(false); }} 
+      <YearModal
+        isOpen={showYearModal}
+        onClose={() => setShowYearModal(false)}
+        onSubmit={(p) => { createYear(p); setShowYearModal(false); }}
         institutions={institutions}
       />
-      <YearModal 
-        isOpen={showEditYearModal} 
-        onClose={() => setShowEditYearModal(false)} 
-        editingYear={editingYear} 
-        onSubmit={(p) => { updateYear(editingYear!.id, p); setShowEditYearModal(false); }} 
+      <YearModal
+        isOpen={showEditYearModal}
+        onClose={() => setShowEditYearModal(false)}
+        editingYear={editingYear}
+        onSubmit={(p) => { updateYear(editingYear!.id, p); setShowEditYearModal(false); }}
         institutions={institutions}
       />
       <SemesterModal isOpen={showSemModal} onClose={() => setShowSemModal(false)} onSubmit={(p) => { createSemester(targetYearId, p); setShowSemModal(false); }} />
@@ -162,15 +149,15 @@ function NoActiveYearView({ onInitialize, role }: { onInitialize: () => void; ro
       <div className="w-20 h-20 bg-slate-50 border border-black/5 flex items-center justify-center mx-auto mb-8 text-slate-300">
         <CalendarBlank size={36} weight="duotone" />
       </div>
-      <h3 className="text-2xl font-black text-[#0F172A] mb-3">No Active Academic Year</h3>
-      <p className="text-slate-400 text-xs font-semibold max-w-sm mx-auto leading-relaxed mb-8">
-        {isLocalAdmin 
+      <h3 className="text-2xl font-semibold text-[#0F172A] mb-3">No Active Academic Year</h3>
+      <p className="text-slate-400 text-sm font-semibold max-w-sm mx-auto leading-relaxed mb-8">
+        {isLocalAdmin
           ? "Add a new academic year to start tracking progress."
           : "No active academic cycle for this chapter."}
       </p>
       {isLocalAdmin && (
-        <button 
-          className="btn-lux-primary h-14 px-10 flex items-center gap-3 mx-auto" 
+        <button
+          className="btn-lux-primary h-14 px-10 flex items-center gap-3 mx-auto"
           onClick={onInitialize}
         >
           <Plus size={20} weight="duotone" />
@@ -185,7 +172,7 @@ function CalendarLoadingSkeleton() {
   return (
     <div className="space-y-8 w-full stagger-fade-in">
       <HeaderSkeleton />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
+      <div className="admin-dashboard-grid grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
         <div className="lg:col-span-7 space-y-8">
           <div className="h-[500px] bg-slate-50/50 border border-black/5 animate-pulse" />
         </div>

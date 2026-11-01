@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+import { canViewAdministrativeData, isLocalScope as hasChapterScope } from '@/lib/roles';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
@@ -11,6 +13,9 @@ function dateFilter(startDate?: Date, endDate?: Date) {
 
 export async function GET(request: Request) {
   const session = await auth();
+    if (session && !canViewAdministrativeData(session.user?.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
@@ -21,7 +26,7 @@ export async function GET(request: Request) {
     const contextId = role === 'REGIONAL_ADMIN' ? session.user?.regionId : session.user?.chapterId;
 
     const { searchParams } = new URL(request.url);
-    const range = searchParams.get('range') || '12m'; 
+    const range = searchParams.get('range') || '12m';
     const yearParam = searchParams.get('year');
     let startDate: Date | undefined;
     let endDate: Date | undefined;
@@ -45,7 +50,7 @@ export async function GET(request: Request) {
       by: ['category', 'type'],
       where: {
         AND: [
-          role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+          hasChapterScope(role) ? { chapterId: contextId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
           ...df
         ]
@@ -57,21 +62,20 @@ export async function GET(request: Request) {
     const chapterStats = await db.chapter.findMany({
       where: {
         AND: [
-          role === 'LOCAL_ADMIN' ? { id: contextId || 'none' } : {},
+          hasChapterScope(role) ? { id: contextId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { regionId: contextId || 'none' } : {},
         ]
       },
       select: {
         name: true,
-        _count: { 
-          select: { 
-            students: startDate || endDate ? { 
+        _count: {
+          select: {
+            students: startDate || endDate ? {
               where: {
-                ...(startDate ? { enrollmentDate: { gte: startDate } } : {}),
-                ...(endDate ? { enrollmentDate: { lte: endDate } } : {})
-              } 
-            } : true 
-          } 
+                enrollmentDate: { ...(startDate ? { gte: startDate } : {}), ...(endDate ? { lte: endDate } : {}) }
+              }
+            } : true
+          }
         }
       }
     });
@@ -80,7 +84,7 @@ export async function GET(request: Request) {
     const attendanceSessions = await db.attendanceSession.findMany({
       where: {
         AND: [
-          role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+          hasChapterScope(role) ? { chapterId: contextId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
           ...df
         ]
@@ -94,7 +98,7 @@ export async function GET(request: Request) {
     const transactions = await db.transaction.findMany({
       where: {
         AND: [
-          role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+          hasChapterScope(role) ? { chapterId: contextId || 'none' } : {},
           role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
           ...df
         ]
@@ -105,31 +109,31 @@ export async function GET(request: Request) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const monthlyData = months.map((m: string, index: number) => {
       const income = transactions
-        .filter((c: { type: string; date: Date; amount?: number }) => c.type === 'INCOME' && new Date(c.date).getMonth() === index)
-        .reduce((sum: number, c: { type: string; date: Date; amount?: number }) => sum + (c.amount || 0), 0);
-      
+        .filter((c) => c.type === 'INCOME' && new Date(c.date).getMonth() === index)
+        .reduce((sum, c) => sum.plus(c.amount), new Prisma.Decimal(0)).toNumber();
+
       const expense = transactions
-        .filter((c: { type: string; date: Date; amount?: number }) => c.type === 'EXPENSE' && new Date(c.date).getMonth() === index)
-        .reduce((sum: number, c: { type: string; date: Date; amount?: number }) => sum + (c.amount || 0), 0);
+        .filter((c) => c.type === 'EXPENSE' && new Date(c.date).getMonth() === index)
+        .reduce((sum, c) => sum.plus(c.amount), new Prisma.Decimal(0)).toNumber();
 
       return { month: m, amount: income, expense, balance: income - expense };
     });
 
     return NextResponse.json({
-      categoryStats: categoryStats.map((s: { category: string; _sum: { amount: number | null }; type: string }) => ({ 
-        name: s.category, 
-        value: s._sum.amount || 0,
+      categoryStats: categoryStats.map((s) => ({
+        name: s.category,
+        value: Number(s._sum.amount || 0),
         type: s.type
       })),
-      institutionStats: chapterStats.map((ch: { name: string; _count: { students: number } }) => ({ 
-        name: ch.name, 
-        value: ch._count.students || 0 
+      institutionStats: chapterStats.map((ch: { name: string; _count: { students: number } }) => ({
+        name: ch.name,
+        value: ch._count.students || 0
       })),
       monthlyData,
       attendanceStats: {
         totalSessions: attendanceSessions.length,
-        avgAttendance: attendanceSessions.length > 0 
-          ? attendanceSessions.reduce((acc: number, s: { _count: { records: number } }) => acc + s._count.records, 0) / attendanceSessions.length 
+        avgAttendance: attendanceSessions.length > 0
+          ? attendanceSessions.reduce((acc: number, s: { _count: { records: number } }) => acc + s._count.records, 0) / attendanceSessions.length
           : 0
       }
     });

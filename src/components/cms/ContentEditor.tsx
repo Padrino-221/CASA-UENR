@@ -99,13 +99,13 @@ export default function ContentEditor({
   return (
     <div className="space-y-6">
       {/* Toolbar */}
-      <div className="sticky top-0 z-30 bg-white border border-[#E2E8F0] p-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="rounded-xl sticky top-0 z-30 bg-white border border-[#E2E8F0] p-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => save(false)}
             disabled={status === 'saving'}
-            className="h-10 px-4 bg-white border border-[#E2E8F0] text-[#0F172A] text-[12px] font-bold flex items-center gap-2 disabled:opacity-60"
+            className="h-10 px-4 bg-white border border-[#E2E8F0] text-[#0F172A] text-sm font-bold flex items-center gap-2 disabled:opacity-60"
           >
             <FloppyDisk size={15} weight="bold" />
             Save draft
@@ -114,7 +114,7 @@ export default function ContentEditor({
             type="button"
             onClick={openPreview}
             disabled={status === 'saving'}
-            className="h-10 px-4 bg-white border border-[#E2E8F0] text-[#0F172A] text-[12px] font-bold flex items-center gap-2 disabled:opacity-60"
+            className="h-10 px-4 bg-white border border-[#E2E8F0] text-[#0F172A] text-sm font-bold flex items-center gap-2 disabled:opacity-60"
           >
             <Eye size={15} weight="bold" />
             Preview
@@ -123,7 +123,7 @@ export default function ContentEditor({
             type="button"
             onClick={() => save(true)}
             disabled={status === 'saving'}
-            className="h-10 px-4 bg-primary text-white text-[12px] font-bold flex items-center gap-2 disabled:opacity-60"
+            className="h-10 px-4 bg-primary text-white text-sm font-bold flex items-center gap-2 disabled:opacity-60"
           >
             <UploadSimple size={15} weight="bold" />
             {status === 'saving' ? 'Saving…' : 'Publish'}
@@ -131,17 +131,17 @@ export default function ContentEditor({
           <button
             type="button"
             onClick={() => reset()}
-            className="h-10 px-4 bg-white border border-[#E2E8F0] text-[#DC2626] text-[12px] font-bold flex items-center gap-2"
+            className="h-10 px-4 bg-white border border-[#E2E8F0] text-[#DC2626] text-sm font-bold flex items-center gap-2"
           >
             <ArrowClockwise size={15} weight="bold" />
             Reset page
           </button>
         </div>
-        <div className="text-[12px] font-bold">
+        <div className="text-sm font-bold">
           {status === 'saved' && <span className="text-[#059669] flex items-center gap-1.5"><CheckCircle size={14} weight="fill" /> {message}</span>}
           {status === 'published' && <span className="text-[#059669] flex items-center gap-1.5"><CheckCircle size={14} weight="fill" /> {message}</span>}
           {status === 'error' && <span className="text-[#DC2626] flex items-center gap-1.5"><WarningCircle size={14} weight="fill" /> {message}</span>}
-          {status === 'idle' && <span className="text-[#94A3B8]">Unsaved changes are not visible on the live site.</span>}
+          {status === 'idle' && <span className="text-[#64748B]">Unsaved changes are not visible on the live site.</span>}
         </div>
       </div>
 
@@ -162,16 +162,16 @@ export default function ContentEditor({
                   className={`text-[#64748B] transition-transform ${isOpen ? '' : '-rotate-90'}`}
                 />
                 <span>
-                  <span className="block text-[15px] font-black text-[#0F172A] tracking-tight">{section.label}</span>
+                  <span className="block text-[15px] font-semibold text-[#0F172A] tracking-tight">{section.label}</span>
                   {section.description && (
-                    <span className="block text-[12px] text-[#64748B] font-medium mt-0.5">{section.description}</span>
+                    <span className="block text-sm text-[#64748B] font-medium mt-0.5">{section.description}</span>
                   )}
                 </span>
               </button>
               <button
                 type="button"
                 onClick={() => reset(section.key)}
-                className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#94A3B8] hover:text-[#DC2626]"
+                className="text-[13px] font-bold normal-case tracking-normal text-[#64748B] hover:text-[#DC2626]"
               >
                 Reset
               </button>
@@ -183,11 +183,11 @@ export default function ContentEditor({
                   const key = `${section.key}.${field.key}`;
                   return (
                     <div key={field.key}>
-                      <label className="block text-[12px] font-black uppercase tracking-[0.12em] text-[#475569] mb-2">
+                      <label className="block text-sm font-semibold normal-case tracking-normal text-[#475569] mb-2">
                         {field.label}
                       </label>
                       <FieldInput field={field} value={values[key] ?? ''} onChange={(v) => setValue(key, v)} />
-                      {field.help && <p className="mt-1.5 text-[11px] text-[#94A3B8] font-medium">{field.help}</p>}
+                      {field.help && <p className="mt-1.5 text-[13px] text-[#64748B] font-medium">{field.help}</p>}
                     </div>
                   );
                 })}
@@ -209,7 +209,7 @@ export default function ContentEditor({
           <button
             type="button"
             onClick={() => setPreviewNonce((n) => n + 1)}
-            className="h-9 px-3 bg-white border border-[#E2E8F0] text-[#0F172A] text-[12px] font-bold flex items-center gap-2"
+            className="h-9 px-3 bg-white border border-[#E2E8F0] text-[#0F172A] text-sm font-bold flex items-center gap-2"
           >
             <ArrowClockwise size={14} weight="bold" />
             Reload preview
@@ -218,7 +218,7 @@ export default function ContentEditor({
             href={page.path}
             target="_blank"
             rel="noreferrer"
-            className="h-9 px-3 bg-white border border-[#E2E8F0] text-primary text-[12px] font-bold flex items-center"
+            className="h-9 px-3 bg-white border border-[#E2E8F0] text-primary text-sm font-bold flex items-center"
           >
             Open live page
           </a>

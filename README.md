@@ -1,72 +1,102 @@
-# University Church Management System (U-CHMS)
+# University Church Management System
 
-An administrative platform for managing university church chapters across the national network. Features a command center UI with real-time analytics and role-based access control.
+CASA UENR public website and administrative platform for regions, chapters, members, attendance, events, finances, and content publishing.
 
-## 🚀 How to Run (Direct Deployment Guide)
+## Stack and requirements
 
-### 1. Prerequisites
-- **Node.js**: v18.x or v20.x
-- **Database**: PostgreSQL (Recommended for production) or SQLite (Included for development).
-- **Hosting Platform**: Vercel (Preferred) or Railway/Render.
+- Node.js 20.9 or newer
+- Next.js 16.2 / React 19 / TypeScript
+- PostgreSQL with Prisma 7 (SQLite is not supported)
+- Auth.js v5 credentials authentication
+- Tailwind CSS 4, Phosphor icons, Recharts
 
-### 2. Local Setup
-1. **Clone the project** and install dependencies:
-   ```bash
-   npm install
-   ```
-2. **Configure Environment Variables**:
-   Copy `.env.example` to `.env` and fill in the details:
-   ```bash
-   cp .env.example .env
-   ```
-3. **Initialize Database**:
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   # Optional: Run the seed script to create admin accounts
-   node prisma/seed-auth.js
-   ```
-4. **Start Development Server**:
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000)
+## Local setup
 
----
+1. Install dependencies with `npm install`.
+2. Copy `.env.example` to `.env`. Set PostgreSQL `DATABASE_URL` and a strong random `AUTH_SECRET`.
+3. For a new empty database, run `npm run db:migrate`.
+4. Set `BOOTSTRAP_ADMIN_EMAIL` and a unique `BOOTSTRAP_ADMIN_PASSWORD` of at least 16 characters, then run `npm run seed:auth`. This creates one national administrator only if that email does not exist. Remove the bootstrap variables afterward. There are no default credentials.
+5. Run `npm run dev`.
 
-## ☁️ Deployment Guide (For Stakeholders Review)
+Demo scripts (`seed:full`, `seed:dummy`, and `seed-uenr.js`) are development fixtures. Never run them against production data.
 
-### Step 1: Database (Neon.tech)
-1. Sign up at [Neon.tech](https://neon.tech) and create a new project.
-2. Copy the **Connection String** (PostgreSQL).
-3. Set this as your `DATABASE_URL` in your hosting environment variables.
+## Existing databases: migration baseline
 
-### Step 2: Hosting (Vercel)
-1. Push your code to a GitHub repository.
-2. Import the repository into **Vercel**.
-3. Add the following **Environment Variables** in the Vercel Dashboard:
-   - `DATABASE_URL`: (The string from Neon)
-   - `NEXTAUTH_SECRET`: (Generate a random string: `openssl rand -base64 32`)
-   - `NEXTAUTH_URL`: `https://your-app-name.vercel.app`
-   - `AUTH_TRUST_HOST`: `true`
-4. Click **Deploy**.
+This repository previously used `prisma db push` without migration history. Back up the database and verify that its existing schema matches the baseline migration before adopting migrations. Do not execute the baseline SQL against an existing populated database.
 
----
+For a matching existing schema, mark only the baseline as already applied:
 
-## 🔐 Default Administrative Credentials
-*Used for the initial system review.*
+```powershell
+npx prisma migrate resolve --applied 20261031000000_baseline
+```
 
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| **National Admin** | `national@u-chms.gov` | `admin123` |
-| **Regional Admin** | `regional@u-chms.gov` | `admin123` |
-| **Local Admin** | `local@u-chms.gov` | `admin123` |
+Review the currency preflight below, then run `npm run db:migrate` to apply subsequent migrations. If the database differs from the baseline, reconcile the differences in a reviewed migration first. For a new empty database, `npm run db:migrate` applies both migrations normally.
 
----
+### Currency migration
 
-## 🛠 Tech Stack
-- **Framework**: Next.js 15 (App Router)
-- **Styling**: Vanilla CSS + Premium Design Tokens
-- **Database**: PostgreSQL (via Prisma ORM)
-- **Identity**: NextAuth.js (v5)
-- **Visuals**: Lucide Icons, Recharts (Modernized)
+Transaction amounts now use PostgreSQL `DECIMAL(14,2)`. The migration rounds historical floating-point values to cents. Before deployment, review out-of-range, non-positive, non-finite, and fractional-cent data with your database administrator:
+
+```sql
+SELECT id, amount FROM "Transaction"
+WHERE amount <= 0 OR amount >= 1000000000000
+   OR amount::text IN ('NaN', 'Infinity', '-Infinity')
+   OR amount::numeric <> round(amount::numeric, 2);
+```
+
+Resolve invalid values and review rounding before applying the migration. New finance API requests must have a positive amount with at most two decimal places and a valid transaction type/date. Bulk imports validate all rows before inserting.
+
+## Deployment
+
+Set `DATABASE_URL`, a strong `AUTH_SECRET`, `AUTH_TRUST_HOST=true`, and the canonical site URL when needed. Configure optional S3-compatible storage from `.env.example`.
+
+Run database migrations as a separate reviewed deployment step:
+
+```powershell
+npm run db:migrate
+npm run build
+npm start
+```
+
+The build generates the Prisma client and compiles the application; it does not modify the database. `seed:prod` runs only the explicit create-only administrator bootstrap and never inserts demo records or resets existing passwords.
+
+After changing client components, remove the entire workspace `.next` directory before building, per `AGENTS.md`.
+
+## Checks
+
+```powershell
+npm run lint
+npm test
+npx tsc --noEmit --incremental false
+npm run build
+```
+
+
+### Secretary inbox and Arkesel SMS
+
+Public contact submissions are stored for `SITE_CHAPTER_ID`. Only a `SECRETARY` in that
+chapter can read/archive them at `/messages`. Other roles cannot access the inbox.
+
+Secretaries use `/announcements` to prepare SMS for active chapter members, student
+leaders, or selected active members. Invalid/duplicate phone numbers are excluded.
+A preview saves the recipient snapshot; sending requires confirmation and happens once.
+
+Set these server-only environment variables and restart:
+
+```dotenv
+SITE_CHAPTER_ID="the-chapter-that-owns-this-website"
+ARKESEL_API_KEY="your-arkesel-api-key"
+ARKESEL_SENDER_ID="CASA UENR"
+```
+
+Use an Arkesel-approved sender ID (at most 11 letters, numbers, or spaces) and fund the
+SMS balance. Do not use a `NEXT_PUBLIC_` prefix for these variables. The integration uses
+the [Arkesel SMS V2 API](https://developers.arkesel.com/), supports up to 1,000 recipients
+per announcement, and estimates GSM-7/Unicode SMS parts before sending.
+
+Accepted means gateway acceptance, not handset delivery. Check Arkesel for final delivery
+reports. Unknown or interrupted submissions must be checked before sending another
+announcement; the application does not automatically retry ambiguous sends.
+
+Apply migration `20261101010000_secretary_communications` with `npm run db:migrate`
+when deploying elsewhere. Contact rate limiting is in memory; use a shared limiter for
+multiple application instances.

@@ -1,8 +1,11 @@
+import '../site-redesign.css';
+import '../church-inner.css';
 import SiteHeader from '@/components/site/SiteHeader';
 import SiteFooter from '@/components/site/SiteFooter';
 import SiteReveal from '@/components/site/SiteReveal';
 import { getGlobalContent, getPageContent, parseList } from '@/lib/cms/content';
 import { SITE_NAME, SITE_URL, SITE_DESCRIPTION, SOCIAL_LINKS } from '@/lib/seo';
+
 
 export default async function SiteLayout({
   children,
@@ -26,14 +29,15 @@ export default async function SiteLayout({
   };
 
   return (
-    <main className="site min-h-screen w-full bg-white overflow-x-clip">
+    <main className="site site-editorial min-h-screen w-full overflow-x-clip">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
+      <a href="#site-content" className="skip-link">Skip to content</a>
       <div className="main-container">
         <SiteHeader siteName={siteName} />
-        {children}
+        <div id="site-content">{children}</div>
         <SiteFooter content={content} gatherings={gatherings} venue={venue} />
         <SiteReveal />
       </div>

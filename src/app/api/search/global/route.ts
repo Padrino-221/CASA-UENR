@@ -28,7 +28,7 @@ export async function GET(request: Request) {
         select: { id: true, name: true, university: true, campus: true }
       }),
       db.student.findMany({
-        where: { 
+        where: {
           OR: [
             { name: { contains: query, mode: 'insensitive' } },
             { studentId: { contains: query, mode: 'insensitive' } }
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     const results = [
       ...regions.map((r: { id: string; name: string }) => ({ type: 'REGION', id: r.id, title: r.name, subtitle: 'Region Secretariat', link: `/regions` })),
       ...institutions.map((i: { id: string; name: string; university: string | null; campus: string | null }) => ({ type: 'BRANCH', id: i.id, title: i.name, subtitle: `${i.university} - ${i.campus || 'Main'}`, link: `/chapters` })),
-      ...students.map((s: { id: string; name: string; levelYear: string | null; chapter: { name: string }; studentId: string }) => ({ type: 'MEMBER', id: s.id, title: s.name, subtitle: `${s.levelYear} | ${s.chapter?.name ?? 'Unassigned'} (${s.studentId})`, link: `/students` }))
+      ...students.map((s: { id: string; name: string; levelYear: string | null; chapter: { name: string } | null; studentId: string }) => ({ type: 'MEMBER', id: s.id, title: s.name, subtitle: `${s.levelYear} | ${s.chapter?.name ?? 'Unassigned'} (${s.studentId})`, link: `/students` }))
     ];
 
     return NextResponse.json({ results });

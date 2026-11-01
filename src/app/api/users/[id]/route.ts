@@ -37,7 +37,7 @@ export async function PATCH(
     // Permissions:
     // National can edit anyone.
     // Regional can edit Local Admins within their own region (resolved via chapter).
-    // Local can edit their own chapter's sub-accounts (Finance / Secretary).
+    // Local can edit their own chapter's sub-accounts (Finance / Secretary / Content Manager).
     if (currentRole === 'REGIONAL_ADMIN') {
       const hasJurisdiction = await regionalAdminHasJurisdiction(session.user?.regionId, userToUpdate);
       if (!hasJurisdiction) {
@@ -45,6 +45,7 @@ export async function PATCH(
       }
     } else if (currentRole === 'LOCAL_ADMIN') {
       const isOwnSubAccount =
+        !!session.user?.chapterId &&
         (SUB_ACCOUNT_ROLES as readonly string[]).includes(userToUpdate.role) &&
         userToUpdate.chapterId === session.user?.chapterId;
       if (!isOwnSubAccount) {
@@ -71,6 +72,12 @@ export async function PATCH(
       }
       if (role !== undefined) updateData.role = role;
       updateData.chapterId = session.user?.chapterId;
+    } else if (currentRole === 'REGIONAL_ADMIN') {
+      if ((role !== undefined && role !== 'LOCAL_ADMIN') ||
+          (chapterId !== undefined && chapterId !== userToUpdate.chapterId) ||
+          (regionId !== undefined && regionId !== userToUpdate.regionId)) {
+        return NextResponse.json({ error: 'Forbidden: Regional administrators cannot change roles or assignments' }, { status: 403 });
+      }
     } else {
       if (role !== undefined) updateData.role = role;
       if (chapterId !== undefined && chapterId !== '') updateData.chapterId = chapterId;
@@ -119,6 +126,7 @@ export async function DELETE(
       }
     } else if (currentRole === 'LOCAL_ADMIN') {
       const isOwnSubAccount =
+        !!session.user?.chapterId &&
         (SUB_ACCOUNT_ROLES as readonly string[]).includes(userToDelete.role) &&
         userToDelete.chapterId === session.user?.chapterId;
       if (!isOwnSubAccount) {

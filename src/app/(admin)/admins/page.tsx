@@ -1,7 +1,9 @@
+import type { Prisma } from '@prisma/client';
 import React from 'react';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import { SUB_ACCOUNT_ROLES } from '@/lib/roles';
 import AdminList from '@/components/admins/AdminList';
 
 export default async function AdminManagement() {
@@ -12,11 +14,11 @@ export default async function AdminManagement() {
     redirect('/');
   }
 
-  // Local admins only manage chapter-scoped sub-accounts (Finance / Secretary).
-  const where =
+  // Local admins only manage chapter-scoped sub-accounts (Finance / Secretary / Content Manager).
+  const where: Prisma.UserWhereInput =
     role === 'LOCAL_ADMIN'
-      ? { chapterId: session.user?.chapterId ?? 'none', role: { in: ['FINANCE', 'SECRETARY'] } }
-      : {};
+      ? { chapterId: session.user?.chapterId ?? 'none', role: { in: [...SUB_ACCOUNT_ROLES] } }
+      : role === 'REGIONAL_ADMIN' ? { role: 'LOCAL_ADMIN', chapter: { regionId: session.user.regionId || 'none' } } : {};
 
   const users = await db.user.findMany({
     where,
@@ -34,10 +36,10 @@ export default async function AdminManagement() {
       <header className="premium-header !mb-0 !pb-6">
         <div className="header-content-root">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">
               {isLocal ? 'Sub-accounts' : 'Admins'}
             </h1>
-            <p className="text-xs uppercase font-black text-slate-500 tracking-widest mt-2.5">
+            <p className="text-sm normal-case font-semibold text-slate-500 tracking-normal mt-2.5">
               {isLocal ? 'Task accounts for your chapter' : 'Admin Accounts'}
             </p>
           </div>

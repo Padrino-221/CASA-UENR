@@ -7,11 +7,11 @@ export type AppRole =
   | 'SECRETARY';
 
 /** Sub-accounts created by a LOCAL_ADMIN, scoped to their chapter. */
-export const SUB_ACCOUNT_ROLES = ['FINANCE', 'SECRETARY'] as const;
+export const SUB_ACCOUNT_ROLES = ['FINANCE', 'SECRETARY', 'CONTENT_MANAGER'] as const;
 export type SubAccountRole = (typeof SUB_ACCOUNT_ROLES)[number];
 
 export function isSubAccount(role?: string | null): role is SubAccountRole {
-  return role === 'FINANCE' || role === 'SECRETARY';
+  return role === 'FINANCE' || role === 'SECRETARY' || role === 'CONTENT_MANAGER';
 }
 
 /** Roles whose data is scoped to a single chapter. */
@@ -46,4 +46,9 @@ export function canManageCalendar(role?: string | null): boolean {
 
 export function canViewAuditLogs(role?: string | null): boolean {
   return role === 'NATIONAL_ADMIN' || role === 'REGIONAL_ADMIN' || role === 'LOCAL_ADMIN';
+}
+
+/** Explicit allowlist for administrative data; CMS-only accounts have no access. */
+export function canViewAdministrativeData(role?: string | null): boolean {
+  return role === 'NATIONAL_ADMIN' || role === 'REGIONAL_ADMIN' || isLocalScope(role);
 }

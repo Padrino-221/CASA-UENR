@@ -25,7 +25,7 @@ export default function MediaPicker({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const { confirm } = useNotification();
+  const { confirm, success } = useNotification();
 
   const load = useCallback(async () => {
     try {
@@ -41,6 +41,7 @@ export default function MediaPicker({
   }, [open, load]);
 
   const handleUpload = async (file: File) => {
+    if (file.size > 100 * 1024 * 1024) { setError('This image exceeds the 100 MB upload limit.'); return; }
     setUploading(true);
     setError('');
     try {
@@ -50,6 +51,7 @@ export default function MediaPicker({
       if (res.ok) {
         const asset = await res.json();
         onChange(asset.url);
+        success('Image uploaded. Save the article or page to apply it.');
         setOpen(false);
         load();
       } else {
@@ -84,7 +86,7 @@ export default function MediaPicker({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="" className="w-full h-full object-cover" />
           ) : (
-            <ImageSquare size={22} className="text-[#94A3B8]" />
+            <ImageSquare size={22} className="text-[#64748B]" />
           )}
         </div>
         <div className="flex flex-wrap gap-2">
@@ -92,15 +94,15 @@ export default function MediaPicker({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
-            className="h-9 px-3 bg-primary text-white text-[12px] font-bold flex items-center gap-2 disabled:opacity-60"
+            className="h-9 px-3 bg-primary text-white text-sm font-bold flex items-center gap-2 disabled:opacity-60"
           >
             <UploadSimple size={14} weight="bold" />
-            {uploading ? 'Uploading…' : 'Upload'}
+            {uploading ? 'Uploading & optimising…' : 'Upload'}
           </button>
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="h-9 px-3 bg-white border border-[#E2E8F0] text-[#0F172A] text-[12px] font-bold flex items-center gap-2"
+            className="h-9 px-3 bg-white border border-[#E2E8F0] text-[#0F172A] text-sm font-bold flex items-center gap-2"
           >
             <ImageSquare size={14} weight="bold" />
             Library
@@ -109,7 +111,7 @@ export default function MediaPicker({
             <button
               type="button"
               onClick={() => onChange('')}
-              className="h-9 px-3 bg-white border border-[#E2E8F0] text-[#DC2626] text-[12px] font-bold"
+              className="h-9 px-3 bg-white border border-[#E2E8F0] text-[#DC2626] text-sm font-bold"
             >
               Remove
             </button>
@@ -119,8 +121,8 @@ export default function MediaPicker({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
-        className="hidden"
+        accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif,image/tiff"
+        className="hidden rounded-md text-base"
         onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) handleUpload(file);
@@ -128,8 +130,10 @@ export default function MediaPicker({
         }}
       />
 
+      {error && <p role="alert" className="text-sm text-rose-700">{error}</p>}
+      <p className="text-xs text-slate-500">Images up to 100 MB. Automatically resized and converted to WebP. Save your changes after selecting an image.</p>
       <Modal isOpen={open} onClose={() => setOpen(false)} title="Media library" maxWidth="max-w-4xl">
-        {error && <p className="mb-4 text-sm font-bold text-[#DC2626]">{error}</p>}
+
         {assets.length === 0 ? (
           <p className="text-sm text-[#64748B] font-medium py-8 text-center">
             No images yet. Upload one to get started.
@@ -162,7 +166,7 @@ export default function MediaPicker({
                 >
                   <Trash size={13} weight="bold" />
                 </button>
-                <p className="px-2 py-1 text-[10px] text-[#64748B] font-medium truncate">{asset.filename}</p>
+                <p className="px-2 py-1 text-[13px] text-[#64748B] font-medium truncate">{asset.filename}</p>
               </div>
             ))}
           </div>

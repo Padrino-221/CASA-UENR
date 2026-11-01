@@ -31,7 +31,7 @@ interface CollectionListProps {
 export default function CollectionList({ initialCollections, chapters, members, role }: CollectionListProps) {
   const { isSubmitting, createCollection, updateCollection, deleteCollection, bulkUploadCollections } = useCollections();
   const notification = useNotification();
-  
+
   const searchParams = useSearchParams();
   const urlChId = searchParams.get('chapterId') || '';
 
@@ -50,8 +50,8 @@ export default function CollectionList({ initialCollections, chapters, members, 
   const [bulkFile, setBulkFile] = useState<File | null>(null);
   const { searchQuery } = useGlobalSearch();
 
-  const [newCol, setNewCol] = useState({ 
-    amount: '', type: 'INCOME', category: 'Offering', chapterId: '', studentId: '', 
+  const [newCol, setNewCol] = useState({
+    amount: '', type: 'INCOME', category: 'Offering', chapterId: '', studentId: '',
     date: new Date().toISOString().split('T')[0], description: ''
   });
 
@@ -59,9 +59,9 @@ export default function CollectionList({ initialCollections, chapters, members, 
     e.preventDefault();
     if (await createCollection(newCol)) {
       setShowAddModal(false);
-      setNewCol({ 
-        amount: '', type: 'INCOME', category: 'Offering', chapterId: '', studentId: '', 
-        date: new Date().toISOString().split('T')[0], description: '' 
+      setNewCol({
+        amount: '', type: 'INCOME', category: 'Offering', chapterId: '', studentId: '',
+        date: new Date().toISOString().split('T')[0], description: ''
       });
     }
   };
@@ -165,31 +165,31 @@ export default function CollectionList({ initialCollections, chapters, members, 
         <div className="header-content-root">
           <div>
             <div className="flex flex-col md:flex-row md:items-center gap-3">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">Collections</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">Collections</h1>
               {selectedChapter && (
-                <div className="bg-[#EBF2FF] text-[#1E67FC] text-[10px] font-black px-3 py-1.5 flex items-center gap-2 shrink-0 border border-[#1E67FC]/10 mt-2 md:mt-0 w-fit">
+                <div className="bg-[#EBF2FF] text-[#1D4ED8] text-[13px] font-semibold px-3 py-1.5 flex items-center gap-2 shrink-0 border border-[#1D4ED8]/10 mt-2 md:mt-0 w-fit">
                   <span>Chapter: {selectedChapter.name}</span>
-                  <button 
+                  <button
                     onClick={() => setSelectedChId('')}
-                    className="hover:text-[#0F53D6] text-slate-400 font-extrabold text-xs leading-none"
+                    className="hover:text-[#0F53D6] text-slate-500 font-semibold text-sm leading-none"
                   >
                     ×
                   </button>
                 </div>
               )}
               {selectedCategory && (
-                <div className="bg-[#EBF2FF] text-[#1E67FC] text-[10px] font-black px-3 py-1.5 flex items-center gap-2 shrink-0 border border-[#1E67FC]/10 mt-2 md:mt-0 w-fit">
+                <div className="bg-[#EBF2FF] text-[#1D4ED8] text-[13px] font-semibold px-3 py-1.5 flex items-center gap-2 shrink-0 border border-[#1D4ED8]/10 mt-2 md:mt-0 w-fit">
                   <span>Type: {selectedCategoryLabel}</span>
-                  <button 
+                  <button
                     onClick={() => setSelectedCategory('')}
-                    className="hover:text-[#0F53D6] text-slate-400 font-extrabold text-xs leading-none"
+                    className="hover:text-[#0F53D6] text-slate-500 font-semibold text-sm leading-none"
                   >
                     ×
                   </button>
                 </div>
               )}
             </div>
-            <p className="text-xs uppercase font-black text-slate-500 tracking-widest mt-2.5">Finance</p>
+            <p className="text-sm normal-case font-semibold text-slate-500 tracking-normal mt-2.5">Finance</p>
           </div>
 
           <div className="actions-cluster">
@@ -208,23 +208,23 @@ export default function CollectionList({ initialCollections, chapters, members, 
       <CollectionStats totalIncome={totalIncome} totalExpense={totalExpense} balance={balance} />
 
       {/* Premium Multi-Filter Toolbar */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white border border-black/5 p-4 mb-6">
+      <div className="admin-filter-bar">
         {/* Search Field */}
-        <div className="relative w-full md:w-[320px]">
-          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" weight="duotone" />
-          <input 
-            type="text" 
-            placeholder="Search transactions, members, amount..." 
+        <div className="admin-filter-search relative">
+          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" weight="duotone" />
+          <input
+            type="text"
+            aria-label="Search transactions" placeholder="Search transactions..."
             value={localSearchQuery}
             onChange={(e) => setLocalSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
           />
         </div>
 
         {/* Dynamic Dropdowns Filter Cluster */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto justify-end">
+        <div className="admin-filter-controls">
           {!isLocalScope(role) && (
-            <CustomDropdown 
+            <CustomDropdown
               options={chapterDropdownOptions}
               value={selectedChId}
               onChange={(val) => setSelectedChId(val)}
@@ -234,7 +234,7 @@ export default function CollectionList({ initialCollections, chapters, members, 
           )}
 
           {/* Category Dropdown Selector */}
-          <CustomDropdown 
+          <CustomDropdown
             options={categoryDropdownOptions}
             value={selectedCategory}
             onChange={(val) => setSelectedCategory(val)}
@@ -243,13 +243,13 @@ export default function CollectionList({ initialCollections, chapters, members, 
           />
 
           {(localSearchQuery || selectedChId || selectedCategory) && (
-            <button 
+            <button
               onClick={() => {
                 setLocalSearchQuery('');
                 setSelectedChId('');
                 setSelectedCategory('');
               }}
-              className="px-4 py-2.5 text-slate-400 hover:text-[#1E67FC] hover:bg-[#1E67FC]/10 font-black text-xs uppercase tracking-widest transition-all shrink-0 w-full sm:w-auto"
+              className="px-4 py-2.5 text-slate-500 hover:text-[#1D4ED8] hover:bg-[#1D4ED8]/10 font-semibold text-sm normal-case tracking-normal transition-all shrink-0 w-full sm:w-auto"
             >
               Reset
             </button>
@@ -257,24 +257,24 @@ export default function CollectionList({ initialCollections, chapters, members, 
         </div>
       </div>
 
-      <CollectionTable 
-        collections={filteredCollections} role={role} 
+      <CollectionTable
+        collections={filteredCollections} role={role}
         onEdit={(col) => { setEditingCol(col); setShowEditModal(true); }}
         onDelete={deleteCollection} searchQuery={searchQuery}
         onAddClick={() => setShowAddModal(true)}
       />
 
-      <CollectionAddModal 
+      <CollectionAddModal
         isOpen={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleCreateSubmit}
         newCol={newCol} setNewCol={setNewCol} institutions={chapters} members={members} isSubmitting={isSubmitting}
       />
 
-      <CollectionEditModal 
+      <CollectionEditModal
         isOpen={showEditModal} onClose={() => setShowEditModal(false)} onSubmit={handleUpdateSubmit}
         editingCol={editingCol} setEditingCol={setEditingCol} isSubmitting={isSubmitting}
       />
 
-      <CollectionBulkModal 
+      <CollectionBulkModal
         isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} onSubmit={handleBulkSubmit}
         bulkFile={bulkFile} setBulkFile={setBulkFile} onDownloadTemplate={downloadTemplate} isSubmitting={isSubmitting}
       />

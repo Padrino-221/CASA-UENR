@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
     "@neondatabase/serverless",
     "ws",
   ],
+  async headers() {
+    return [
+      { source: '/sw.js', headers: [{ key: 'Cache-Control', value: 'no-store' }] },
+      { source: '/reset-local-cache.html', headers: [{ key: 'Cache-Control', value: 'no-store' }] },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
@@ -16,6 +22,7 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
+    proxyClientMaxBodySize: '101mb',
     optimizePackageImports: ["@phosphor-icons/react"],
     turbopackFileSystemCacheForDev: false,
   },

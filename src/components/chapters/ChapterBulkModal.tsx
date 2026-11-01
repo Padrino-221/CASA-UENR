@@ -31,16 +31,16 @@ export const ChapterBulkModal: React.FC<ChapterBulkModalProps> = ({
   }));
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
       title="Import Chapters"
     >
       <form onSubmit={onSubmit} className="space-y-8">
         {role === 'NATIONAL_ADMIN' && (
           <div className="space-y-2">
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Region</label>
-            <CustomDropdown 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Region</label>
+            <CustomDropdown
               options={regionOptions}
               value={targetRegionId}
               onChange={val => setTargetRegionId(val)}
@@ -50,48 +50,48 @@ export const ChapterBulkModal: React.FC<ChapterBulkModalProps> = ({
           </div>
         )}
 
-        <div 
+        <div
           className="border-2 border-dashed border-slate-200 p-12 text-center hover:bg-slate-50 transition-colors group cursor-pointer relative"
           onClick={() => document.getElementById('bulk-ch-input')?.click()}
         >
-          <input 
+          <input
             id="bulk-ch-input"
-            type="file" 
-            accept=".csv" 
-            className="hidden" 
+            type="file"
+            accept=".csv"
+            className="hidden rounded-md text-base"
             onChange={(e) => setBulkFile(e.target.files?.[0] || null)}
           />
-          <div className="w-16 h-16 bg-[#EBF2FF] text-[#1E67FC] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+          <div className="w-16 h-16 bg-[#EBF2FF] text-[#1D4ED8] flex items-center justify-center mx-auto mb-6  transition-transform">
             <FileArrowUp size={32} weight="duotone" />
           </div>
           {bulkFile ? (
             <div>
-              <p className="font-extrabold text-[#0F172A] text-base">{bulkFile.name}</p>
-              <p className="text-xs text-slate-400 font-extrabold uppercase tracking-wider mt-1.5">Ready for import</p>
+              <p className="font-semibold text-[#0F172A] text-base">{bulkFile.name}</p>
+              <p className="text-sm text-slate-500 font-semibold normal-case tracking-normal mt-1.5">Ready for import</p>
             </div>
           ) : (
             <div>
-              <h4 className="font-black text-[#0F172A] text-base">Select CSV File</h4>
-              <p className="text-xs text-slate-400 font-extrabold uppercase tracking-wider mt-2">Drop your .csv file here or click to browse</p>
+              <h4 className="font-semibold text-[#0F172A] text-base">Select CSV File</h4>
+              <p className="text-sm text-slate-500 font-semibold normal-case tracking-normal mt-2">Drop your .csv file here or click to browse</p>
             </div>
           )}
         </div>
 
         <div className="flex flex-col gap-6">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onDownloadTemplate}
-            className="flex items-center justify-center gap-2 text-[#1E67FC] hover:text-[#0F53D6] text-xs font-black uppercase tracking-widest hover:underline"
+            className="flex items-center justify-center gap-2 text-[#1D4ED8] hover:text-[#0F53D6] text-sm font-semibold normal-case tracking-normal hover:underline"
           >
             <DownloadSimple size={14} weight="duotone" />
             <span>Download Chapter Template</span>
           </button>
 
           <div className="flex justify-center items-center gap-3">
-            <button type="button" className="px-6 h-12 text-slate-400 hover:text-slate-600 hover:bg-slate-50 font-black text-sm transition-all" onClick={onClose}>Cancel</button>
-            <button 
-              type="submit" 
-              disabled={isSubmitting || !bulkFile} 
+            <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-600 hover:bg-slate-50 font-semibold text-sm transition-all" onClick={onClose}>Cancel</button>
+            <button
+              type="submit"
+              disabled={isSubmitting || !bulkFile}
               className="btn-lux-primary !px-8 !h-12 disabled:opacity-50"
             >
               {isSubmitting ? 'Adding Chapters...' : 'Import All'}

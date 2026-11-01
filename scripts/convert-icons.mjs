@@ -84,10 +84,10 @@ const allPhosphorIcons = new Set([
 ]);
 
 // Sort by length descending to match longer names first
-const sortedPhosphorNames = [...allPhosphorIcons].sort((a, b) => b.length - a.length);
+
 
 const PATTERN_SELF_CLOSE = /<(\w+)\s+([^>]*?)\s*\/\s*>/gs;
-const PATTERN_OPEN_CLOSE = /<(\w+)([^>]*)>([\s\S]*?)<\/\1>/gs;
+
 
 /**
  * Add weight="duotone" to a JSX tag for a known phosphor icon
@@ -177,7 +177,7 @@ function processFile(filePath) {
   });
 
   // Handle non-self-closing tags
-  content = content.replace(/<(\w+)([^>]*)>(?!(?:[\s\S]*?<\/\1>))/g, (match, tagName, attrs) => {
+  content = content.replace(/<(\w+)([^>]*)>(?!(?:[\s\S]*?<\/\1>))/g, (match) => {
     return match; // Don't process opening tags without closing (not likely for icons)
   });
 

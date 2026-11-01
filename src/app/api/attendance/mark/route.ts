@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
-import { canManageAttendance } from '@/lib/roles';
+import { canManageAttendance, canViewAdministrativeData, isLocalScope } from '@/lib/roles';
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -26,10 +26,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized session access' }, { status: 403 });
     }
 
-    // Create records
-    const records = await Promise.all(
-      studentIds.map((studentId: string) => {
-        return db.attendanceRecord.upsert({
+    const uniqueIds = [...new Set(studentIds)];
+    if (uniqueIds.some((id) => typeof id !== 'string') || uniqueIds.length > 1000) {
+      return NextResponse.json({ error: 'Invalid student IDs' }, { status: 400 });
+    }
+    const members = await db.student.count({ where: { id: { in: uniqueIds }, chapterId: attendanceSession.chapterId } });
+    if (members !== uniqueIds.length) {
+      return NextResponse.json({ error: 'Students must belong to your chapter' }, { status: 403 });
+    }
+    // Commit the complete batch atomically.
+
+    const records = await db.$transaction(async (tx) => {
+      const results = [];
+      for (const studentId of uniqueIds) {
+        results.push(await tx.attendanceRecord.upsert({
           where: {
             sessionId_studentId: {
               sessionId,
@@ -44,9 +54,10 @@ export async function POST(request: Request) {
             studentId,
             checkInMethod: checkInMethod || 'MANUAL'
           }
-        });
-      })
-    );
+        }));
+      }
+      return results;
+    });
 
     return NextResponse.json({ success: true, count: records.length });
   } catch (err) {
@@ -60,6 +71,8 @@ export async function GET(request: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  if (!canViewAdministrativeData(session.user?.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
   const { searchParams } = new URL(request.url);
   const sessionId = searchParams.get('sessionId');
 
@@ -69,7 +82,10 @@ export async function GET(request: Request) {
 
   try {
     const records = await db.attendanceRecord.findMany({
-      where: { sessionId },
+      where: { sessionId, session: {
+        ...(isLocalScope(session.user.role) ? { chapterId: session.user.chapterId || 'none' } : {}),
+        ...(session.user.role === 'REGIONAL_ADMIN' ? { chapter: { regionId: session.user.regionId || 'none' } } : {}),
+      } },
       include: {
         student: {
           select: { id: true, name: true, studentId: true }

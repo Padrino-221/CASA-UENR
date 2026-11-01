@@ -33,6 +33,7 @@ export default function MediaLibrary() {
   }, [load]);
 
   const upload = async (file: File) => {
+    if (file.size > 100 * 1024 * 1024) { setError('This image exceeds the 100 MB upload limit.'); return; }
     setUploading(true);
     setError('');
     try {
@@ -44,6 +45,8 @@ export default function MediaLibrary() {
         const data = await res.json().catch(() => ({}));
         setError(data.error || 'Upload failed');
       }
+    } catch {
+      setError('Upload failed. Check your connection and try again.');
     } finally {
       setUploading(false);
     }
@@ -66,22 +69,22 @@ export default function MediaLibrary() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-[#0F172A] tracking-tight">Media Library</h1>
-          <p className="text-sm text-[#64748B] font-medium mt-1">Images uploaded through the CMS.</p>
+          <h1 className="text-3xl font-semibold text-[#0F172A] tracking-tight">Media Library</h1>
+          <p className="text-sm text-[#64748B] font-medium mt-1">Upload images up to 100 MB. We resize and convert them to WebP automatically.</p>
         </div>
         <button
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="h-10 px-4 bg-primary text-white text-[12px] font-bold flex items-center gap-2 disabled:opacity-60"
+          className="h-10 px-4 bg-primary text-white text-sm font-bold flex items-center gap-2 disabled:opacity-60"
         >
           <UploadSimple size={15} weight="bold" />
-          {uploading ? 'Uploading…' : 'Upload image'}
+          {uploading ? 'Uploading & optimising…' : 'Upload image'}
         </button>
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
-          className="hidden"
+          accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/avif,image/tiff"
+          className="hidden rounded-md text-base"
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) upload(file);
@@ -90,12 +93,12 @@ export default function MediaLibrary() {
         />
       </div>
 
-      {error && <p className="text-sm font-bold text-[#DC2626]">{error}</p>}
+      {error && <p role="alert" className="text-sm font-bold text-[#DC2626]">{error}</p>}
 
       {loading ? (
-        <p className="text-sm text-[#94A3B8] font-medium">Loading…</p>
+        <p className="text-sm text-[#64748B] font-medium">Loading…</p>
       ) : assets.length === 0 ? (
-        <p className="text-sm text-[#94A3B8] font-medium border border-dashed border-[#CBD5E1] p-10 text-center">
+        <p className="text-sm text-[#64748B] font-medium border border-dashed border-[#CBD5E1] p-10 text-center">
           No images uploaded yet.
         </p>
       ) : (
@@ -108,8 +111,8 @@ export default function MediaLibrary() {
               </div>
               <div className="p-3 flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-[12px] font-bold text-[#0F172A] truncate">{asset.filename}</p>
-                  <p className="text-[10px] text-[#94A3B8] font-medium">{(asset.size / 1024).toFixed(0)} KB</p>
+                  <p className="text-sm font-bold text-[#0F172A] truncate">{asset.filename}</p>
+                  <p className="text-[13px] text-[#64748B] font-medium">{(asset.size / 1024).toFixed(0)} KB</p>
                 </div>
                 <button onClick={() => remove(asset)} className="p-1.5 text-[#DC2626] shrink-0" aria-label="Delete">
                   <Trash size={15} weight="bold" />

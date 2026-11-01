@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import './layout/admin-navigation.css';
 import {
   SquaresFour, MapTrifold, Buildings, UsersThree, CheckSquare,
-  CalendarBlank, ClockCounterClockwise, Wallet, FileText, SignOut, ShieldCheck, X, PaintBrush
+  CalendarBlank, ClockCounterClockwise, Wallet, FileText, SignOut, ShieldCheck, X, PaintBrush, EnvelopeSimple, Megaphone
 } from '@phosphor-icons/react';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
@@ -17,6 +19,13 @@ interface SidebarProps {
 }
 
 const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  useEffect(() => {
+    if (!isOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [isOpen, onClose]);
   const pathname = usePathname();
   const { data: session } = useSession();
   const role = session?.user?.role;
@@ -38,6 +47,8 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: 'Chapters', icon: Buildings, path: '/chapters', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN'] },
     { name: 'Members', icon: UsersThree, path: '/students', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
     { name: 'Attendance', icon: CheckSquare, path: '/attendance', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
+    { name: 'Messages', icon: EnvelopeSimple, path: '/messages', roles: ['SECRETARY'] },
+    { name: 'Announcements', icon: Megaphone, path: '/announcements', roles: ['SECRETARY'] },
     { name: 'Events', icon: CalendarBlank, path: '/events', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
     { name: 'Calendar', icon: ClockCounterClockwise, path: '/calendar', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'SECRETARY'] },
     { name: 'Finance', icon: Wallet, path: '/collections', roles: ['NATIONAL_ADMIN', 'REGIONAL_ADMIN', 'LOCAL_ADMIN', 'FINANCE'] },
@@ -76,8 +87,10 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       {/* Sidebar Panel - Scaled Down to w-64 */}
       <aside
+        inert={!isOpen && !isDesktop}
+        aria-hidden={!isOpen && !isDesktop}
         suppressHydrationWarning
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-primary border-r border-white/10 transform lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`admin-sidebar fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-primary border-r border-white/10 transform lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
       >
         {/* Brand Header */}
@@ -88,12 +101,13 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
             <div className="flex flex-col">
               <h2 className="text-white text-[16px] font-bold tracking-tight leading-none whitespace-nowrap">CASA UENR</h2>
-              <p className="text-blue-200 text-[9px] uppercase font-bold tracking-[0.1em] mt-1">{formatRoleLabel(role)}</p>
+              <p className="text-blue-200 text-[13px] uppercase font-bold tracking-[0.1em] mt-1">{formatRoleLabel(role)}</p>
             </div>
           </Link>
 
           <button
             onClick={onClose}
+            aria-label="Close navigation"
             className="flex items-center justify-center w-7 h-7 bg-white/10 border border-white/20 text-white/70 lg:hidden"
           >
             <X size={14} weight="duotone" />
@@ -101,12 +115,13 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
 
         {/* Scrollable Navigation List */}
-        <nav suppressHydrationWarning className="flex-1 px-3 py-4 flex flex-col justify-start space-y-1 overflow-y-auto no-scrollbar">
+        <nav aria-label="Administration navigation" suppressHydrationWarning className="flex-1 px-3 py-4 flex flex-col justify-start space-y-1 overflow-y-auto no-scrollbar">
           {filteredNavItems.map((item) => {
             const active = checkActive(item.path);
             const Icon = item.icon;
             return (
               <Link
+                aria-current={active ? 'page' : undefined}
                 key={item.name}
                 href={item.path}
                 onClick={onClose}
@@ -135,7 +150,7 @@ const Sidebar = React.memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
             className="flex items-center gap-2.5 w-full px-3 h-10 text-white/60 hover:text-red-300 hover:bg-white/10 transition-all font-bold text-[13px]"
           >
             <SignOut size={18} weight="duotone" className="text-white/40 group-hover:text-red-300" />
-            <span>Exit Portal</span>
+            <span>Sign out</span>
           </button>
         </div>
       </aside>

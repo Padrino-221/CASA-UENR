@@ -48,29 +48,29 @@ export const CollectionAddModal: React.FC<CollectionAddModalProps> = ({
   ];
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
       title="Add Collection"
     >
       <form onSubmit={onSubmit} className="space-y-6">
-        
+
         {/* Amount & Date Input Grid */}
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="text-[10px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Amount (GHS)</label>
-            <input 
-              type="number" 
-              step="0.01" 
-              placeholder="0.00" 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Amount (GHS)</label>
+            <input
+              type="number"
+              step="0.01"
+              placeholder="0.00"
               value={newCol.amount}
               onChange={e => setNewCol({...newCol, amount: e.target.value})}
-              required 
-              className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A]"
+              required
+              className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A]"
             />
           </div>
           <div className="flex flex-col justify-end">
-            <CustomDateTimePicker 
+            <CustomDateTimePicker
               label="Date & Time"
               value={newCol.date ? new Date(newCol.date) : new Date()}
               onChange={val => setNewCol({...newCol, date: val.toISOString().split('T')[0]})}
@@ -97,13 +97,13 @@ export const CollectionAddModal: React.FC<CollectionAddModalProps> = ({
 
         {/* Description Field */}
         <div>
-          <label className="text-[10px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Description</label>
-          <input 
-            type="text" 
-            placeholder="Provide context for this transaction..." 
+          <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Description</label>
+          <input
+            type="text"
+            placeholder="Provide context for this transaction..."
             value={newCol.description}
             onChange={e => setNewCol({...newCol, description: e.target.value})}
-            className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A]"
+            className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A]"
           />
         </div>
 
@@ -126,17 +126,17 @@ export const CollectionAddModal: React.FC<CollectionAddModalProps> = ({
 
         {/* Form Actions Panel */}
         <div className="flex justify-center items-center gap-3 pt-6 border-t border-slate-100">
-          <button 
-            type="button" 
-            className="px-6 h-12 text-slate-400 hover:text-slate-600 hover:bg-slate-50 font-black text-xs uppercase tracking-widest transition-all" 
+          <button
+            type="button"
+            className="px-6 h-12 text-slate-500 hover:text-slate-600 hover:bg-slate-50 font-semibold text-sm normal-case tracking-normal transition-all"
             onClick={onClose}
           >
             Cancel
           </button>
-          <button 
-            type="submit" 
-            disabled={isSubmitting} 
-            className="bg-[#1E67FC] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-black text-xs uppercase tracking-widest transition-all"
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-[#1D4ED8] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-semibold text-sm normal-case tracking-normal transition-all"
           >
             {isSubmitting ? 'Adding...' : 'Add Collection'}
           </button>

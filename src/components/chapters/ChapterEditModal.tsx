@@ -38,27 +38,27 @@ export const ChapterEditModal: React.FC<ChapterEditModalProps> = ({
   ];
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={onClose}
       title="Edit Chapter"
     >
       <form onSubmit={onSubmit} className="space-y-6">
           <div>
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Chapter Name</label>
-            <input 
-              type="text" 
+            <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Chapter Name</label>
+            <input
+              type="text"
               value={editingCh?.name || ''}
               onChange={e => setEditingCh((prev: Chapter | null) => prev ? {...prev, name: e.target.value} : null)}
               required
-              className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+              className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
             />
          </div>
          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {isNational && (
               <div>
-                <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Region</label>
-                <CustomDropdown 
+                <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Region</label>
+                <CustomDropdown
                   options={regionOptions}
                   value={editingCh?.regionId || ''}
                   onChange={val => setEditingCh((prev: Chapter | null) => prev ? {...prev, regionId: val} : null)}
@@ -68,8 +68,8 @@ export const ChapterEditModal: React.FC<ChapterEditModalProps> = ({
               </div>
             )}
             <div>
-              <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Type</label>
-              <CustomDropdown 
+              <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Type</label>
+              <CustomDropdown
                 options={typeOptions}
                 value={editingCh?.university || 'University'}
                 onChange={val => setEditingCh((prev: Chapter | null) => prev ? {...prev, university: val} : null)}
@@ -80,44 +80,44 @@ export const ChapterEditModal: React.FC<ChapterEditModalProps> = ({
          </div>
 
          <div className="pt-6 border-t border-slate-100 space-y-4">
-            <label className="text-[11px] uppercase font-black text-[#1E67FC] tracking-widest block ml-1 flex items-center gap-2">
+            <label className="text-[13px] normal-case font-semibold text-[#1D4ED8] tracking-normal block ml-1 flex items-center gap-2">
                <Shield size={14} weight="duotone" /> Admin
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <div>
-                  <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Admin Name</label>
-                  <input 
-                     type="text" 
+                  <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Admin Name</label>
+                  <input
+                     type="text"
                      value={editAdmin.name}
                      onChange={e => setEditAdmin({...editAdmin, name: e.target.value})}
-                     className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+                     className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
                   />
                </div>
                <div>
-                  <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Admin Email</label>
-                  <input 
-                     type="email" 
+                  <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Admin Email</label>
+                  <input
+                     type="email"
                      value={editAdmin.email}
                      onChange={e => setEditAdmin({...editAdmin, email: e.target.value})}
-                     className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+                     className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
                   />
                </div>
             </div>
             <div>
-               <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest mb-2 block ml-1">Reset Password (Optional)</label>
-               <input 
-                  type="password" 
+               <label className="text-[13px] normal-case font-semibold text-slate-500 tracking-normal mb-2 block ml-1">Reset Password (Optional)</label>
+               <input
+                  type="password" autoComplete="new-password"
                   placeholder="Enter new secure password..."
                   value={editAdmin.password}
                   onChange={e => setEditAdmin({...editAdmin, password: e.target.value})}
-                  className="w-full p-4 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-[#0F172A] placeholder:text-slate-400"
+                  className="w-full p-4 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-[#0F172A] placeholder:text-slate-500"
                />
             </div>
          </div>
 
          <div className="flex justify-center items-center gap-3 pt-6">
-            <button type="button" className="px-6 h-12 text-slate-400 hover:text-slate-600 hover:bg-slate-50 font-black text-sm transition-all" onClick={onClose}>Cancel</button>
-            <button type="submit" disabled={isSubmitting} className="bg-[#1E67FC] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-black text-sm transition-all">
+            <button type="button" className="px-6 h-12 text-slate-500 hover:text-slate-600 hover:bg-slate-50 font-semibold text-sm transition-all" onClick={onClose}>Cancel</button>
+            <button type="submit" disabled={isSubmitting} className="bg-[#1D4ED8] hover:bg-[#0F53D6] disabled:opacity-50 text-white px-8 h-12 font-semibold text-sm transition-all">
               {isSubmitting ? 'Saving...' : 'Update Chapter'}
             </button>
          </div>

@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+import { canViewAdministrativeData, isLocalScope as hasChapterScope } from '@/lib/roles';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
@@ -6,12 +8,15 @@ import ExcelJS from 'exceljs';
 export async function GET(request: Request) {
   try {
     const session = await auth();
+    if (session && !canViewAdministrativeData(session.user?.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
     if (!session || !session.user) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
-    const exportType = searchParams.get('type') || 'strategic'; 
+    const exportType = searchParams.get('type') || 'strategic';
     const range = searchParams.get('range') || '12m';
     const chapterId = searchParams.get('chapterId') || '';
     const category = searchParams.get('category') || '';
@@ -19,7 +24,7 @@ export async function GET(request: Request) {
 
     // Determine current user scoping parameters
     const role = session.user.role;
-    const contextId = role === 'REGIONAL_ADMIN' ? session.user.regionId : (role === 'LOCAL_ADMIN' ? session.user.chapterId : null);
+    const contextId = role === 'REGIONAL_ADMIN' ? session.user.regionId : (hasChapterScope(role) ? session.user.chapterId : null);
 
     const workbook = new ExcelJS.Workbook();
     workbook.creator = 'CASA UENR System';
@@ -41,7 +46,7 @@ export async function GET(request: Request) {
           AND: [
             { type: 'INCOME' },
             { date: { gte: rangeDate } },
-            role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+            hasChapterScope(role) ? { chapterId: contextId || 'none' } : {},
             role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
           ]
         },
@@ -52,7 +57,7 @@ export async function GET(request: Request) {
       const membersCount = await db.student.count({
         where: {
           AND: [
-            role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+            hasChapterScope(role) ? { chapterId: contextId || 'none' } : {},
             role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
           ]
         }
@@ -61,7 +66,7 @@ export async function GET(request: Request) {
       const institutionsCount = await db.chapter.count({
         where: {
           AND: [
-            role === 'LOCAL_ADMIN' ? { id: contextId || 'none' } : {},
+            hasChapterScope(role) ? { id: contextId || 'none' } : {},
             role === 'REGIONAL_ADMIN' ? { regionId: contextId || 'none' } : {},
           ]
         }
@@ -81,7 +86,7 @@ export async function GET(request: Request) {
       worksheet.getCell('B3').value = new Date().toLocaleDateString(undefined, { dateStyle: 'medium' });
       worksheet.getCell('A4').value = 'Report Range:';
       worksheet.getCell('B4').value = range === '12m' ? 'Last 12 Months' : range === '6m' ? 'Last 6 Months' : 'All Historical';
-      
+
       worksheet.getCell('A3').font = { name: 'Segoe UI', bold: true, size: 10 };
       worksheet.getCell('B3').font = { name: 'Segoe UI', size: 10 };
       worksheet.getCell('A4').font = { name: 'Segoe UI', bold: true, size: 10 };
@@ -97,7 +102,7 @@ export async function GET(request: Request) {
       worksheet.getRow(6).height = 30;
 
       worksheet.getCell('A7').value = 'Total Received Finance';
-      const totalRev = transactions.reduce((a: number, b: { amount: number }) => a + b.amount, 0);
+      const totalRev = Number(transactions.reduce((a, b) => a.plus(b.amount), new Prisma.Decimal(0)));
       worksheet.getCell('B7').value = totalRev;
       worksheet.getCell('B7').numFmt = 'GH₵ #,##0.00';
 
@@ -131,7 +136,7 @@ export async function GET(request: Request) {
       const headers = ['Transaction ID', 'Date', 'Type', 'Category', 'Chapter', 'Contributor', 'Amount'];
       detailsSheet.getRow(3).values = headers;
       detailsSheet.getRow(3).height = 28;
-      
+
       headers.forEach((h: string, index: number) => {
         const colLetter = String.fromCharCode(65 + index);
         const cell = detailsSheet.getCell(`${colLetter}3`);
@@ -141,7 +146,7 @@ export async function GET(request: Request) {
       });
 
       // Fill detail rows
-      transactions.forEach((tx: { id: string; date: Date; type: string; category: string; chapter?: { name: string }; student?: { name: string }; amount: number }, idx: number) => {
+      transactions.forEach((tx, idx) => {
         const rowNumber = idx + 4;
         const row = detailsSheet.getRow(rowNumber);
         row.values = [
@@ -151,7 +156,7 @@ export async function GET(request: Request) {
           tx.category.replace(/_/g, ' '),
           tx.chapter?.name || 'Unknown',
           tx.student?.name || 'Chapter Contribution',
-          tx.amount
+          Number(tx.amount)
         ];
         row.height = 20;
 
@@ -161,7 +166,7 @@ export async function GET(request: Request) {
         detailsSheet.getCell(`D${rowNumber}`).alignment = { horizontal: 'left' };
         detailsSheet.getCell(`E${rowNumber}`).alignment = { horizontal: 'left' };
         detailsSheet.getCell(`F${rowNumber}`).alignment = { horizontal: 'left' };
-        
+
         const amtCell = detailsSheet.getCell(`G${rowNumber}`);
         amtCell.numFmt = 'GH₵ #,##0.00';
         amtCell.alignment = { horizontal: 'right' };
@@ -213,7 +218,7 @@ export async function GET(request: Request) {
             chapterId ? { chapterId } : {},
             category ? { category } : {},
             regionId ? { chapter: { regionId } } : {},
-            role === 'LOCAL_ADMIN' ? { chapterId: contextId || 'none' } : {},
+            hasChapterScope(role) ? { chapterId: contextId || 'none' } : {},
             role === 'REGIONAL_ADMIN' ? { chapter: { regionId: contextId || 'none' } } : {},
           ]
         },
@@ -232,12 +237,12 @@ export async function GET(request: Request) {
 
       // Filter summary rows
       worksheet.getCell('A3').value = 'Filter Scope:';
-      worksheet.getCell('B3').value = chapterId 
-        ? 'Specific Chapter' 
-        : (role === 'REGIONAL_ADMIN' ? 'Regional Scope' : (role === 'LOCAL_ADMIN' ? 'Local Chapter Scope' : 'All Chapters / National Network'));
+      worksheet.getCell('B3').value = chapterId
+        ? 'Specific Chapter'
+        : (role === 'REGIONAL_ADMIN' ? 'Regional Scope' : (hasChapterScope(role) ? 'Local Chapter Scope' : 'All Chapters / National Network'));
       worksheet.getCell('A4').value = 'Filter Category:';
       worksheet.getCell('B4').value = category || 'All Financial Categories';
-      
+
       worksheet.getCell('A3').font = { name: 'Segoe UI', bold: true, size: 10 };
       worksheet.getCell('B3').font = { name: 'Segoe UI', size: 10 };
       worksheet.getCell('A4').font = { name: 'Segoe UI', bold: true, size: 10 };
@@ -245,7 +250,7 @@ export async function GET(request: Request) {
 
       // Table Headers
       const colHeaders = [
-        'Transaction ID', 'Date', 'Chapter', 'Type', 'Category', 
+        'Transaction ID', 'Date', 'Chapter', 'Type', 'Category',
         'Member Name', 'Student ID', 'Amount', 'Description'
       ];
       worksheet.getRow(6).values = colHeaders;
@@ -260,7 +265,7 @@ export async function GET(request: Request) {
       });
 
       // Data list
-      collections.forEach((col: { id: string; date: Date; type: string; category: string; chapter?: { name: string }; student?: { name: string; studentId?: string }; amount: number; description?: string }, idx: number) => {
+      collections.forEach((col, idx) => {
         const rowNumber = idx + 7;
         const row = worksheet.getRow(rowNumber);
         row.values = [
@@ -271,7 +276,7 @@ export async function GET(request: Request) {
           col.category.replace(/_/g, ' '),
           col.student?.name || 'Chapter Contribution',
           col.student?.studentId || 'N/A',
-          col.amount,
+          Number(col.amount),
           col.description || ''
         ];
         row.height = 20;
@@ -283,7 +288,7 @@ export async function GET(request: Request) {
         worksheet.getCell(`E${rowNumber}`).alignment = { horizontal: 'left' };
         worksheet.getCell(`F${rowNumber}`).alignment = { horizontal: 'left' };
         worksheet.getCell(`G${rowNumber}`).alignment = { horizontal: 'center' };
-        
+
         const amtCell = worksheet.getCell(`H${rowNumber}`);
         amtCell.numFmt = 'GH₵ #,##0.00';
         amtCell.alignment = { horizontal: 'right' };
@@ -312,15 +317,15 @@ export async function GET(request: Request) {
       // Bottom balance sum row
       const totalRowNumber = collections.length + 8;
       worksheet.getRow(totalRowNumber).height = 26;
-      
+
       worksheet.getCell(`G${totalRowNumber}`).value = 'Net Balance:';
       worksheet.getCell(`G${totalRowNumber}`).font = { bold: true, name: 'Segoe UI', size: 10 };
       worksheet.getCell(`G${totalRowNumber}`).alignment = { horizontal: 'right', vertical: 'middle' };
 
-      const totalSum = collections.reduce((acc: number, curr: { type: string; amount: number }) => {
-        if (curr.type === 'EXPENSE') return acc - curr.amount;
-        return acc + curr.amount;
-      }, 0);
+      const totalSum = Number(collections.reduce((acc, curr) => {
+        if (curr.type === 'EXPENSE') return acc.minus(curr.amount);
+        return acc.plus(curr.amount);
+      }, new Prisma.Decimal(0)));
 
       const totalSumCell = worksheet.getCell(`H${totalRowNumber}`);
       totalSumCell.value = totalSum;

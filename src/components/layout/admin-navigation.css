@@ -1,0 +1,25 @@
+.admin-workspace .admin-sidebar{background:#153ca5;width:260px;min-width:260px;isolation:isolate;overflow:hidden;border-right:0;color:#fff;font-family:var(--font-plus-jakarta),sans-serif}
+.admin-workspace .admin-sidebar:before,.admin-workspace .admin-sidebar:after{content:'';position:absolute;z-index:-1;pointer-events:none;border:1px solid #dbeafe24;border-radius:50%;width:360px;height:360px}
+.admin-workspace .admin-sidebar:before{top:-220px;right:-200px;outline:1px solid #dbeafe14;outline-offset:45px}
+.admin-workspace .admin-sidebar:after{bottom:-250px;left:-180px;outline:1px solid #dbeafe14;outline-offset:50px}
+.admin-workspace .admin-sidebar>div:first-child{height:85px;padding:18px 19px;border-bottom:1px solid #ffffff24}
+.admin-workspace .admin-sidebar nav{padding:20px 13px;gap:4px;position:relative}
+.admin-workspace .admin-sidebar nav a{height:43px;border-radius:7px;padding:0 14px;font-size:14px;font-weight:500;gap:12px;color:#e2e8f0}
+.admin-workspace .admin-sidebar nav a svg{color:#bfdbfe}
+.admin-workspace .admin-sidebar nav a[aria-current=page]{background:#fff;color:#153ca5;font-weight:600}
+.admin-workspace .admin-sidebar nav a[aria-current=page] svg{color:#153ca5}
+.admin-workspace .admin-sidebar nav a:hover{background:#ffffff1a;color:white}
+.admin-workspace .admin-sidebar nav a[aria-current=page]:hover{background:#eff6ff;color:#153ca5}
+.admin-workspace .admin-sidebar>div:last-child button{border-radius:7px;color:#e2e8f0;font-size:14px;font-weight:500}
+.admin-workspace .admin-sidebar>div:last-child svg{color:#bfdbfe}
+.admin-workspace .admin-sidebar h2{color:#fff;font-size:18px;font-weight:700}
+.admin-workspace .admin-sidebar p{color:#dbeafe;font-size:11px;letter-spacing:0;text-transform:none;line-height:1.5}
+.admin-workspace .admin-topbar{height:74px;background:#fff;border-bottom:1px solid #dce3ee;padding:0 30px;flex-shrink:0}
+.admin-workspace .admin-topbar input{font:400 14px/1.4 var(--font-plus-jakarta),sans-serif;padding-block:12px;color:#0f172a}
+.admin-workspace .admin-topbar input::placeholder{color:#64748b}
+.admin-workspace .admin-topbar button{border-radius:7px}
+.admin-workspace .admin-topbar input:focus{outline:none}
+.admin-workspace .admin-topbar [class*=bg-white]{border-radius:9px}
+.admin-workspace .admin-topbar [class*=text-\[\#94A3B8\]]{color:#64748b}
+@media(max-width:1023px){.admin-workspace .admin-sidebar{position:fixed;z-index:50}.admin-workspace .admin-topbar{height:66px;padding:0 16px}.admin-workspace .admin-topbar input{font-size:14px}.admin-workspace .admin-topbar>div:first-child{min-width:0;flex:1}.admin-workspace .admin-topbar>div:first-child>div{width:auto;max-width:380px;flex:1}}
+@media(max-width:520px){.admin-workspace .admin-topbar{gap:10px;padding-inline:12px}.admin-workspace .admin-topbar>div:first-child{gap:8px}.admin-workspace .admin-topbar input{min-width:0;width:100%}.admin-workspace .admin-topbar>div:last-child{gap:2px}.admin-workspace .admin-topbar>div:last-child>button[title=Help]{display:none}}

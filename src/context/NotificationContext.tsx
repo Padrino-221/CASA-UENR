@@ -4,6 +4,7 @@ import {
   Question
 } from '@phosphor-icons/react';
 
+import Modal from '@/components/ui/Modal';
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { Toast, NotificationType } from '@/components/ui/Notification';
 
@@ -75,7 +76,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   return (
     <NotificationContext.Provider value={contextValue}>
       {children}
-      <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+      <div className="fixed top-5 right-5 left-5 sm:left-auto z-[3000] flex flex-col gap-3 pointer-events-none">
         {toasts.map((toast) => (
           <Toast
             key={toast.id}
@@ -88,42 +89,17 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
         ))}
       </div>
 
-      {confirmState && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0F172A]/40 backdrop-blur-md animate-in fade-in duration-200">
-           <div className="w-full max-w-md bg-white/95 border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-200">
-              <div className="p-7">
-                 <div className={`w-12 h-12 flex items-center justify-center mb-5 border ${
-                   confirmState.variant === 'danger' 
-                     ? 'bg-rose-500/10 border-rose-500/5 text-rose-500' 
-                     : 'bg-[#1E67FC]/10 border-[#1E67FC]/5 text-[#1E67FC]'
-                 }`}>
-                    {confirmState.variant === 'danger' ? <WarningCircle size={24} weight="duotone" /> : <Question size={24} weight="duotone" />}
-                 </div>
-                 <h3 className="text-xl font-extrabold text-[#0F172A] tracking-tight mb-2">{confirmState.title}</h3>
-                 <p className="text-[#475569] text-[13px] font-medium leading-relaxed">{confirmState.message}</p>
-                  
-                 <div className="grid grid-cols-2 gap-3 mt-6">
-                    <button 
-                       onClick={handleCancel}
-                       className="h-11 text-slate-500 font-extrabold hover:bg-slate-50 hover:text-[#0F172A] border border-slate-200/60 transition-all text-[12px]"
-                    >
-                       {confirmState.cancelText || 'Cancel'}
-                    </button>
-                    <button 
-                       onClick={handleConfirm}
-                       className={`h-11 font-extrabold text-white transition-all text-[12px] ${
-                         confirmState.variant === 'danger' 
-                           ? 'bg-rose-500 hover:bg-rose-600' 
-                           : 'bg-[#1E67FC] hover:bg-[#1E67FC]/90'
-                       }`}
-                    >
-                       {confirmState.confirmText || 'Confirm'}
-                    </button>
-                 </div>
-              </div>
-           </div>
+      {confirmState && <Modal isOpen onClose={handleCancel} title={confirmState.title} maxWidth="max-w-md">
+        <div className={`admin-confirm-icon ${confirmState.variant === 'danger' ? 'admin-confirm-icon-danger' : ''}`}>
+          {confirmState.variant === 'danger' ? <WarningCircle size={25}/> : <Question size={25}/>}
         </div>
-      )}
+        <p className="admin-confirm-message">{confirmState.message}</p>
+        <div className="admin-confirm-actions">
+          <button type="button" onClick={handleCancel}>{confirmState.cancelText || 'Cancel'}</button>
+          <button type="button" onClick={handleConfirm} className={confirmState.variant === 'danger' ? 'admin-confirm-danger' : 'admin-confirm-primary'}>{confirmState.confirmText || 'Confirm'}</button>
+        </div>
+      </Modal>}
+
     </NotificationContext.Provider>
   );
 };

@@ -1,3 +1,4 @@
+import { canViewAdministrativeData } from '@/lib/roles';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { auth } from '@/auth';
@@ -5,7 +6,8 @@ import { isLocalScope } from '@/lib/roles';
 
 export async function GET(request: Request) {
   const session = await auth();
-  
+  if (session && !canViewAdministrativeData(session.user?.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -42,8 +44,8 @@ export async function GET(request: Request) {
       include: { chapter: true },
       take: 6
     });
-    
-    students.forEach((s: { name: string; studentId: string; chapter: { name: string }; id: string }) => results.push({
+
+    students.forEach((s: { name: string; studentId: string; chapter: { name: string } | null; id: string }) => results.push({
       type: 'Member',
       title: s.name,
       subtitle: `${s.studentId} • ${s.chapter?.name ?? 'Unassigned'}`,
@@ -63,7 +65,7 @@ export async function GET(request: Request) {
         include: { region: true },
         take: 4
       });
-      
+
       institutions.forEach((i: { name: string; region: { name: string }; id: string }) => results.push({
         type: 'Branch',
         title: i.name,
@@ -79,7 +81,7 @@ export async function GET(request: Request) {
         where: { name: { contains: query, mode: 'insensitive' } },
         take: 3
       });
-      
+
       regions.forEach((r: { name: string; id: string }) => results.push({
         type: 'Region',
         title: r.name,

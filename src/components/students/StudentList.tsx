@@ -30,7 +30,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isSubmitting, handleSearch, createStudent, updateStudent, deleteStudent, bulkUploadStudents } = useStudents();
-  
+
   // Filter states
   const [filterRegion, setFilterRegion] = useState(searchParams.get('regionId') || '');
   const [filterChapter, setFilterChapter] = useState(searchParams.get('chapterId') || '');
@@ -42,7 +42,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [bulkFile, setBulkFile] = useState<File | null>(null);
-  const [newMember, setNewMember] = useState({ 
+  const [newMember, setNewMember] = useState({
     name: '', studentId: '', chapterId: '', email: '', phone: '', department: '', levelYear: '',
     address: '', nextOfKinName: '', nextOfKinPhone: '', isLeader: false, position: '', status: 'ACTIVE', maxLevel: '400'
   });
@@ -60,12 +60,12 @@ export default function StudentList({ initialStudents, chapters, regions, role }
     const params = new URLSearchParams(searchParams.toString());
     if (value) params.set(key, value);
     else params.delete(key);
-    
+
     if (key === 'regionId') {
       params.delete('chapterId');
       setFilterChapter('');
     }
-    
+
     router.replace(`/students?${params.toString()}`);
   };
 
@@ -80,7 +80,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
     e.preventDefault();
     if (await createStudent(newMember)) {
       setShowAddModal(false);
-      setNewMember({ 
+      setNewMember({
         name: '', studentId: '', chapterId: chapters.length === 1 ? chapters[0].id : '',
         email: '', phone: '', department: '', levelYear: '', address: '',
         nextOfKinName: '', nextOfKinPhone: '', isLeader: false, position: '', status: 'ACTIVE', maxLevel: '400'
@@ -153,7 +153,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
       <Protection/>
     </Style>
     <Style ss:ID="InstHeaderStyle">
-      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#1E67FC"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#1D4ED8"/>
       <Interior ss:Color="#EBF2FF" ss:Pattern="Solid"/>
       <Borders>
         <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
@@ -198,7 +198,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
       regionNames.forEach(regionName => {
         // Sanitize tab names (cannot exceed 31 chars or contain special symbols)
         const sanitizedSheet = regionName.replace(/[\\/?*\[\]]/g, '').substring(0, 31) || 'Region';
-        
+
         xml += `  <Worksheet ss:Name="${sanitizedSheet}">
     <Table ss:DefaultColumnWidth="120">
       <Column ss:Width="90"/> <!-- Student ID -->
@@ -237,15 +237,15 @@ export default function StudentList({ initialStudents, chapters, regions, role }
 
           // Student Row Items
           instStudents.forEach(student => {
-            const isAlumni = student.status === 'ALUMNI' || 
-                             student.status === 'GRADUATED' || 
-                             student.levelYear === 'Post-Grad' || 
-                             student.levelYear === 'Alumni' || 
+            const isAlumni = student.status === 'ALUMNI' ||
+                             student.status === 'GRADUATED' ||
+                             student.levelYear === 'Post-Grad' ||
+                             student.levelYear === 'Alumni' ||
                              (student.levelYear ? parseInt(student.levelYear) > 400 : false);
 
             const displayStatus = isAlumni ? 'ALUMNI' : student.status;
             const roleLabel = student.isLeader ? (student.position || 'Chapel Leader') : 'Member';
-            
+
             xml += `      <Row ss:Height="20" ss:StyleID="DataStyle">
         <Cell ss:StyleID="CodeStyle"><Data ss:Type="String">${student.studentId}</Data></Cell>
         <Cell><Data ss:Type="String">${student.name}</Data></Cell>
@@ -286,8 +286,8 @@ export default function StudentList({ initialStudents, chapters, regions, role }
       <header className="premium-header !mb-0 !pb-6">
         <div className="header-content-root">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">Members</h1>
-            <p className="text-xs uppercase font-black text-slate-500 tracking-widest mt-2.5">Manage members</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">Members</h1>
+            <p className="text-sm normal-case font-semibold text-slate-500 tracking-normal mt-2.5">Manage members</p>
           </div>
 
           <div className="actions-cluster">
@@ -306,23 +306,23 @@ export default function StudentList({ initialStudents, chapters, regions, role }
       </header>
 
       {/* Sleek Standard Filter Bar */}
-      <div className="flex flex-col lg:flex-row gap-4 items-center justify-between bg-white border border-black/5 p-4 mb-6">
+      <div className="admin-filter-bar">
         {/* Department Search Field */}
-        <div className="relative w-full lg:w-[280px]">
-          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" weight="duotone" />
-          <input 
-            type="text" 
-            placeholder="Search department..." 
+        <div className="admin-filter-search relative">
+          <MagnifyingGlass size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" weight="duotone" />
+          <input
+            type="text"
+            aria-label="Search department" placeholder="Search department..."
             value={filterDept}
             onChange={(e) => { setFilterDept(e.target.value); updateFilters('dept', e.target.value); }}
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
           />
         </div>
 
         {/* Dropdown Selectors and Reset Button */}
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
+        <div className="admin-filter-controls">
             {role === 'NATIONAL_ADMIN' && (
-            <CustomDropdown 
+            <CustomDropdown
               placeholder="All Regions"
               value={filterRegion}
               onChange={(val) => { setFilterRegion(val); updateFilters('regionId', val); }}
@@ -335,7 +335,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
           )}
 
           {(role === 'NATIONAL_ADMIN' || role === 'REGIONAL_ADMIN') && (
-            <CustomDropdown 
+            <CustomDropdown
               placeholder="All Chapters"
               value={filterChapter}
               onChange={(val) => { setFilterChapter(val); updateFilters('chapterId', val); }}
@@ -347,7 +347,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
             />
           )}
 
-          <CustomDropdown 
+          <CustomDropdown
             placeholder="Status"
             value={filterStatus}
             onChange={(val) => { setFilterStatus(val); updateFilters('status', val); }}
@@ -360,7 +360,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
             className="w-full sm:w-[140px] !space-y-0"
           />
 
-          <CustomDropdown 
+          <CustomDropdown
             placeholder="Level/Year"
             value={filterLevel}
             onChange={(val) => { setFilterLevel(val); updateFilters('level', val); }}
@@ -378,7 +378,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
           />
 
           {(filterRegion || filterChapter || filterStatus || filterLevel || filterDept) && (
-            <button 
+            <button
               onClick={() => {
                 setFilterRegion('');
                 setFilterChapter('');
@@ -387,7 +387,7 @@ export default function StudentList({ initialStudents, chapters, regions, role }
                 setFilterDept('');
                 router.replace('/students');
               }}
-              className="px-4 py-2.5 text-slate-400 hover:text-[#1E67FC] hover:bg-[#1E67FC]/10 font-black text-xs uppercase tracking-widest transition-all shrink-0"
+              className="px-4 py-2.5 text-slate-500 hover:text-[#1D4ED8] hover:bg-[#1D4ED8]/10 font-semibold text-sm normal-case tracking-normal transition-all shrink-0"
             >
               Reset
             </button>
@@ -395,40 +395,40 @@ export default function StudentList({ initialStudents, chapters, regions, role }
         </div>
       </div>
 
-      <StudentTable 
-        students={initialStudents} 
-        role={role} 
+      <StudentTable
+        students={initialStudents}
+        role={role}
         onEdit={(s) => { setEditingStudent(s); setShowEditModal(true); }}
-        onDelete={deleteStudent} 
+        onDelete={deleteStudent}
         searchQuery={searchQuery}
       />
 
-      <StudentAddModal 
-        isOpen={showAddModal} 
-        onClose={() => setShowAddModal(false)} 
+      <StudentAddModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
         onSubmit={handleCreateSubmit}
-        newMember={newMember} 
-        setNewMember={setNewMember} 
-        chapters={chapters} 
+        newMember={newMember}
+        setNewMember={setNewMember}
+        chapters={chapters}
         isSubmitting={isSubmitting}
       />
 
-      <StudentEditModal 
-        isOpen={showEditModal} 
-        onClose={() => setShowEditModal(false)} 
+      <StudentEditModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
         onSubmit={handleUpdateSubmit}
-        editingStudent={editingStudent} 
-        setEditingStudent={setEditingStudent} 
+        editingStudent={editingStudent}
+        setEditingStudent={setEditingStudent}
         isSubmitting={isSubmitting}
       />
 
-      <StudentBulkModal 
-        isOpen={showBulkModal} 
-        onClose={() => setShowBulkModal(false)} 
+      <StudentBulkModal
+        isOpen={showBulkModal}
+        onClose={() => setShowBulkModal(false)}
         onSubmit={handleBulkSubmit}
-        bulkFile={bulkFile} 
-        setBulkFile={setBulkFile} 
-        onDownloadTemplate={downloadTemplate} 
+        bulkFile={bulkFile}
+        setBulkFile={setBulkFile}
+        onDownloadTemplate={downloadTemplate}
         isSubmitting={isSubmitting}
       />
     </div>

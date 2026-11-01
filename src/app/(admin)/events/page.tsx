@@ -7,7 +7,6 @@ import {
   Plus,
   Building,
   Globe,
-  Tag,
   TrendUp,
   ShieldWarning,
   Pencil,
@@ -27,7 +26,7 @@ export default function EventsPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Create Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -187,22 +186,22 @@ export default function EventsPage() {
     const start = new Date(startStr);
     const optionsDate: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
     const optionsTime: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
-    
+
     const startDatePart = start.toLocaleDateString(undefined, optionsDate);
     const startTimePart = start.toLocaleTimeString([], optionsTime);
-    
+
     if (!endStr) {
       return `${startDatePart} @ ${startTimePart}`;
     }
-    
+
     const end = new Date(endStr);
     const endDatePart = end.toLocaleDateString(undefined, optionsDate);
     const endTimePart = end.toLocaleTimeString([], optionsTime);
-    
+
     if (startDatePart === endDatePart) {
       return `${startDatePart} @ ${startTimePart} — ${endTimePart}`;
     }
-    
+
     return `${startDatePart} @ ${startTimePart} — ${endDatePart} @ ${endTimePart}`;
   };
 
@@ -213,7 +212,7 @@ export default function EventsPage() {
           <div className="header-content-root">
             <div className="space-y-3">
               <div className="w-56 h-10 bg-slate-100" />
-              <div className="w-32 h-4 bg-slate-550" />
+              <div className="w-32 h-4 bg-slate-200" />
             </div>
           </div>
         </header>
@@ -230,7 +229,7 @@ export default function EventsPage() {
   const scopeColors: Record<string, string> = {
     'NATIONAL': 'bg-rose-50 text-rose-600 border-rose-100/50',
     'REGIONAL': 'bg-amber-50 text-amber-600 border-amber-100/50',
-    'LOCAL': 'bg-[#EBF2FF] text-[#1E67FC] border-[#1E67FC]/10'
+    'LOCAL': 'bg-[#EBF2FF] text-[#1D4ED8] border-[#1D4ED8]/10'
   };
 
   const scopeIcons: Record<string, React.ReactNode> = {
@@ -238,169 +237,109 @@ export default function EventsPage() {
     'REGIONAL': <TrendUp size={11} weight="duotone" />,
     'LOCAL': <Building size={11} weight="duotone" />
   };
- 
+
   return (
     <div className="space-y-8 w-full">
+
       {/* Page Header */}
       <header className="premium-header !mb-0 !pb-6">
         <div className="header-content-root">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tight leading-none">
-              Ministry Programs
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0F172A] tracking-tight leading-none">
+              Events
             </h1>
+            <p>Manage church gatherings, programs, and conferences.</p>
           </div>
- 
+
           <div className="actions-cluster">
-            <button 
+            <button
               onClick={() => setIsModalOpen(true)}
               className="btn-lux-primary"
             >
               <Plus size={20} weight="duotone" />
-              <span>Broadcast Event</span>
+              <span>Add event</span>
             </button>
           </div>
         </div>
       </header>
- 
-      {/* Events Listing Matrix */}
-      <div className="space-y-6">
-        {events.map((eventItem) => (
-          <div 
-            key={eventItem.id} 
-            className="group bg-white border border-black/5 sm: p-4 sm:p-6 lg:p-8 hover:border-[#1E67FC]/20 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 lg:gap-8 relative"
-          >
-            {/* Left Side: Identity & Date (Flex-1.5) */}
-            <div className="flex-1 lg:flex-[1.5] flex items-start gap-4 sm:gap-6 min-w-0 w-full">
-              {/* Calendar Date Block */}
-              <div className="flex-shrink-0 w-14 h-14 sm:w-20 sm:h-20 bg-[#EBF2FF] text-[#1E67FC] sm: flex flex-col items-center justify-center border border-black/5 shrink-0 group-hover:bg-[#1E67FC] group-hover:text-white group-hover:border-transparent transition-all duration-300">
-                <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest opacity-80 mt-0.5">
-                  {new Date(eventItem.date).toLocaleString('default', { month: 'short' })}
-                </span>
-                <span className="text-lg sm:text-2xl font-black tracking-tighter leading-none mb-0.5 mt-0.5">
-                  {new Date(eventItem.date).getDate()}
-                </span>
-              </div>
- 
-              {/* Title & Description */}
-              <div className="space-y-2 min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${scopeColors[eventItem.scope]}`}>
-                    {scopeIcons[eventItem.scope]}
-                    {eventItem.scope}
-                  </span>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-slate-50 text-slate-550 border border-black/5 text-[8px] font-black uppercase tracking-widest">
-                    <Tag size={9} className="text-[#1E67FC]" weight="duotone" />
-                    {eventItem.category}
-                  </span>
-                </div>
-                <h3 className="text-xl font-black text-[#0F172A] group-hover:text-[#1E67FC] transition-colors leading-snug tracking-tight truncate">
-                  {eventItem.title}
-                </h3>
-                {eventItem.description && (
-                  <p className="text-slate-500 text-xs font-semibold leading-relaxed line-clamp-2">
-                    {eventItem.description}
-                  </p>
-                )}
-              </div>
-            </div>
- 
-            {/* Middle Side: Logistics Column Spread (Flex-2) */}
-            <div className="flex-1 lg:flex-[2] grid grid-cols-1 sm:grid-cols-2 gap-6 w-full lg:border-l lg:border-black/5 lg:pl-8">
-              {/* Venue Block */}
-              <div className="space-y-1.5 min-w-0">
-                <div className="flex items-center gap-1.5 text-slate-400">
-                  <MapPin size={13} className="text-[#1E67FC]" weight="duotone" />
-                  <span className="text-[9px] font-black uppercase tracking-widest">Venue / Platform</span>
-                </div>
-                <p className="text-sm font-black text-[#0F172A] uppercase tracking-tight truncate leading-snug">
-                  {eventItem.venue || 'TBA'}
-                </p>
-                {eventItem.chapter && (
-                  <p className="text-[9px] font-black uppercase tracking-widest text-[#1E67FC] truncate">
-                    {eventItem.chapter.name}
-                  </p>
-                )}
-              </div>
 
-              {/* Schedule Block */}
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-1.5 text-slate-400">
-                  <Clock size={13} className="text-[#1E67FC]" weight="duotone" />
-                  <span className="text-[9px] font-black uppercase tracking-widest">Schedule / Duration</span>
-                </div>
-                <p className="text-sm font-black text-[#0F172A] uppercase tracking-tight leading-snug">
-                  {formatEventRange(eventItem.date, eventItem.endDate)}
-                </p>
+      {/* Events Listing */}
+      <div className="space-y-4">
+        {events.map((eventItem) => (
+          <article key={eventItem.id} className="program-card">
+            <div className="program-date" aria-label={new Date(eventItem.date).toLocaleDateString()}>
+              <span>{new Date(eventItem.date).toLocaleString('en-GB', { month: 'short' })}</span>
+              <strong>{new Date(eventItem.date).getDate()}</strong>
+              <small>{new Date(eventItem.date).getFullYear()}</small>
+            </div>
+            <div className="program-content">
+              <div className="program-tags">
+                <span className={`program-scope ${scopeColors[eventItem.scope]}`}>{scopeIcons[eventItem.scope]}{eventItem.scope.toLowerCase()}</span>
+                <span>{eventItem.category}</span>
+              </div>
+              <h3>{eventItem.title}</h3>
+              {eventItem.description && <p className="program-description">{eventItem.description}</p>}
+              <div className="program-details">
+                <span><MapPin size={17} aria-hidden="true" />{eventItem.venue || 'Venue to be confirmed'}</span>
+                <span><Clock size={17} aria-hidden="true" />{formatEventRange(eventItem.date, eventItem.endDate)}</span>
               </div>
             </div>
- 
-            {/* Right Side: Manager actions */}
             {canManageEvent(eventItem) && (
-              <div className="flex-shrink-0 flex items-center justify-end gap-1.5 lg:border-l lg:border-black/5 lg:pl-8 border-t border-black/5 lg:border-t-0 pt-4 lg:pt-0 w-full lg:w-auto">
-                <button 
-                  onClick={(e) => { e.stopPropagation(); handleOpenEditModal(eventItem); }} 
-                  className="w-8 h-8 bg-slate-50 text-slate-400 hover:bg-[#EBF2FF] hover:text-[#1E67FC] flex items-center justify-center transition-all border border-black/5"
-                  title="Edit Program"
-                >
-                  <Pencil size={13} weight="duotone" />
-                </button>
-                <button 
-                  onClick={(e) => { e.stopPropagation(); handleDeleteEvent(eventItem.id); }} 
-                  className="w-8 h-8 bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition-all border border-black/5"
-                  title="Delete Program"
-                >
-                  <Trash size={13} weight="duotone" />
-                </button>
+              <div className="program-actions">
+                <button aria-label={`Edit ${eventItem.title}`} title="Edit event" onClick={() => handleOpenEditModal(eventItem)}><Pencil size={18} /></button>
+                <button aria-label={`Delete ${eventItem.title}`} title="Delete event" className="program-delete" onClick={() => handleDeleteEvent(eventItem.id)}><Trash size={18} /></button>
               </div>
             )}
-          </div>
+          </article>
         ))}
 
         {events.length === 0 && (
           <div className="py-20 text-center bg-slate-50/30 border border-black/5">
             <ShieldWarning size={40} className="mx-auto text-slate-300 mb-4" weight="duotone" />
-            <h3 className="text-lg font-black text-[#0F172A] mb-1">Calendar is currently clear</h3>
-            <p className="text-slate-400 text-xs font-extrabold max-w-xs mx-auto leading-relaxed">No upcoming programs recorded in the current scope. Broadcast a new event to mobilize members.</p>
+            <h3 className="text-lg font-semibold text-[#0F172A] mb-1">Calendar is currently clear</h3>
+            <p className="text-slate-400 text-sm font-semibold max-w-xs mx-auto leading-relaxed">
+              No upcoming programs recorded in the current scope. Broadcast a new event to mobilize members.
+            </p>
           </div>
         )}
       </div>
 
       {/* Modal for Creating New Event */}
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         title="Broadcast Event"
         maxWidth="max-w-2xl"
         overflowVisible={true}
       >
         <form onSubmit={handleCreateEvent} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Event Title</label>
-            <input 
-              type="text" 
+            <label className="text-[14px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Event Title</label>
+            <input
+              type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
               placeholder="e.g. National Youth Convocation"
               required
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <CustomDateTimePicker 
+            <CustomDateTimePicker
               label="Start Date & Time"
               value={date}
               onChange={setDate}
             />
-            <CustomDateTimePicker 
+            <CustomDateTimePicker
               label="End Date & Time"
               value={endDate}
               onChange={setEndDate}
             />
           </div>
- 
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <CustomDropdown 
+            <CustomDropdown
               label="Category"
               value={category}
               onChange={setCategory}
@@ -413,39 +352,39 @@ export default function EventsPage() {
               ]}
             />
             <div className="space-y-2">
-              <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Venue / Platform</label>
-              <input 
-                type="text" 
+              <label className="text-[14px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Venue / Platform</label>
+              <input
+                type="text"
                 value={venue}
                 onChange={(e) => setVenue(e.target.value)}
-                className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+                className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
                 placeholder="e.g. Main Auditorium or Zoom Link"
               />
             </div>
           </div>
- 
+
           <div className="space-y-2">
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Program Details</label>
-            <textarea 
+            <label className="text-[14px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Program Details</label>
+            <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400 min-h-[120px] resize-none"
+              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400 min-h-[120px] resize-none"
               placeholder="Share the vision or outline details for this session..."
             />
           </div>
- 
+
           <div className="flex gap-3 pt-4">
-            <button 
+            <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-6 h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs uppercase tracking-widest transition-all"
+              className="flex-1 px-6 h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm normal-case tracking-normal transition-all"
             >
               Cancel
             </button>
-            <button 
+            <button
               type="submit"
               disabled={submitting}
-              className="flex-[2] px-6 h-12 bg-[#1E67FC] hover:bg-[#0F53D6] text-white font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50"
+              className="flex-[2] px-6 h-12 bg-[#1D4ED8] hover:bg-[#0F53D6] text-white font-semibold text-sm normal-case tracking-normal transition-all disabled:opacity-50"
             >
               {submitting ? 'Broadcasting...' : 'Broadcast'}
             </button>
@@ -454,41 +393,41 @@ export default function EventsPage() {
       </Modal>
 
       {/* Modal for Editing Existing Event */}
-      <Modal 
-        isOpen={isEditModalOpen} 
-        onClose={() => setIsEditModalOpen(false)} 
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
         title="Edit Mission Event"
         maxWidth="max-w-2xl"
         overflowVisible={true}
       >
         <form onSubmit={handleUpdateEvent} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Event Title</label>
-            <input 
-              type="text" 
+            <label className="text-[14px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Event Title</label>
+            <input
+              type="text"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
               placeholder="e.g. National Youth Convocation"
               required
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <CustomDateTimePicker 
+            <CustomDateTimePicker
               label="Start Date & Time"
               value={editDate}
               onChange={setEditDate}
             />
-            <CustomDateTimePicker 
+            <CustomDateTimePicker
               label="End Date & Time"
               value={editEndDate}
               onChange={setEditEndDate}
             />
           </div>
- 
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <CustomDropdown 
+            <CustomDropdown
               label="Category"
               value={editCategory}
               onChange={setEditCategory}
@@ -501,39 +440,39 @@ export default function EventsPage() {
               ]}
             />
             <div className="space-y-2">
-              <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Venue / Platform</label>
-              <input 
-                type="text" 
+              <label className="text-[14px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Venue / Platform</label>
+              <input
+                type="text"
                 value={editVenue}
                 onChange={(e) => setEditVenue(e.target.value)}
-                className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400"
+                className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400"
                 placeholder="e.g. Main Auditorium or Zoom Link"
               />
             </div>
           </div>
- 
+
           <div className="space-y-2">
-            <label className="text-[11px] uppercase font-black text-slate-500 tracking-widest block ml-1">Program Details</label>
-            <textarea 
+            <label className="text-[14px] normal-case font-semibold text-slate-500 tracking-normal block ml-1">Program Details</label>
+            <textarea
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
-              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1E67FC] transition-all font-extrabold text-sm text-[#0F172A] placeholder-slate-400 min-h-[120px] resize-none"
+              className="w-full pl-4 pr-4 py-3 bg-slate-50 border border-black/5 focus:outline-none focus:border-[#1D4ED8] transition-all font-semibold text-sm text-[#0F172A] placeholder-slate-400 min-h-[120px] resize-none"
               placeholder="Share the vision or outline details for this session..."
             />
           </div>
- 
+
           <div className="flex gap-3 pt-4">
-            <button 
+            <button
               type="button"
               onClick={() => setIsEditModalOpen(false)}
-              className="flex-1 px-6 h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs uppercase tracking-widest transition-all"
+              className="flex-1 px-6 h-12 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm normal-case tracking-normal transition-all"
             >
               Cancel
             </button>
-            <button 
+            <button
               type="submit"
               disabled={submitting}
-              className="flex-[2] px-6 h-12 bg-[#1E67FC] hover:bg-[#0F53D6] text-white font-black text-xs uppercase tracking-widest transition-all disabled:opacity-50"
+              className="flex-[2] px-6 h-12 bg-[#1D4ED8] hover:bg-[#0F53D6] text-white font-semibold text-sm normal-case tracking-normal transition-all disabled:opacity-50"
             >
               {submitting ? 'Updating...' : 'Save Changes'}
             </button>

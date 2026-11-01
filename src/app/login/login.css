@@ -1,0 +1,71 @@
+.admin-signin{min-height:100svh;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);background:#fff;color:#0f172a;font-family:var(--font-plus-jakarta),Arial,sans-serif}
+.admin-signin *{box-sizing:border-box}
+.admin-signin a{text-decoration:none}
+.signin-story{background:#153ca5;color:#fff;padding:38px clamp(30px,4vw,62px) 26px;display:flex;flex-direction:column;min-width:0;gap:0}
+.signin-brand{display:flex;align-items:center;gap:12px;color:#fff;width:fit-content}
+.signin-brand>img{flex-shrink:0;object-fit:contain}
+.signin-brand>span{font-size:21px;font-weight:700;letter-spacing:-.03em;line-height:1.2}
+.signin-brand small{display:block;font-size:12px;font-weight:500;letter-spacing:0;color:#dbeafe;margin-top:6px}
+.signin-story-copy{margin:auto 0; padding-block:64px;max-width:520px}
+.signin-story-copy h2{font:700 clamp(29px,3.05vw,43px)/1.12 var(--font-plus-jakarta),Arial,sans-serif;letter-spacing:-.045em;color:#fff;margin:0 0 20px}
+.signin-story-copy p{font-size:16px;line-height:1.7;color:#e2e8f0;margin:0;max-width:430px}
+.signin-story-note{font-size:12px;line-height:1.6;color:#dbeafe;margin:20px 0 0}
+.signin-main{padding:34px clamp(30px,5vw,80px) 24px;display:flex;flex-direction:column;min-width:0;min-height:100svh}
+.signin-back{display:inline-flex;align-items:center;gap:9px;color:#475569;font-size:13px;font-weight:500;align-self:start}
+.signin-back:hover{color:#1d4ed8;text-decoration:underline;text-underline-offset:4px}
+.signin-form-wrap{width:100%;max-width:420px;margin:auto; padding:36px 0}
+.signin-mobile-brand{display:none}
+.signin-heading{margin-bottom:30px}
+.signin-heading>p{color:#1d4ed8;font-size:14px;font-weight:600;margin:0 0 13px}
+.signin-heading h1{font:700 36px/1.1 var(--font-plus-jakarta),Arial,sans-serif;letter-spacing:-.045em;margin:0 0 16px;color:#0f172a}
+.signin-heading>div{font-size:16px;line-height:1.65;color:#475569;max-width:370px}
+.signin-field{margin-bottom:21px}
+.signin-field label{display:block;font-size:14px;font-weight:600;margin-bottom:9px;color:#0f172a;line-height:1.5}
+.signin-field input{display:block;width:100%;height:51px;border:1px solid #94a3b8;border-radius:7px;background:#fff;padding:12px 15px;font:400 16px/1.4 var(--font-plus-jakarta),Arial,sans-serif;color:#0f172a;outline:none;transition:border-color .2s,box-shadow .2s}
+.signin-field input::placeholder{color:#64748b;opacity:1}
+.signin-field input:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px #dbeafe}
+.signin-field input:disabled{background:#f4f7fc;color:#475569}
+.signin-password{position:relative}
+.signin-password input{padding-right:52px}
+.signin-password button{position:absolute;right:5px;top:5px;width:41px;height:41px;background:transparent;border:0;border-radius:5px;display:grid;place-items:center;color:#475569;cursor:pointer}
+.signin-password button:hover{color:#1d4ed8;background:#eff6ff}
+.signin-options{display:flex;align-items:center;margin:2px 0 24px}
+.signin-options label{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:#334155;cursor:pointer;line-height:1.5}
+.signin-options input{width:17px;height:17px;accent-color:#1d4ed8;margin:0;cursor:pointer}
+.signin-submit{width:100%;height:51px;border:1px solid #1d4ed8;border-radius:7px;background:#1d4ed8;color:#fff;display:flex;align-items:center;justify-content:center;gap:14px;font:600 15px/1.3 var(--font-plus-jakarta),Arial,sans-serif;cursor:pointer;transition:background .2s}
+.signin-submit:hover{background:#1e40af;border-color:#1e40af}
+.signin-submit:disabled{cursor:wait;background:#334f9f;border-color:#334f9f}
+.signin-help{border-top:1px solid #e2e8f0;padding-top:23px;margin-top:28px}
+.signin-help h2{font:600 14px/1.4 var(--font-plus-jakarta),Arial,sans-serif;letter-spacing:0;color:#0f172a;margin:0 0 8px}
+.signin-help p{font-size:13px;line-height:1.75;color:#475569;margin:0}
+.signin-help a{color:#1d4ed8;font-weight:600;white-space:normal}
+.signin-help a:hover{text-decoration:underline;text-underline-offset:3px}
+.signin-access-note{text-align:center;font-size:12px;line-height:1.6;color:#64748b;margin:0}
+.signin-error{display:flex;align-items:start;gap:10px;padding:13px 14px;margin-bottom:23px;background:#fff1f2;border:1px solid #fecdd3;border-radius:7px;color:#9f1239}
+.signin-error svg{flex-shrink:0;margin-top:1px}
+.signin-error p{font-size:14px;line-height:1.6;margin:0;color:inherit}
+.admin-signin :focus-visible{outline:3px solid #2563eb;outline-offset:4px}
+.signin-spinner{animation:signin-spin 1s linear infinite}
+@keyframes signin-spin{to{transform:rotate(360deg)}}
+@media(min-height:900px) and (min-width:901px){.signin-story-copy{margin-block:auto}}
+@media(max-width:1100px){.signin-story{padding-inline:30px}.signin-main{padding-inline:38px}.signin-story-copy h2{font-size:34px}.signin-story-copy{margin-block:auto}}
+@media(max-width:900px){.admin-signin{display:block;background:#f4f7fc}.signin-story{display:none}.signin-main{padding:25px 24px;min-height:100svh;max-width:580px;margin:auto}.signin-form-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:30px;max-width:460px;margin:30px auto}.signin-mobile-brand{display:flex;gap:10px;align-items:center;font-size:19px;font-weight:700;color:#0f172a;margin-bottom:30px;letter-spacing:-.03em}.signin-mobile-brand>span{background:#1d4ed8;border-radius:50%;padding:2px;width:46px;height:46px;display:grid;place-items:center}.signin-heading h1{font-size:33px}.signin-access-note{margin-top:auto}.signin-heading{margin-bottom:25px}}
+@media(max-width:420px){.signin-main{padding:22px 20px}.signin-form-wrap{padding:24px 21px;margin:24px auto}.signin-heading h1{font-size:31px}.signin-heading>div{font-size:15px}.signin-mobile-brand{margin-bottom:25px}.signin-help{margin-top:24px}.signin-access-note{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.admin-signin *{transition:none!important}.signin-spinner{animation:none}}
+/* Quiet outline shapes and a compact, single-screen sign-in layout. */
+.signin-story{position:relative;isolation:isolate;overflow:hidden}
+.signin-story:before,.signin-story:after{content:'';position:absolute;z-index:-1;pointer-events:none;border:1px solid rgba(219,234,254,.24);border-radius:50%;width:440px;height:440px}
+.signin-story:before{top:-220px;right:-170px;outline:1px solid rgba(219,234,254,.14);outline-offset:58px}
+.signin-story:after{bottom:-265px;left:-165px;width:570px;height:570px;outline:1px solid rgba(219,234,254,.12);outline-offset:65px}
+.signin-main{padding-block:24px 18px}
+.signin-form-wrap{padding-block:20px;max-width:410px}
+.signin-heading{margin-bottom:23px}
+.signin-heading>p{margin-bottom:10px}
+.signin-heading h1{margin-bottom:12px}
+.signin-field{margin-bottom:17px}
+.signin-options{margin-bottom:20px}
+.signin-help{margin-top:22px;padding-top:18px}
+.signin-help p{line-height:1.6}
+@media(max-width:900px){.signin-main{padding:18px 22px;justify-content:center}.signin-back{margin-bottom:16px}.signin-form-wrap{margin:0 auto 16px;padding:24px;max-width:440px}.signin-mobile-brand{margin-bottom:21px}.signin-heading{margin-bottom:21px}.signin-access-note{margin-top:0}.signin-field input,.signin-submit{height:48px}.signin-password button{height:38px;width:38px}.signin-help{margin-top:19px;padding-top:16px}}
+@media(max-width:420px){.signin-main{padding:16px 18px}.signin-form-wrap{padding:22px 20px}.signin-heading h1{font-size:30px}.signin-help{margin-top:18px}.signin-heading>div{font-size:15px;line-height:1.5}.signin-access-note{font-size:11px}}
+@media(min-width:901px) and (max-height:760px){.signin-main{padding-block:18px 14px}.signin-form-wrap{padding-block:12px}.signin-story-copy{padding-block:30px}.signin-heading{margin-bottom:19px}.signin-heading>p{margin-bottom:8px}.signin-field{margin-bottom:15px}.signin-help{margin-top:18px;padding-top:15px}.signin-access-note{font-size:11px}}

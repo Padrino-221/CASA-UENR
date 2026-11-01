@@ -27,12 +27,12 @@ export default async function ContentPageEditor({
       <header>
         <Link
           href="/content"
-          className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#94A3B8] hover:text-primary"
+          className="inline-flex items-center gap-2 text-[14px] font-semibold normal-case tracking-normal text-[#64748B] hover:text-primary"
         >
           <ArrowLeft size={13} weight="bold" />
           All pages
         </Link>
-        <h1 className="text-3xl font-black text-[#0F172A] tracking-tight mt-3">{page.title}</h1>
+        <h1 className="text-3xl font-semibold text-[#0F172A] tracking-tight mt-3">{page.title}</h1>
         {page.description && (
           <p className="text-sm text-[#64748B] font-medium mt-2 max-w-2xl">{page.description}</p>
         )}

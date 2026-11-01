@@ -35,28 +35,28 @@ export const RegionTable: React.FC<RegionTableProps> = ({ regions, userRole, onE
   const paginatedRegions = regions.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="card table-card overflow-hidden ! border-black/5">
+    <div className="card table-card overflow-hidden border-slate-200">
       <div className="overflow-x-auto">
         <table className="ds-table w-full border-collapse">
           <thead>
             <tr>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Region
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Chapters
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Total Members
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Status
               </th>
-              <th className="bg-slate-50/50 p-6 text-left text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+              <th className="bg-slate-50/50 px-5 py-4 text-left text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                 Access
               </th>
               {isNationalAdmin && (
-                <th className="bg-slate-50/50 p-6 text-right text-[10px] font-extrabold uppercase tracking-widest text-slate-400 border-b border-black/5">
+                <th className="bg-slate-50/50 px-5 py-4 text-right text-[13px] font-semibold normal-case tracking-normal text-slate-500 border-b border-slate-200">
                   Actions
                 </th>
               )}
@@ -67,19 +67,19 @@ export const RegionTable: React.FC<RegionTableProps> = ({ regions, userRole, onE
               paginatedRegions.map((region) => (
                 <tr
                   key={region.id}
-                  className="group border-b border-black/5 last:border-0 hover:bg-slate-50/60 transition-all"
+                  className="group border-b border-slate-200 last:border-0 hover:bg-slate-50/60 transition-all"
                 >
                   {/* Region Name */}
-                  <td className="p-6">
+                  <td className="px-5 py-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-slate-50 text-slate-400 flex items-center justify-center shrink-0 border border-black/5 group-hover:bg-[#EBF2FF] group-hover:text-[#1E67FC] group-hover:scale-105 transition-all">
+                      <div className="w-12 h-12 bg-slate-50 text-slate-500 flex items-center justify-center shrink-0 border border-slate-200 group-hover:bg-[#EBF2FF] group-hover:text-[#1D4ED8]  transition-all">
                         <Globe size={20} weight="duotone" />
                       </div>
                       <div>
-                        <span className="font-black text-main text-base block leading-tight tracking-tight">
+                        <span className="font-semibold text-main text-base block leading-tight tracking-tight">
                           {region.name}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest mt-1 block">
+                        <span className="text-[13px] text-slate-500 font-semibold normal-case tracking-normal mt-1 block">
                           Region
                         </span>
                       </div>
@@ -87,41 +87,41 @@ export const RegionTable: React.FC<RegionTableProps> = ({ regions, userRole, onE
                   </td>
 
                   {/* Chapters */}
-                  <td className="p-6">
+                  <td className="px-5 py-4">
                     <div className="flex flex-col">
-                      <span className="text-base font-black text-main tracking-tight leading-none">
+                      <span className="text-base font-semibold text-main tracking-tight leading-none">
                         {region._count?.chapters || 0}
                       </span>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1.5">
+                      <span className="text-[13px] normal-case font-bold text-slate-500 tracking-normal mt-1.5">
                         Chapters
                       </span>
                     </div>
                   </td>
 
                   {/* Total Members */}
-                  <td className="p-6">
+                  <td className="px-5 py-4">
                     <div className="flex flex-col">
-                      <span className="text-base font-black text-main tracking-tight leading-none">
+                      <span className="text-base font-semibold text-main tracking-tight leading-none">
                         {region._count?.students || 0}
                       </span>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1.5">
+                      <span className="text-[13px] normal-case font-bold text-slate-500 tracking-normal mt-1.5">
                         Members
                       </span>
                     </div>
                   </td>
 
                   {/* Active Status */}
-                  <td className="p-6">
-                    <span className="inline-flex text-[9px] font-black uppercase tracking-[0.15em] text-primary bg-primary/10 px-2.5 py-1 leading-none">
+                  <td className="px-5 py-4">
+                    <span className="inline-flex text-[13px] font-semibold normal-case tracking-normal text-primary bg-primary/10 px-2.5 py-1 leading-none">
                       Active
                     </span>
                   </td>
 
                   {/* Enter Region Link */}
-                  <td className="p-6">
+                  <td className="px-5 py-4">
                     <Link
                       href={`/chapters?regionId=${region.id}`}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-50 hover:bg-primary/10 hover:text-primary text-secondary font-bold text-xs uppercase tracking-widest transition-all border border-black/5"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-50 hover:bg-primary/10 hover:text-primary text-secondary font-bold text-sm normal-case tracking-normal transition-all border border-slate-200"
                     >
                       <span>Enter</span>
                       <CaretRight size={14} weight="duotone" />
@@ -130,18 +130,18 @@ export const RegionTable: React.FC<RegionTableProps> = ({ regions, userRole, onE
 
                   {/* Actions Column (NATIONAL_ADMIN only) */}
                   {isNationalAdmin && (
-                    <td className="p-6">
+                    <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
-                        <button
+                        <button aria-label="Edit record"
                           onClick={() => onEdit(region)}
-                          className="w-9 h-9 flex items-center justify-center bg-slate-50 text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors border border-black/5"
+                          className="w-9 h-9 flex items-center justify-center bg-slate-50 text-slate-500 hover:text-primary hover:bg-primary/10 transition-colors border border-slate-200"
                           title="Edit"
                         >
                           <Pencil size={14} weight="duotone" />
                         </button>
-                        <button
+                        <button aria-label="Delete record"
                           onClick={() => onDelete(region.id)}
-                          className="w-9 h-9 flex items-center justify-center bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors border border-black/5"
+                          className="w-9 h-9 flex items-center justify-center bg-slate-50 text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors border border-slate-200"
                           title="Delete"
                         >
                           <Trash size={14} weight="duotone" />
@@ -154,7 +154,7 @@ export const RegionTable: React.FC<RegionTableProps> = ({ regions, userRole, onE
             ) : (
               <tr>
                 <td colSpan={isNationalAdmin ? 6 : 5} className="text-center py-20 bg-slate-50/10">
-                  <p className="text-slate-400 font-bold">No regions yet.</p>
+                  <p className="text-slate-500 font-bold">No regions yet.</p>
                 </td>
               </tr>
             )}

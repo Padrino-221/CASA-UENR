@@ -1,181 +1,50 @@
 'use client';
-
-import Link from 'next/link';
 import { useState } from 'react';
-import SiteArrow from '@/components/site/SiteArrow';
-import RichHeading from '@/components/site/RichHeading';
+import { MapPin, EnvelopeSimple, Phone } from '@phosphor-icons/react';
 import CustomDropdown from '@/components/ui/CustomDropdown';
 import { parseLines } from '@/lib/cms/parse';
-import {
-  MapPin,
-  Clock,
-  EnvelopeSimple,
-  Phone,
-  InstagramLogo,
-  WhatsappLogo,
-  XLogo,
-  YoutubeLogo,
-} from '@phosphor-icons/react';
 
-const TOPIC_OPTIONS = [
-  { label: "I'm new and want to visit", value: 'new-visitor' },
-  { label: 'I want to join a department', value: 'join-department' },
-  { label: 'Prayer request', value: 'prayer-request' },
-  { label: 'Counselling', value: 'counselling' },
-  { label: 'Something else', value: 'something-else' },
-];
+const TOPICS = ['Planning a first visit', 'Joining a department', 'Prayer or pastoral support', 'Something else'];
 
-export default function ContactView({ content }: { content: Record<string, string> }) {
-  const [topic, setTopic] = useState('new-visitor');
-  const addressLines = parseLines(content['info.address']);
-  const gatheringLines = parseLines(content['info.gatherings']);
-
-  return (
-    <>
-      {/* ============ Page Hero ============ */}
-      <section className="page-hero">
-        <div className="inner page-hero-inner">
-          <h1 data-reveal>
-            <RichHeading text={content['hero.heading']} />
-          </h1>
-          <div className="lede" data-reveal data-reveal-delay="120">
-            <p>{content['hero.body']}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ Contact ============ */}
-      <section className="contact-section" id="message">
-        <div className="inner">
-          <div className="contact-grid">
-            <div className="form-card" data-reveal>
-              <h3>
-                <RichHeading text={content['form.heading']} />
-              </h3>
-              <form action="#" method="post">
-                <div className="form-row">
-                  <div className="form-field">
-                    <label htmlFor="name">Full name</label>
-                    <input type="text" id="name" name="name" placeholder="Your name" required />
-                  </div>
-                  <div className="form-field">
-                    <label htmlFor="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="you@example.com" required />
-                  </div>
-                </div>
-                <div className="form-field">
-                  <CustomDropdown label="What's this about?" options={TOPIC_OPTIONS} value={topic} onChange={setTopic} />
-                </div>
-                <div className="form-field">
-                  <label htmlFor="message">Message</label>
-                  <textarea id="message" name="message" placeholder="Write your message here&hellip;" required />
-                </div>
-                <button type="submit" className="btn btn-ink">
-                  Send message
-                  <SiteArrow stroke="#0D47A1" />
-                </button>
-                <p className="form-note">{content['form.note']}</p>
-              </form>
-            </div>
-
-            <div className="info-card" data-reveal data-reveal-delay="120">
-              <h3>
-                <RichHeading text={content['info.heading']} />
-              </h3>
-              <p className="info-sub">{content['info.subheading']}</p>
-
-              <div className="info-row">
-                <div className="info-row-icon">
-                  <MapPin size={19} weight="regular" />
-                </div>
-                <div>
-                  <h4>Find us</h4>
-                  <p>
-                    {addressLines.map((line, index) => (
-                      <span key={index}>
-                        {line}
-                        {index < addressLines.length - 1 && <br />}
-                      </span>
-                    ))}
-                  </p>
-                </div>
-              </div>
-
-              <div className="info-row">
-                <div className="info-row-icon">
-                  <Clock size={19} weight="regular" />
-                </div>
-                <div>
-                  <h4>Worship gatherings</h4>
-                  <p>
-                    {gatheringLines.map((line, index) => (
-                      <span key={index}>
-                        {line}
-                        {index < gatheringLines.length - 1 && <br />}
-                      </span>
-                    ))}
-                  </p>
-                </div>
-              </div>
-
-              <div className="info-row">
-                <div className="info-row-icon">
-                  <EnvelopeSimple size={19} weight="regular" />
-                </div>
-                <div>
-                  <h4>Email</h4>
-                  <p>
-                    <a href={`mailto:${content['info.email']}`}>{content['info.email']}</a>
-                  </p>
-                </div>
-              </div>
-
-              <div className="info-row">
-                <div className="info-row-icon">
-                  <Phone size={19} weight="regular" />
-                </div>
-                <div>
-                  <h4>Phone / WhatsApp</h4>
-                  <p>
-                    <a href={`tel:${content['info.phone']}`}>{content['info.phone']}</a>
-                  </p>
-                </div>
-              </div>
-
-              <div className="socials-row">
-                <a href={content['socials.instagram'] || '#'} className="social-chip" aria-label="Instagram">
-                  <InstagramLogo size={19} weight="regular" />
-                </a>
-                <a href={content['socials.whatsapp'] || '#'} className="social-chip" aria-label="WhatsApp">
-                  <WhatsappLogo size={19} weight="regular" />
-                </a>
-                <a href={content['socials.twitter'] || '#'} className="social-chip" aria-label="X">
-                  <XLogo size={19} weight="regular" />
-                </a>
-                <a href={content['socials.youtube'] || '#'} className="social-chip" aria-label="YouTube">
-                  <YoutubeLogo size={19} weight="regular" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ CTA Band ============ */}
-      <section className="cta-band">
-        <div className="inner cta-band-inner">
-          <div data-reveal>
-            <h2>
-              <RichHeading text={content['cta.heading']} />
-            </h2>
-            <p>{content['cta.body']}</p>
-          </div>
-          <Link href={content['cta.ctaHref']} className="btn btn-lime" data-reveal data-reveal-delay="120">
-            {content['cta.ctaLabel']}
-            <SiteArrow stroke="#0D47A1" />
-          </Link>
-        </div>
-      </section>
-    </>
-  );
+export default function ContactView({ content }: { content: Record<string,string> }) {
+  const [topic,setTopic]=useState(TOPICS[0]);
+  const [sending,setSending]=useState(false);
+  const [sent,setSent]=useState(false);
+  const [error,setError]=useState('');
+  const address=parseLines(content['info.address']);
+  const email=content['info.email'];
+  const phone=content['info.phone'];
+  const hasPhone=phone&&!/000[\s-]*0000/.test(phone);
+  return <div className="church-inner-page">
+    <section className="church-page-intro"><div className="inner"><h1>We would love to meet you</h1><p>Planning your first visit, looking for a department, or need someone to pray with? Get in touch with the fellowship.</p></div></section>
+    <section className="church-section"><div className="inner church-contact-layout">
+      <div className="church-contact-details"><h2>Talk to the team</h2><p>You are welcome to come to a gathering and introduce yourself. If you would like help finding us, send a message before you visit.</p>
+        <div className="church-contact-detail"><MapPin size={24} aria-hidden="true"/><div><h3>Find us on campus</h3><p>{address.map((line,index)=><span key={index}>{line}{index<address.length-1&&<br/>}</span>)}</p></div></div>
+        {email&&<div className="church-contact-detail"><EnvelopeSimple size={24} aria-hidden="true"/><div><h3>Email</h3><a href={`mailto:${email}`}>{email}</a></div></div>}
+        {hasPhone&&<div className="church-contact-detail"><Phone size={24} aria-hidden="true"/><div><h3>Phone</h3><a href={`tel:${phone.replace(/[\s()-]/g,'')}`}>{phone}</a></div></div>}
+      </div>
+      <div className="church-contact-form"><h2>Send a message</h2><form onSubmit={async event=>{
+        event.preventDefault();
+        const element=event.currentTarget;
+        const form=new FormData(element);
+        setSending(true);setSent(false);setError('');
+        try {
+          const res=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:form.get('name'),email:form.get('email'),message:form.get('message'),website:form.get('website'),topic})});
+          const result=await res.json();
+          if(!res.ok) throw new Error(result.error||'Could not send your message.');
+          setSent(true);element.reset();
+        } catch(error) {setError(error instanceof Error?error.message:'Could not send your message. Please try again.');}
+        finally {setSending(false);}
+      }}>
+        <div hidden aria-hidden="true"><label htmlFor="contact-website">Website</label><input id="contact-website" name="website" tabIndex={-1} autoComplete="off"/></div>
+        <div className="church-form-row"><div><label htmlFor="name">Your name</label><input id="name" name="name" autoComplete="name" maxLength={120} required/></div><div><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" maxLength={254} required/></div></div>
+        <CustomDropdown label="How can we help?" value={topic} onChange={setTopic} options={TOPICS.map(item=>({label:item,value:item}))} className="church-contact-topic"/>
+        <label htmlFor="message">Your message</label><textarea id="message" name="message" rows={5} maxLength={5000} required/>
+        <button type="submit" className="btn btn-ink" disabled={sending}>{sending?'Sending...':'Send message'}</button>
+        <p className="church-form-note">Your message goes directly to the chapter secretary.</p>
+        {sent&&<p role="status" className="church-form-note">Message received. The secretary will contact you using the email address you provided.</p>}
+        {error&&<p role="alert" className="church-form-note" style={{color:'#be123c'}}>{error}</p>}
+      </form></div>
+    </div></section>
+  </div>;
 }

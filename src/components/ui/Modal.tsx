@@ -1,9 +1,9 @@
 'use client';
-
-import React, { useEffect } from 'react';
+import { useCallback, useEffect, useId, useRef } from 'react';
 import { X } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import Portal from './Portal';
+import './admin-controls.css';
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,80 +15,43 @@ interface ModalProps {
   overflowVisible?: boolean;
 }
 
-const Modal = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  description, 
-  children, 
-  maxWidth = 'max-w-lg',
-  overflowVisible = false
-}: ModalProps) => {
+export default function Modal({ isOpen, onClose, title, description, children, maxWidth = 'max-w-lg', overflowVisible = false }: ModalProps) {
+  const titleId = useId();
+  const descriptionId = useId();
+  const panel = useRef<HTMLDivElement>(null);
+  const attachPanel = useCallback((node: HTMLDivElement | null) => { panel.current = node; node?.focus(); }, []);
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement;
+    document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
     };
   }, [isOpen]);
-
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || (event.target instanceof Element && event.target.closest('[data-admin-floating]'))) return;
+      if (event.key === 'Escape') { event.preventDefault(); onClose(); }
+      if (event.key !== 'Tab') return;
+      const items = Array.from(panel.current?.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex="0"]') || []).filter(item => item.getClientRects().length > 0);
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (!first) { event.preventDefault(); panel.current?.focus(); return; }
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === panel.current)) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [isOpen, onClose]);
   if (!isOpen) return null;
-
-  return (
-    <Portal>
-      <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-        {/* Refined Backdrop */}
-        <div 
-          className="absolute inset-0 bg-[#0F172A]/40 backdrop-blur-md animate-in fade-in duration-500"
-          onClick={onClose}
-        />
-        
-        {/* Premium Flow Popup */}
-        <div className={cn(
-          "relative bg-white w-full border border-standard flex flex-col max-h-[92vh]",
-          overflowVisible ? "overflow-visible" : "overflow-hidden",
-          "animate-in zoom-in-[0.98] fade-in slide-in-from-bottom-5 duration-500 ease-out",
-          maxWidth
-        )}>
-          {/* Header Section */}
-          <div className="px-8 pt-10 pb-6 flex justify-between items-start bg-white relative z-10">
-            <div className="flex-1 pr-6">
-              {title && (
-                <h2 className="text-[26px] font-black text-[#0F172A] tracking-tighter leading-[1.1] mb-2 font-primary">
-                  {title}
-                </h2>
-              )}
-              {description && (
-                <p className="text-[#475569] text-sm font-bold uppercase tracking-wide opacity-80 leading-relaxed">
-                  {description}
-                </p>
-              )}
-            </div>
-            <button 
-              onClick={onClose}
-              className="w-12 h-12 flex items-center justify-center bg-[#E2E8F0]/50 hover:bg-[#E2E8F0] border border-transparent hover:border-black/5 transition-all text-slate-400 hover:text-slate-900 focus:outline-none shrink-0"
-            >
-              <X size={18} weight="bold" />
-            </button>
-          </div>
-          
-          {/* Main Body */}
-          <div className={cn(
-            "px-8 pb-10 relative z-10",
-            overflowVisible ? "overflow-visible" : "overflow-y-auto no-scrollbar"
-          )}>
-            {children}
-          </div>
-          
-          {/* Decorative Subtle Fade */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[60px] pointer-events-none" />
-        </div>
-      </div>
-    </Portal>
-  );
-};
-
-export default Modal;
+  return <Portal><div className="admin-dialog">
+    <div className="admin-dialog-backdrop" onClick={onClose} aria-hidden="true"/>
+    <div ref={attachPanel} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby={title ? titleId : undefined} aria-label={title ? undefined : 'Dialog'} aria-describedby={description ? descriptionId : undefined} className={cn('admin-dialog-panel', maxWidth, overflowVisible && 'admin-dialog-overflow')}>
+      <header className="admin-dialog-header"><div>{title && <h2 id={titleId}>{title}</h2>}{description && <p id={descriptionId}>{description}</p>}</div><button type="button" className="admin-dialog-close" aria-label="Close dialog" onClick={onClose}><X size={21}/></button></header>
+      <div className={cn('admin-dialog-body', overflowVisible && 'admin-dialog-overflow')}>{children}</div>
+    </div>
+  </div></Portal>;
+}

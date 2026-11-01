@@ -41,7 +41,7 @@ export const AuditLogHeader: React.FC<AuditLogHeaderProps> = ({ logs }) => {
       <Protection/>
     </Style>
     <Style ss:ID="TitleHeaderStyle">
-      <Font ss:FontName="Segoe UI" ss:Size="12" ss:Bold="1" ss:Color="#1E67FC"/>
+      <Font ss:FontName="Segoe UI" ss:Size="12" ss:Bold="1" ss:Color="#1D4ED8"/>
       <Interior ss:Color="#EBF2FF" ss:Pattern="Solid"/>
       <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
       <Borders>
@@ -59,7 +59,7 @@ export const AuditLogHeader: React.FC<AuditLogHeaderProps> = ({ logs }) => {
       </Borders>
     </Style>
     <Style ss:ID="ActionStyle">
-      <Font ss:FontName="Segoe UI" ss:Size="10" ss:Bold="1" ss:Color="#1E67FC"/>
+      <Font ss:FontName="Segoe UI" ss:Size="10" ss:Bold="1" ss:Color="#1D4ED8"/>
       <Borders>
         <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
       </Borders>
@@ -140,12 +140,12 @@ export const AuditLogHeader: React.FC<AuditLogHeaderProps> = ({ logs }) => {
     <header className="premium-header !mb-0 !pb-6">
       <div className="header-content-root">
         <div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-main tracking-tight leading-none">Activity Logs</h1>
-          <p className="text-xs uppercase font-black text-slate-500 tracking-widest mt-2.5">Activity Logs</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-main tracking-tight leading-none">Activity Logs</h1>
+          <p className="text-sm normal-case font-semibold text-slate-500 tracking-normal mt-2.5">Activity Logs</p>
         </div>
-        
+
         <div className="actions-cluster flex items-center gap-3">
-          <button 
+          <button
             className="btn-lux-primary h-12 !px-6"
             onClick={handleExportExcel}
           >

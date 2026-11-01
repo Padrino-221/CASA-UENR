@@ -30,14 +30,7 @@ export default function DashboardChartWrapper({ availableYears }: DashboardChart
       const data = await res.json();
       if (res.ok) {
         const monthly = data.monthlyRegistrations || [];
-        const institutionsCount = monthly.reduce((a: number, b: { value: number }) => a + b.value, 0);
-        setChartData(institutionsCount === 0
-          ? monthly.map((m: { name: string }, i: number) => ({
-              name: m.name,
-              value: i === new Date(parseInt(year), 0).getMonth() ? 1 : 0
-            }))
-          : monthly
-        );
+        setChartData(monthly);
       }
     } catch (err) {
       console.error('Failed to fetch chart data:', err);
@@ -47,15 +40,15 @@ export default function DashboardChartWrapper({ availableYears }: DashboardChart
   };
 
   return (
-    <div className="lg:col-span-8 card-premium p-6 flex flex-col justify-between hover:border-[#1E67FC]/20 transition-all duration-300">
+    <div className="lg:col-span-8 card-premium p-6 flex flex-col justify-between hover:border-[#1D4ED8]/20 transition-all duration-300">
       <div className="flex justify-between items-start mb-6">
         <div>
-          <span className="text-xs font-semibold text-slate-500 block">Chapter Growth</span>
+          <span className="text-sm font-semibold text-slate-500 block">Chapter Growth</span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-3xl font-black text-slate-900 tracking-tight">
+            <span className="text-3xl font-semibold text-slate-900 tracking-tight">
               {chartData.reduce((a: number, b: { value: number }) => a + b.value, 0)}
             </span>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <span className="text-sm font-bold text-slate-500 normal-case tracking-normal">
               New Chapter{chartData.reduce((a: number, b: { value: number }) => a + b.value, 0) !== 1 ? 's' : ''}
             </span>
           </div>

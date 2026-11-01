@@ -9,7 +9,7 @@ export async function GET() {
   const session = await getContentSession();
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const assets = await db.mediaAsset.findMany({ orderBy: { createdAt: 'desc' } });
+  const assets = await db.mediaAsset.findMany({ orderBy: { createdAt: 'desc' }, select: { id: true, filename: true, url: true, mimeType: true, size: true, createdAt: true } });
   return NextResponse.json(assets);
 }
 

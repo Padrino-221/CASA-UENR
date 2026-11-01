@@ -51,14 +51,22 @@ export async function POST(req: Request) {
       // Local admins may only create chapter-scoped sub-accounts.
       if (!(SUB_ACCOUNT_ROLES as readonly string[]).includes(role)) {
         return NextResponse.json(
-          { error: 'Local admins can only create Finance or Secretary sub-accounts' },
+          { error: 'Local admins can only create Finance, Secretary, or Content Manager sub-accounts' },
           { status: 403 }
         );
       }
       if (!session.user.chapterId) {
         return NextResponse.json({ error: 'Your account is not assigned to a chapter' }, { status: 400 });
       }
+      const chapter = await db.chapter.findUnique({
+        where: { id: session.user.chapterId },
+        select: { regionId: true },
+      });
+      if (!chapter) {
+        return NextResponse.json({ error: 'Your assigned chapter could not be found' }, { status: 400 });
+      }
       scopeChapterId = session.user.chapterId;
+      scopeRegionId = chapter.regionId;
     } else {
       return NextResponse.json(
         { error: 'Unauthorized. Requires National Administrator or Local Administrator clearance.' },

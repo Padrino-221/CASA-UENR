@@ -22,8 +22,8 @@ export default async function ContentDashboardPage() {
   return (
     <div className="space-y-8">
       <header>
-        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">Website CMS</p>
-        <h1 className="text-3xl font-black text-[#0F172A] tracking-tight mt-1">Manage the website</h1>
+        <p className="text-[14px] font-semibold normal-case tracking-normal text-primary">Website CMS</p>
+        <h1 className="text-3xl font-semibold text-[#0F172A] tracking-tight mt-1">Manage the website</h1>
         <p className="text-sm text-[#64748B] font-medium mt-2 max-w-2xl">
           Select a page to edit its sections. Changes are saved as drafts first — preview them,
           then publish to make them live.
@@ -31,7 +31,7 @@ export default async function ContentDashboardPage() {
       </header>
 
       <section>
-        <h2 className="text-[12px] font-black uppercase tracking-[0.16em] text-[#94A3B8] mb-3">Pages</h2>
+        <h2 className="text-[14px] font-semibold normal-case tracking-normal text-[#64748B] mb-3">Pages</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {CMS_PAGES.map((page) => {
             const Icon = PAGE_ICONS[page.slug] ?? FileText;
@@ -48,8 +48,8 @@ export default async function ContentDashboardPage() {
                   <ArrowRight size={16} weight="bold" className="text-[#CBD5E1] group-hover:text-primary transition-colors" />
                 </div>
                 <div className="mt-4">
-                  <h3 className="text-[16px] font-black text-[#0F172A] tracking-tight">{page.title}</h3>
-                  <p className="text-[12px] text-[#64748B] font-medium mt-1">
+                  <h3 className="text-[16px] font-semibold text-[#0F172A] tracking-tight">{page.title}</h3>
+                  <p className="text-[14px] text-[#64748B] font-medium mt-1">
                     {page.sections.length} section{page.sections.length === 1 ? '' : 's'}
                   </p>
                 </div>
@@ -60,7 +60,7 @@ export default async function ContentDashboardPage() {
       </section>
 
       <section>
-        <h2 className="text-[12px] font-black uppercase tracking-[0.16em] text-[#94A3B8] mb-3">Content</h2>
+        <h2 className="text-[14px] font-semibold normal-case tracking-normal text-[#64748B] mb-3">Content</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { href: '/content/leaders', label: 'Leaders', desc: 'Leadership carousel', Icon: UsersThree },
@@ -77,8 +77,8 @@ export default async function ContentDashboardPage() {
                 <Icon size={20} weight="duotone" />
               </div>
               <div>
-                <h3 className="text-[15px] font-black text-[#0F172A] tracking-tight">{label}</h3>
-                <p className="text-[12px] text-[#64748B] font-medium mt-0.5">{desc}</p>
+                <h3 className="text-[15px] font-semibold text-[#0F172A] tracking-tight">{label}</h3>
+                <p className="text-[14px] text-[#64748B] font-medium mt-0.5">{desc}</p>
               </div>
             </Link>
           ))}
