@@ -9,7 +9,7 @@ interface Leader {
   role?: string; bio?: string; color?: string;
 }
 
-export default function LeadersCarousel({ leaders }: { leaders: Leader[] }) {
+export default function LeadersCarousel({ leaders, labels }: { leaders: Leader[]; labels: {label:string;countLabel:string;swipeLabel:string} }) {
   const id = useId();
   const track = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ current: 0, end: false, scrollable: false });
@@ -38,7 +38,7 @@ export default function LeadersCarousel({ leaders }: { leaders: Leader[] }) {
   };
   if (!leaders.length) return null;
   return <div className="team-carousel" role="region" aria-roledescription="carousel" aria-label="Fellowship leadership">
-    <div className="team-toolbar"><span>Our leadership team</span><div className="team-arrows">
+    <div className="team-toolbar"><span>{labels.label}</span><div className="team-arrows">
       <button type="button" aria-label="Previous leaders" aria-controls={id} disabled={!position.scrollable || position.current === 0} onClick={() => moveTo(position.current - 1)}><ArrowLeft size={20} /></button>
       <button type="button" aria-label="Next leaders" aria-controls={id} disabled={!position.scrollable || position.end} onClick={() => moveTo(position.current + 1)}><ArrowRight size={20} /></button>
     </div></div>
@@ -47,10 +47,10 @@ export default function LeadersCarousel({ leaders }: { leaders: Leader[] }) {
       if (event.key === 'Home' || event.key === 'End') { event.preventDefault(); moveTo(event.key === 'Home' ? 0 : leaders.length - 1); }
     }}>
       {leaders.map((leader, index) => <article className="team-slide" key={leader.id ?? index} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${leaders.length}: ${leader.name || 'Fellowship leader'}`}>
-        <div className="team-portrait">{leader.image ? <Image src={leader.image} alt={leader.name || 'Fellowship leader'} fill sizes="(max-width: 640px) 82vw, (max-width: 1000px) 46vw, 32vw" /> : <span className="team-initials">{leader.initials || leader.name?.split(' ').map(part => part[0]).slice(0, 2).join('')}</span>}</div>
+        <div className="team-portrait">{leader.image ? <Image src={leader.image} alt={leader.name || 'Fellowship leader'} fill unoptimized sizes="(max-width: 640px) 82vw, (max-width: 1000px) 46vw, 32vw" /> : <span className="team-initials">{leader.initials || leader.name?.split(' ').map(part => part[0]).slice(0, 2).join('')}</span>}</div>
         <div className="team-caption"><span className="team-role">{leader.role}</span><h3>{leader.name}</h3>{leader.bio && <p>{leader.bio}</p>}</div>
       </article>)}
     </div>
-    <div className="team-footer"><span>{leaders.length} {leaders.length === 1 ? 'leader' : 'leaders'} serving our fellowship</span><span className="team-swipe-hint">Swipe to explore</span></div>
+    <div className="team-footer"><span>{leaders.length} {labels.countLabel}</span><span className="team-swipe-hint">{labels.swipeLabel}</span></div>
   </div>;
 }

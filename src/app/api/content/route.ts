@@ -1,3 +1,5 @@
+import { CMS_KEY_ALIASES } from '@/lib/cms/aliases';
+import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma';
 import { getContentSession } from '@/lib/cms/auth';
@@ -32,13 +34,15 @@ export async function POST(request: Request) {
       section?: string;
     };
 
+    if (!['save','publish','reset'].includes(action)) return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
     const cmsPage = page ? getCmsPage(page) : undefined;
     if (!page || !cmsPage) {
       return NextResponse.json({ error: 'Unknown page' }, { status: 400 });
     }
 
     if (action === 'reset') {
-      await db.siteContent.deleteMany({ where: section ? { page, section } : { page } });
+      const legacyFields = Object.entries(CMS_KEY_ALIASES[page] || {}).filter(([key]) => key.startsWith(`${section}.`)).map(([, legacy]) => { const [section, field] = legacy.split('.'); return { section, field }; });
+      await db.siteContent.deleteMany({ where: section ? { page, OR: [{ section }, ...legacyFields] } : { page } });
       await createAuditLog({
         userId: session.user.id as string,
         action: 'DELETE',
@@ -46,6 +50,7 @@ export async function POST(request: Request) {
         entityId: `${page}${section ? `.${section}` : ''}`,
         metadata: { page, section },
       });
+      revalidatePath('/', 'layout');
       return NextResponse.json({ ok: true, content: await getPageContent(page, true) });
     }
 
@@ -81,6 +86,7 @@ export async function POST(request: Request) {
       metadata: { page, published: publish, fields: entries.length },
     });
 
+    if (publish) revalidatePath('/', 'layout');
     return NextResponse.json({ ok: true, content: await getPageContent(page, true) });
   } catch (err) {
     console.error('Content save error:', err);

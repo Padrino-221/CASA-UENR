@@ -1,3 +1,6 @@
+import { jsonLd } from '@/lib/cms/display';
+import { getPageContent } from '@/lib/cms/content';
+import { resolvePreview, type SiteSearchParams } from '@/lib/cms/preview';
 import Link from 'next/link';
 import ArticleImage from '@/components/site/ArticleImage';
 import { notFound } from 'next/navigation';
@@ -5,7 +8,7 @@ import type { Metadata } from 'next';
 import { getArticleBySlug, getPublishedArticles } from '@/lib/cms/news';
 import { SITE_NAME, SITE_URL, OG_IMAGE } from '@/lib/seo';
 
-type Params = { params: Promise<{ slug: string }> };
+type Params = { params: Promise<{ slug: string }>; searchParams: SiteSearchParams };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
@@ -40,7 +43,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-export default async function ArticlePage({ params }: Params) {
+export default async function ArticlePage({ params, searchParams }: Params) {
+  const c = await getPageContent('news', await resolvePreview(searchParams));
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
@@ -79,19 +83,19 @@ export default async function ArticlePage({ params }: Params) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(articleJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }}
       />
       <div className="church-inner-page"><section className="church-section"><div className="inner church-article">
-        <Link href="/news" className="church-back-link">← All news &amp; gatherings</Link>
+        <Link href="/news" className="church-back-link">← {c['article.backLabel']}</Link>
         <header><span className="church-article-kind">{article.kind}</span><h1>{article.title}</h1><p className="church-article-summary">{article.excerpt}</p>{article.meta&&<p className="church-article-meta">{article.meta}</p>}</header>
         {article.image&&<div className="church-article-image"><ArticleImage src={article.image} alt={article.title} sizes="(max-width: 900px) 100vw, 840px" priority /></div>}
         <article className="church-article-body">{article.body.map((paragraph,index)=><p key={index}>{paragraph}</p>)}{article.quote&&<blockquote><p>{article.quote.text}</p><cite>{article.quote.cite}</cite></blockquote>}</article>
       </div></section>
-      {related.length>0&&<section className="church-section church-soft"><div className="inner"><h2>More from the fellowship</h2><div className="church-related">{related.map(item=><Link key={item.slug} href={`/news/${item.slug}`}><h3>{item.title}</h3><p>{item.excerpt}</p><span className="church-read-link">Read more →</span></Link>)}</div></div></section>}</div>
+      {c['article.relatedEnabled']!=='false'&&related.length>0&&<section className="church-section church-soft"><div className="inner"><h2>{c['article.relatedHeading']}</h2><div className="church-related">{related.map(item=><Link key={item.slug} href={`/news/${item.slug}`}><h3>{item.title}</h3><p>{item.excerpt}</p><span className="church-read-link">{c['latestHead.readLabel']} →</span></Link>)}</div></div></section>}</div>
     </>
   );
 }

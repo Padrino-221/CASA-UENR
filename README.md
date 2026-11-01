@@ -100,3 +100,19 @@ announcement; the application does not automatically retry ambiguous sends.
 Apply migration `20261101010000_secretary_communications` with `npm run db:migrate`
 when deploying elsewhere. Contact rate limiting is in memory; use a shared limiter for
 multiple application instances.
+
+
+### Public website editing coverage
+
+Website CMS → Pages contains the current Home, About, Departments, Contact, and News
+sections, plus shared Brand, navigation & footer settings. Editors can change headings,
+body text, photos and their descriptions, buttons/links, navigation, lists/cards, contact
+form labels/topics, social links, and search/sharing metadata. Section switches control
+visibility. Weekly gathering times and venue are shared between Home and the footer.
+
+Individual leaders, articles, and events are managed in their dedicated CMS screens.
+Removing or unpublishing the final record leaves that collection empty; sample records
+are never substituted. Saving a draft does not change the public site. Authorised Preview
+also includes shared header/footer drafts; Publish invalidates the public layout cache.
+Existing Home content keys are read through compatibility aliases so earlier uploaded
+images and saved copy remain available without a database migration.

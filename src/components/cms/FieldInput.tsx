@@ -27,6 +27,8 @@ export default function FieldInput({
   value: string;
   onChange: (value: string) => void;
 }) {
+  if (field.type === 'boolean') return <input type="checkbox" aria-label={field.label} checked={value !== 'false'} onChange={event => onChange(String(event.target.checked))} />;
+
   if (field.type === 'text') {
     return (
       <input

@@ -133,3 +133,8 @@
 .site.site-editorial .church-article-body blockquote{background:var(--blue-pale);border-left-color:var(--blue-sky)}
 .site.site-editorial .team-role{color:var(--blue-sky)}
 .site.site-editorial .team-arrows button{color:var(--blue-deep)}
+
+.site.site-editorial .church-contact-layout:has(>:only-child){grid-template-columns:minmax(0,1fr);max-width:820px}
+.site.site-editorial .church-contact-layout:empty{display:none}
+.site.site-editorial .church-social-links{display:flex;flex-wrap:wrap;gap:14px 24px;margin-top:20px}
+.site.site-editorial .church-social-links a{color:var(--blue-sky);font-size:16px;text-decoration:underline;text-underline-offset:4px}

@@ -1,3 +1,4 @@
+import { CMS_KEY_ALIASES } from './aliases';
 import { db } from '@/lib/prisma';
 import { getCmsPage, defaultContentForPage } from './schema';
 
@@ -9,10 +10,14 @@ export async function getPageContent(pageSlug: string, preview = false): Promise
 
   try {
     const rows = await db.siteContent.findMany({ where: { page: pageSlug } });
+    const stored = new Set<string>();
     for (const row of rows) {
       const key = `${row.section}.${row.field}`;
       const value = preview ? row.value : row.publishedValue;
-      if (value !== null && value !== undefined) out[key] = value;
+      if (value !== null && value !== undefined) { out[key] = value; stored.add(key); }
+    }
+    for (const [key, legacy] of Object.entries(CMS_KEY_ALIASES[pageSlug] || {})) {
+      if (!stored.has(key) && stored.has(legacy)) out[key] = out[legacy];
     }
   } catch {
     // Database unavailable — fall back to defaults so the site still renders.

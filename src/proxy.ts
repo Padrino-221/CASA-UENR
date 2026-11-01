@@ -99,7 +99,10 @@ export async function proxy(request: NextRequest) {
 
   // Everything else passes through. Keep the authenticated admin area and the
   // login page out of search engines.
-  const response = NextResponse.next();
+  const forwardedHeaders = new Headers(request.headers);
+  forwardedHeaders.delete('x-cms-preview');
+  if (request.nextUrl.searchParams.get('preview') === '1') forwardedHeaders.set('x-cms-preview', '1');
+  const response = NextResponse.next({ request: { headers: forwardedHeaders } });
   if (!isPublicPath(pathname) || pathname === "/login") {
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
   }

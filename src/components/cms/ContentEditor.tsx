@@ -53,15 +53,15 @@ export default function ContentEditor({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ page: page.slug, action: publish ? 'publish' : 'save', values }),
       });
-      if (!res.ok) throw new Error('Request failed');
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not save. Please try again.');
       if (data.content) setValues(data.content);
       setStatus(publish ? 'published' : 'saved');
       setMessage(publish ? 'Published — changes are live.' : 'Draft saved.');
       return true;
-    } catch {
+    } catch (error) {
       setStatus('error');
-      setMessage('Could not save. Please try again.');
+      setMessage(error instanceof Error ? error.message : 'Could not save. Please try again.');
       return false;
     }
   };
