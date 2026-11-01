@@ -285,15 +285,27 @@ export const CMS_PAGES: CmsPage[] = [
           },
           {
             "key": "image",
-            "label": "Hero image",
+            "label": "First carousel image",
             "type": "image",
             "default": "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=1200&h=600&fit=crop"
           },
           {
             "key": "imageAlt",
-            "label": "Hero image description",
+            "label": "First carousel image description",
             "type": "text",
             "default": "Students worshipping together at CASA UENR"
+          },
+          {
+            "key": "slides",
+            "label": "Additional carousel images",
+            "type": "list",
+            "help": "Add and reorder photos after the first image. The slideshow advances every six seconds.",
+            "defaultList": [{ "image": "/church-bg.jpg", "alt": "Our church community" }],
+            "itemLabelKey": "alt",
+            "subFields": [
+              { "key": "image", "label": "Image", "type": "image" },
+              { "key": "alt", "label": "Image description", "type": "text" }
+            ]
           }
         ]
       },
